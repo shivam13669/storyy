@@ -89,8 +89,8 @@ export const destinations: Destination[] = [
         duration: "5 nights · 6 days",
         description:
           "Embark on a breathtaking 6-day journey through the majestic landscapes of Ladakh. Experience high-altitude adventure with the legendary Khardungla and Changla passes, serene Pangong Lake, mystical monasteries, and the enchanting Nubra Valley. This is not just about luxury or budget—it's about reconnecting with nature, embracing challenges, and finding joy in the unexpected.",
-        price: "₹38,500",
-        oldPrice: "₹42,000",
+        price: "₹21,299",
+        oldPrice: "₹23,500",
         badge: "Save 8%",
         rating: 4.9,
         reviews: 428,
@@ -318,8 +318,8 @@ export const destinations: Destination[] = [
         duration: "6 nights · 7 days",
         description:
           "Experience the ultimate Ladakh adventure with this 7-day expedition through legendary passes and pristine landscapes. Ride across Khardungla, Diskit Monastery, explore Turtuk village at the Indo-Pak border, traverse Pangong Lake, and return via Changla Pass discovering monasteries and cultural landmarks.",
-        price: "₹34,200",
-        oldPrice: "₹36,900",
+        price: "₹26,299",
+        oldPrice: "₹28,500",
         badge: "Popular",
         rating: 4.8,
         reviews: 512,
@@ -582,8 +582,8 @@ export const destinations: Destination[] = [
         duration: "7 nights · 8 days",
         description:
           "An unforgettable 8-day adventure through the heart of Ladakh, where breathtaking landscapes, ancient monasteries, and thrilling high-altitude passes await. This expedition is perfect for adrenaline seekers and nature lovers, offering a mix of scenic beauty, historical landmarks, and the world's highest motorable pass experience at Mig La.",
-        price: "₹39,900",
-        oldPrice: "₹43,500",
+        price: "₹33,199",
+        oldPrice: "₹36,000",
         badge: "Premium",
         rating: 4.7,
         reviews: 302,
@@ -893,8 +893,8 @@ export const destinations: Destination[] = [
         duration: "7 nights · 8 days",
         description:
           "An unforgettable 8-day adventure through the heart of Ladakh, where breathtaking landscapes, ancient monasteries, and thrilling high-altitude passes await. This expedition is perfect for adrenaline seekers and nature lovers, offering a mix of scenic beauty, historical landmarks, and unparalleled stargazing opportunities at Umling La and Tso Moriri.",
-        price: "₹45,600",
-        oldPrice: "₹49,900",
+        price: "₹33,199",
+        oldPrice: "₹36,000",
         badge: "Best Value",
         rating: 4.9,
         reviews: 156,
@@ -1218,8 +1218,8 @@ export const destinations: Destination[] = [
         duration: "12 nights · 13 days",
         description:
           "This 13-day Himalayan Odyssey is the ultimate pilgrimage for every adventure seeker - a grand circuit spanning over 3000 kilometers from the plains of Chandigarh to the highest reaches of the trans-Himalayan desert. From the lush saffron valleys of Kashmir to the stark moonscapes of Ladakh, conquer legendary passes and experience Ladakh's most remote frontiers before descending through the Atal Tunnel engineering marvel.",
-        price: "₹52,900",
-        oldPrice: "₹58,600",
+        price: "₹34,999",
+        oldPrice: "₹38,000",
         badge: "Group Special",
         rating: 4.9,
         reviews: 315,
@@ -1664,7 +1664,7 @@ export const destinations: Destination[] = [
           {
             day: 13,
             title: "The Final Descent (270 km, 6-7 Hours)",
-            location: "Chandigarh",
+            location: "",
             description:
               "Scenic ride following Beas River. Wind down through hills of Himachal Pradesh back to plains. Reflect on 1,500+ km journey over final roadside chai before reaching Chandigarh, concluding your Himalayan odyssey.",
             highlights: [
@@ -1694,9 +1694,10 @@ export const destinations: Destination[] = [
           "Oxygen cylinder (1)",
           "Marshall",
           "Mechanic cum Sweep Rider (From Srinagar to Manali)",
+          "Motorbike (RE Classic 350, RE Himalayan 411 & 452) if opted",
           "Backup Vehicle (throughout the trip)",
           "All inner line permits",
-          "Bonfire (1 night)",
+          "Bonfire & Music",
         ],
         exclusions: [
           "Any food or beverage expenses not covered in the package",

@@ -105,6 +105,7 @@ const DestinationDetail = () => {
             <PricingCard
               showForm={true}
               title={travelPackage.name}
+              packageName={travelPackage.name}
               price={travelPackage.price}
               oldPrice={travelPackage.oldPrice}
               saving={

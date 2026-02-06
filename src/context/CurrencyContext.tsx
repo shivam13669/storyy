@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { useQuery } from "@tanstack/react-query";
 import { CURRENCIES, formatNumberAsCurrency, getCurrencyByCode, type Currency } from "@/lib/currency";
 import { getRegionPricing, type RegionPricing } from "@/lib/pricing";
-import { detectUserRegion, saveRegionPreference } from "@/lib/region";
+import { detectUserRegion, saveRegionPreference, getRegionFromCurrency } from "@/lib/region";
 
 const STORAGE_KEY = "sb_currency";
 const CACHE_KEY = "sb_currency_rates_cache";
@@ -19,6 +19,8 @@ interface CachedRates {
 type CurrencyContextValue = {
   currency: string;
   setCurrency: (code: string) => void;
+  /** Set currency and infer + save region from currency selection */
+  setCurrencyWithRegion: (code: string) => void;
   region: string;
   regionPricing: RegionPricing;
   detectedRegion: string;
@@ -157,28 +159,33 @@ async function fetchExchangeRates(baseCurrency: string, signal?: AbortSignal): P
 }
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const [currency, setCurrencyState] = useState<string>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved || "";
-    } catch {
-      return "";
-    }
-  });
-
+  const [currency, setCurrencyState] = useState<string>("");
   const [detectedRegion, setDetectedRegion] = useState<string>("");
   const [isRegionLoaded, setIsRegionLoaded] = useState(false);
 
-  // Detect region on mount
+  // Detect region on mount, then set currency based on region
   useEffect(() => {
     detectUserRegion().then((detected) => {
       setDetectedRegion(detected);
       setIsRegionLoaded(true);
 
-      // Set default currency to region's base currency if not already set
-      if (!currency) {
+      // Get the saved currency preference (if any)
+      let savedCurrency = "";
+      try {
+        savedCurrency = localStorage.getItem(STORAGE_KEY) || "";
+      } catch {
+        // localStorage not available
+      }
+
+      // If no saved currency, use region's base currency
+      if (!savedCurrency) {
         const regionPricing = getRegionPricing(detected);
         setCurrencyState(regionPricing.baseCurrency);
+        console.log(`[CURRENCY INIT] No saved currency, using region default: ${regionPricing.baseCurrency} (${detected})`);
+      } else {
+        // Use saved currency if available
+        setCurrencyState(savedCurrency);
+        console.log(`[CURRENCY INIT] Using saved currency: ${savedCurrency}`);
       }
     });
   }, []);
@@ -221,7 +228,30 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
       setCurrencyState(code);
       try {
         localStorage.setItem(STORAGE_KEY, code);
-      } catch {}
+      } catch {
+        // localStorage not available (privacy mode, etc)
+      }
+    }
+  }, []);
+
+  const setCurrencyWithRegion = useCallback((code: string) => {
+    const exists = CURRENCIES.some((c) => c.code === code);
+    if (exists) {
+      setCurrencyState(code);
+      try {
+        localStorage.setItem(STORAGE_KEY, code);
+
+        // Infer region from currency and save it
+        const inferredRegion = getRegionFromCurrency(code);
+        if (inferredRegion) {
+          saveRegionPreference(inferredRegion);
+          console.log(`[CURRENCY] Selected ${code}, inferred region: ${inferredRegion}`);
+        } else {
+          console.log(`[CURRENCY] Selected ${code}, but region inference failed`);
+        }
+      } catch (err) {
+        console.log("[CURRENCY] Error saving currency/region preference:", err);
+      }
     }
   }, []);
 
@@ -229,8 +259,11 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     (basePrice: number, fromCurrency?: string) => {
       if (!Number.isFinite(basePrice)) return 0;
 
-      // Apply 20% markup for non-Indian users
-      const adjustedBasePrice = isIndianUser ? basePrice : basePrice * 1.2;
+      // Apply 20% markup for:
+      // 1. Non-Indian detected regions
+      // 2. Unknown/undetected regions (safety: assume international user)
+      const shouldApplyMarkup = !isIndianUser;
+      const adjustedBasePrice = shouldApplyMarkup ? basePrice * 1.2 : basePrice;
 
       // Always use INR as the source currency
       const sourceCurrency = fromCurrency || "INR";
@@ -239,11 +272,11 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
 
       const converted = (adjustedBasePrice / sourceRate) * targetRate;
       console.log(
-        `[CONVERSION] ${adjustedBasePrice} ${sourceCurrency} (rate: ${sourceRate}) → ${currency} (rate: ${targetRate}) = ${converted} [markup: ${isIndianUser ? "none" : "+20%"}]`
+        `[CONVERSION] ${adjustedBasePrice} ${sourceCurrency} (rate: ${sourceRate}) → ${currency} (rate: ${targetRate}) = ${converted} [markup: ${shouldApplyMarkup ? "+20%" : "none"}] [region: ${detectedRegion}]`
       );
       return converted;
     },
-    [currency, rates, isIndianUser]
+    [currency, rates, isIndianUser, detectedRegion]
   );
 
   const formatPrice = useCallback(
@@ -257,6 +290,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const value: CurrencyContextValue = {
     currency,
     setCurrency,
+    setCurrencyWithRegion,
     region: detectedRegion,
     regionPricing,
     detectedRegion,

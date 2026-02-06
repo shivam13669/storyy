@@ -274,8 +274,14 @@ export const REGION_PRICING_MAP: Record<string, RegionPricing> = {
 export const DEFAULT_REGION_CODE = "IN";
 
 /**
+ * Special marker for unknown/undetected regions
+ * These get 20% markup applied
+ */
+export const UNKNOWN_REGION_CODE = "UNKNOWN";
+
+/**
  * Get pricing configuration for a country
- * If not found, returns default region
+ * If not found, returns a special unknown region config with markup flag
  */
 export function getRegionPricing(countryCode?: string): RegionPricing {
   if (!countryCode) {
@@ -283,7 +289,20 @@ export function getRegionPricing(countryCode?: string): RegionPricing {
   }
 
   const normalized = countryCode.toUpperCase();
-  return REGION_PRICING_MAP[normalized] || REGION_PRICING_MAP[DEFAULT_REGION_CODE]!;
+  const found = REGION_PRICING_MAP[normalized];
+
+  if (found) {
+    return found;
+  }
+
+  // Unknown region - use default base price but mark as unknown so markup is applied
+  return {
+    countryCode: normalized,
+    baseCurrency: "INR",
+    basePrice: 9999,
+    locale: "en-US",
+    regionName: normalized,
+  };
 }
 
 /**

@@ -25,7 +25,7 @@ const Navigation = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  const { currency, setCurrency } = useCurrency();
+  const { currency, setCurrencyWithRegion } = useCurrency();
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
 
   // Close dropdown when clicking outside
@@ -77,7 +77,7 @@ const Navigation = () => {
 
           {/* Currency + Auth */}
           <div className="hidden md:flex items-center gap-3">
-            <CurrencyPicker value={currency} onChange={setCurrency} />
+            <CurrencyPicker value={currency} onChange={setCurrencyWithRegion} />
             {isAuthenticated && user ? (
               <div className="relative" ref={userMenuRef}>
                 <button
@@ -184,7 +184,7 @@ const Navigation = () => {
                 );
               })}
               <div className="px-3 py-2 space-y-2">
-                <CurrencyPicker value={currency} onChange={setCurrency} className="w-full" />
+                <CurrencyPicker value={currency} onChange={setCurrencyWithRegion} className="w-full" />
                 {isAuthenticated && user ? (
                   <>
                     <div className="text-white/90 text-sm font-medium px-2 py-1">

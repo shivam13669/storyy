@@ -1,4 +1,5 @@
 import { Mail as MailIcon, Phone as PhoneIcon, Search, ChevronDown } from "lucide-react";
+import emailjs from '@emailjs/browser';
 import WhatsAppIcon from "./icons/WhatsAppIcon";
 import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
@@ -6,8 +7,14 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
+
+// EmailJS Credentials
+const EMAILJS_SERVICE_ID = 'storiesbyfoot';
+const EMAILJS_TEMPLATE_ID = 'template_57tfwsw';
+const EMAILJS_PUBLIC_KEY = 'JH95W_X6r4YZ6I_-0';
 
 const COUNTRIES = [
   { code: "IN", name: "India", dial: "+91" },
@@ -38,6 +45,12 @@ const Contact = () => {
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [countrySearch, setCountrySearch] = useState("");
   const [openCountryPopover, setOpenCountryPopover] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }, []);
 
   const filteredCountries = COUNTRIES.filter(country =>
     country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
@@ -51,21 +64,54 @@ const Contact = () => {
     setCountrySearch("");
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     const name = String(formData.get("name") || "");
+    const email = String(formData.get("email") || "");
+    const phone = String(formData.get("phone") || "");
+    const message = String(formData.get("message") || "");
+
+    // Validation
+    if (!name || !email || !phone || !message) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+      });
+      return;
+    }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Message sent",
-        description: `${name ? name + ", " : ""}we'll get back to you shortly.`,
-      });
+
+    const fullPhoneNumber = selectedCountry.dial + phone;
+
+    const contactData = {
+      fullName: name,
+      email: email,
+      phone: fullPhoneNumber,
+      message: message,
+    };
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        contactData
+      );
+
+      setShowThankYou(true);
       form.reset();
-    }, 800);
+      setSelectedCountry(COUNTRIES[0]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -104,49 +150,67 @@ const Contact = () => {
                   <Label htmlFor="phone">Phone</Label>
                   <div className="flex gap-2">
                     {/* Country Code Selector */}
-                    <Popover open={openCountryPopover} onOpenChange={setOpenCountryPopover}>
+                    <Popover open={openCountryPopover} onOpenChange={(open) => {
+                      setOpenCountryPopover(open);
+                      if (!open) {
+                        setCountrySearch("");
+                      }
+                    }}>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
-                          className="px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 transition-all flex items-center gap-2 min-w-fit focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                          className="px-3 py-2.5 border border-border rounded-md bg-background hover:bg-muted transition-all flex items-center gap-2 min-w-fit focus:outline-none focus:ring-1 focus:ring-primary h-10"
                         >
-                          <span className="text-sm font-medium">{selectedCountry.dial}</span>
-                          <ChevronDown className="h-4 w-4 text-gray-400" />
+                          <span className="text-sm font-medium text-foreground">{selectedCountry.dial}</span>
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-64 p-0" align="start">
-                        <div className="p-3 border-b border-gray-200">
-                          <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
-                            <Input
-                              type="text"
-                              placeholder="Search country..."
-                              value={countrySearch}
-                              onChange={(e) => setCountrySearch(e.target.value)}
-                              className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                            />
-                          </div>
-                        </div>
-                        <div className="max-h-64 overflow-y-auto">
-                          {filteredCountries.length > 0 ? (
-                            filteredCountries.map((country) => (
-                              <button
-                                key={country.code}
-                                type="button"
-                                onClick={() => handleCountrySelect(country)}
-                                className={`w-full text-left px-3 py-2.5 text-sm hover:bg-blue-50 transition-colors flex justify-between items-center ${
-                                  selectedCountry.code === country.code ? "bg-blue-100 font-semibold" : ""
-                                }`}
-                              >
-                                <span>{country.name}</span>
-                                <span className="text-gray-500">{country.dial}</span>
-                              </button>
-                            ))
-                          ) : (
-                            <div className="px-3 py-4 text-sm text-gray-500 text-center">
-                              No countries found
+                      <PopoverContent className="w-56 p-0" align="start">
+                        <div className="flex flex-col">
+                          {/* Search Input */}
+                          <div className="sticky top-0 z-10 p-3 border-b border-border bg-card">
+                            <div className="relative">
+                              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <input
+                                type="text"
+                                placeholder="Search country..."
+                                value={countrySearch}
+                                onChange={(e) => setCountrySearch(e.target.value)}
+                                className="w-full pl-9 pr-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary bg-background"
+                                autoFocus
+                              />
                             </div>
-                          )}
+                          </div>
+
+                          {/* Countries List */}
+                          <div className="max-h-64 overflow-y-auto" onWheel={(e) => e.stopPropagation()}>
+                            {filteredCountries.length > 0 ? (
+                              filteredCountries.map((country) => (
+                                <button
+                                  key={country.code}
+                                  type="button"
+                                  onClick={() => handleCountrySelect(country)}
+                                  className={`w-full text-left px-3 py-2.5 text-sm hover:bg-primary/10 transition-colors flex items-center justify-between ${
+                                    selectedCountry.code === country.code ? "bg-primary/20 font-semibold text-primary" : "text-foreground"
+                                  }`}
+                                >
+                                  <span>
+                                    <span className="font-medium">{country.dial}</span>
+                                    <span className="text-muted-foreground ml-2">
+                                      {country.name}
+                                    </span>
+                                  </span>
+                                  {selectedCountry.code === country.code && (
+                                    <span className="text-primary">✓</span>
+                                  )}
+                                </button>
+                              ))
+                            ) : (
+                              <div className="px-3 py-8 text-sm text-muted-foreground text-center">
+                                No countries found
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </PopoverContent>
                     </Popover>
@@ -165,8 +229,8 @@ const Contact = () => {
                   <Label htmlFor="message">Message</Label>
                   <Textarea id="message" name="message" placeholder="Tell us about your plans…" className="min-h-32" required />
                 </div>
-                <Button type="submit" variant="contact" className="w-full" disabled={loading}>
-                  {loading ? "Sending…" : "Send Message"}
+                <Button type="submit" variant="contact" className="w-full disabled:opacity-50 disabled:cursor-not-allowed" disabled={loading}>
+                  {loading ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </CardContent>
@@ -218,6 +282,27 @@ const Contact = () => {
           </div>
         </div>
       </div>
+
+      {/* Thank You Modal */}
+      <Dialog open={showThankYou} onOpenChange={setShowThankYou}>
+        <DialogContent className="max-w-md text-center">
+          <DialogTitle className="sr-only">Thank You</DialogTitle>
+          <div className="py-12 px-4">
+            <div className="mb-6 text-6xl">✨</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-12">Thank You!</h2>
+            <p className="text-lg text-gray-600 mb-8">
+              We will reach out to you shortly!
+            </p>
+            <Button
+              onClick={() => setShowThankYou(false)}
+              className="w-full"
+              variant="default"
+            >
+              Got it
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

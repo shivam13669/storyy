@@ -38,22 +38,36 @@ app.get('/api/health', (req, res) => {
 
 // Region detection endpoint (for currency/locale detection)
 app.get('/api/region', (req, res) => {
-  // For local development, detect region from:
-  // 1. Query parameter (manual override)
-  // 2. Accept-Language header
-  // 3. Default to India
+  // Detection priority:
+  // 1. Manual query parameter override
+  // 2. Vercel IP country header (production on Vercel)
+  // 3. Cloudflare country header (if behind Cloudflare)
+  // 4. Accept-Language header
+  // 5. Return null (unknown) so client applies 20% markup
 
   const queryRegion = req.query.region;
   if (queryRegion && typeof queryRegion === 'string') {
     return res.json({ region: queryRegion.toUpperCase() });
   }
 
-  // Try to detect from Accept-Language header
-  const acceptLanguage = req.headers['accept-language'] || '';
+  // Priority 1: Vercel Edge Network header (most reliable)
+  const vercelCountry = req.headers['x-vercel-ip-country'];
+  if (vercelCountry && typeof vercelCountry === 'string') {
+    console.log(`[REGION] Detected from Vercel IP: ${vercelCountry}`);
+    return res.json({ region: vercelCountry.toUpperCase() });
+  }
 
-  // Simple language to region mapping
+  // Priority 2: Cloudflare header
+  const cloudflareCountry = req.headers['cf-ipcountry'];
+  if (cloudflareCountry && typeof cloudflareCountry === 'string') {
+    console.log(`[REGION] Detected from Cloudflare IP: ${cloudflareCountry}`);
+    return res.json({ region: cloudflareCountry.toUpperCase() });
+  }
+
+  // Priority 3: Accept-Language header (less reliable but better than nothing)
+  const acceptLanguage = req.headers['accept-language'] || '';
   const languageRegionMap = {
-    'hi': 'IN', // Hindi -> India
+    'hi': 'IN',
     'en-IN': 'IN',
     'en-US': 'US',
     'en-GB': 'GB',
@@ -64,15 +78,16 @@ app.get('/api/region', (req, res) => {
     'zh': 'CN',
   };
 
-  // Extract language code from Accept-Language (e.g., 'en-US,en;q=0.9' -> 'en-US')
   const primaryLanguage = acceptLanguage.split(',')[0].trim().split(';')[0];
-
   if (languageRegionMap[primaryLanguage]) {
+    console.log(`[REGION] Detected from Accept-Language: ${primaryLanguage} -> ${languageRegionMap[primaryLanguage]}`);
     return res.json({ region: languageRegionMap[primaryLanguage] });
   }
 
-  // Default to India for local development
-  res.json({ region: 'IN' });
+  // If no detection succeeded, return null
+  // Client will treat this as unknown region and apply 20% markup as safety measure
+  console.log('[REGION] Could not detect region, returning null');
+  res.json({ region: null });
 });
 
 // Serve frontend
