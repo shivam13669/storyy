@@ -5,6 +5,9 @@ export interface AuthUser {
   id: number;
   fullName: string;
   email: string;
+  countryCode: string;
+  mobileNumber: string;
+  signupDate: string;
   role: 'user' | 'admin';
   testimonialAllowed: boolean;
 }
