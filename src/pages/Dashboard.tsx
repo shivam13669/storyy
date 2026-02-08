@@ -604,7 +604,7 @@ const Dashboard = () => {
             </div>
           ) : activeNav === "profile" ? (
             <div>
-              {user && <UserProfileView user={user} />}
+              {user && <UserProfileView user={user} onChangePassword={() => setIsPasswordModalOpen(true)} />}
               <ChangePasswordModal
                 isOpen={isPasswordModalOpen}
                 onClose={() => setIsPasswordModalOpen(false)}
