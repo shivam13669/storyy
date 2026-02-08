@@ -332,11 +332,11 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem
-                              onClick={() => setResetPasswordUser(user)}
+                              onClick={() => handleViewDetails(user)}
                               className="flex items-center gap-2"
                             >
-                              <Lock className="w-4 h-4" />
-                              Reset Password
+                              <Eye className="w-4 h-4" />
+                              View Details
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => setSuspendConfirmId(user.id)}
@@ -350,7 +350,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                               ) : (
                                 <>
                                   <Power className="w-4 h-4" />
-                                  Suspend
+                                  Suspend User
                                 </>
                               )}
                             </DropdownMenuItem>
@@ -359,7 +359,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                               className="flex items-center gap-2 text-red-600"
                             >
                               <Trash2 className="w-4 h-4" />
-                              Delete
+                              Delete User
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
