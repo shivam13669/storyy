@@ -517,6 +517,8 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
             </>
+          ) : activeNav === "reports" ? (
+            <AdminReportsView bookings={bookings} users={users} testimonials={testimonials} />
           ) : activeNav === "users" ? (
             <AdminUsersView users={users} onDataChange={loadData} />
           ) : activeNav === "bookings" ? (
