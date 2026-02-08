@@ -29,6 +29,26 @@ import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { changeUserPassword } from "@/lib/api";
 
+// Country code to phone code mapping
+const countryCodeToPhoneCode: { [key: string]: string } = {
+  'IN': '91',   // India
+  'US': '1',    // United States
+  'GB': '44',   // United Kingdom
+  'CA': '1',    // Canada
+  'AU': '61',   // Australia
+  'DE': '49',   // Germany
+  'FR': '33',   // France
+  'JP': '81',   // Japan
+  'CN': '86',   // China
+  'BR': '55',   // Brazil
+  'MX': '52',   // Mexico
+  'ZA': '27',   // South Africa
+  'SG': '65',   // Singapore
+  'HK': '852',  // Hong Kong
+  'PK': '92',   // Pakistan
+  'BD': '880',  // Bangladesh
+};
+
 const Dashboard = () => {
   const { user, isAuthenticated, isAdmin, logout, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
