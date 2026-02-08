@@ -46,6 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 id: dbUser.id,
                 fullName: dbUser.fullName,
                 email: dbUser.email,
+                countryCode: dbUser.countryCode,
+                mobileNumber: dbUser.mobileNumber,
+                signupDate: dbUser.signupDate,
                 role: dbUser.role,
                 testimonialAllowed: dbUser.testimonialAllowed,
               });
