@@ -32,7 +32,6 @@ import { AdminUsersView } from "@/components/dashboardViews/AdminUsersView";
 import { AdminBookingsView } from "@/components/dashboardViews/AdminBookingsView";
 import { AdminTestimonialsView } from "@/components/dashboardViews/AdminTestimonialsView";
 import { AdminCouponsView } from "@/components/dashboardViews/AdminCouponsView";
-import { AdminRevenueView } from "@/components/dashboardViews/AdminRevenueView";
 import { AdminTestimonialForm } from "@/components/AdminTestimonialForm";
 import { AdminReportsView } from "@/components/dashboardViews/AdminReportsView";
 import { CustomerManagementView } from "@/components/dashboardViews/CustomerManagementView";
@@ -226,7 +225,6 @@ const AdminDashboard = () => {
             { id: "bookings", label: "Bookings", icon: Briefcase },
             { id: "reviews", label: "Testimonials", icon: FileText },
             { id: "coupons", label: "Coupons", icon: Briefcase },
-            { id: "revenue", label: "Revenue", icon: DollarSign },
             { id: "settings", label: "Settings", icon: Settings },
           ].map((item) => {
             const Icon = item.icon;
@@ -532,8 +530,6 @@ const AdminDashboard = () => {
             <AdminTestimonialsView testimonials={testimonials} onDataChange={loadData} />
           ) : activeNav === "coupons" ? (
             <AdminCouponsView />
-          ) : activeNav === "revenue" ? (
-            <AdminRevenueView bookings={bookings} users={users} testimonials={testimonials} />
           ) : activeNav === "settings" ? (
             <Card className="border-0 shadow-md rounded-2xl">
               <CardHeader>
