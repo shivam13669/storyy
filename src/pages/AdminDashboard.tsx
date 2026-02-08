@@ -221,7 +221,8 @@ const AdminDashboard = () => {
           {[
             { id: "overview", label: "Overview", icon: BarChart3 },
             { id: "reports", label: "Reports & Analytics", icon: LineChart },
-            { id: "users", label: "Travelers", icon: Users },
+            { id: "customers", label: "Customers", icon: Users },
+            { id: "users", label: "User Management", icon: Users },
             { id: "bookings", label: "Bookings", icon: Briefcase },
             { id: "reviews", label: "Testimonials", icon: FileText },
             { id: "coupons", label: "Coupons", icon: Briefcase },
