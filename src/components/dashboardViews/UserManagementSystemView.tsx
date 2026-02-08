@@ -37,6 +37,7 @@ import {
   PowerOff,
   Trash2,
   RefreshCw,
+  Eye,
 } from "lucide-react";
 import { format } from "date-fns";
 import { suspendUser, unsuspendUser, deleteUser, resetUserPassword } from "@/lib/api";
@@ -66,6 +67,8 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
   const [suspendConfirmId, setSuspendConfirmId] = useState<number | null>(null);
   const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
   const [refreshLoading, setRefreshLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
