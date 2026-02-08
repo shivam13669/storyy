@@ -719,7 +719,7 @@ const Dashboard = () => {
                       <p className="text-sm text-gray-600 font-medium mb-2">Phone Number</p>
                       <p className="text-lg font-semibold text-gray-900">
                         {user?.countryCode && user?.mobileNumber
-                          ? `+${user.countryCode} ${user.mobileNumber}`
+                          ? `+${countryCodeToPhoneCode[user.countryCode] || user.countryCode}${user.mobileNumber}`
                           : "—"}
                       </p>
                       <p className="text-xs text-gray-500 mt-2">Cannot be changed after signup</p>
