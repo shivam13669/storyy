@@ -604,25 +604,63 @@ const Dashboard = () => {
             </div>
           ) : activeNav === "profile" ? (
             <div className="space-y-6">
-              {user ? (
-                <>
-                  <UserProfileView
-                    user={user}
-                    onChangePassword={() => setIsPasswordModalOpen(true)}
-                  />
-                  <ChangePasswordModal
-                    isOpen={isPasswordModalOpen}
-                    onClose={() => setIsPasswordModalOpen(false)}
-                    onSubmit={handleChangePassword}
-                  />
-                </>
-              ) : (
-                <Card className="border-0 shadow-md rounded-2xl">
-                  <CardContent className="p-8 text-center">
-                    <p className="text-gray-600">Loading profile...</p>
-                  </CardContent>
-                </Card>
-              )}
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">My Profile</h3>
+                <p className="text-sm text-gray-600 mt-1">Manage your personal information and account settings</p>
+              </div>
+
+              {/* Personal Information Card */}
+              <Card className="border-0 shadow-md rounded-2xl">
+                <CardHeader>
+                  <CardTitle>Personal Information</CardTitle>
+                  <CardDescription>Your account details</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div>
+                      <p className="text-sm text-gray-600 font-medium">Full Name</p>
+                      <p className="text-lg font-semibold text-gray-900 mt-2">{user?.fullName}</p>
+                      <p className="text-xs text-gray-500 mt-1">You can edit your name below</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 font-medium">Email</p>
+                      <p className="text-lg font-semibold text-gray-900 mt-2">{user?.email}</p>
+                      <p className="text-xs text-gray-500 mt-1">Email cannot be changed after signup</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 font-medium">Phone</p>
+                      <p className="text-lg font-semibold text-gray-900 mt-2">+{user?.countryCode} {user?.mobileNumber}</p>
+                      <p className="text-xs text-gray-500 mt-1">Phone number cannot be changed after signup</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 font-medium">Member Since</p>
+                      <p className="text-lg font-semibold text-gray-900 mt-2">
+                        {user?.signupDate && !isNaN(new Date(user.signupDate).getTime())
+                          ? format(new Date(user.signupDate), "MMMM dd, yyyy")
+                          : "—"}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Account Security Card */}
+              <Card className="border-0 shadow-md rounded-2xl">
+                <CardHeader>
+                  <CardTitle>Account Security</CardTitle>
+                  <CardDescription>Manage your password and security settings</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-700 mb-4">Your account security is important to us. You can change your password at any time.</p>
+                  <Button onClick={() => setIsPasswordModalOpen(true)} className="w-full">Change Password</Button>
+                </CardContent>
+              </Card>
+
+              <ChangePasswordModal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
+                onSubmit={handleChangePassword}
+              />
             </div>
           ) : activeNav === "settings" ? (
             <Card className="border-0 shadow-md rounded-2xl">
