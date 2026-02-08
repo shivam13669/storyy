@@ -81,6 +81,11 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
     setFilteredUsers(filtered);
   };
 
+  const handleViewDetails = (user: User) => {
+    setSelectedUser(user);
+    setIsDetailsModalOpen(true);
+  };
+
   const handleRefresh = async () => {
     setRefreshLoading(true);
     try {
