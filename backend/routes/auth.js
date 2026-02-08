@@ -47,6 +47,12 @@ router.post('/signup', async (req, res) => {
       return res.status(409).json({ error: 'Email already registered' });
     }
 
+    // Check if mobile number already exists
+    const mobileResult = db.exec(`SELECT id FROM users WHERE mobileNumber = '${escapeSQL(mobileNumber)}'`);
+    if (mobileResult && mobileResult.length > 0 && mobileResult[0].values.length > 0) {
+      return res.status(409).json({ error: 'Phone number already registered' });
+    }
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
