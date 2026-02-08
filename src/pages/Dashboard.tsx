@@ -23,6 +23,9 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getBookingsByUserId, getTestimonialsByUserId, Booking, Testimonial } from "@/lib/db";
 import { format } from "date-fns";
+import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
+import { ChangePasswordModal } from "@/components/ChangePasswordModal";
+import { changeUserPassword } from "@/lib/api";
 
 const Dashboard = () => {
   const { user, isAuthenticated, isAdmin, logout, isLoading: authLoading } = useAuth();
