@@ -27,6 +27,9 @@ import { useToast } from "@/hooks/use-toast";
 import { getAllUsers as getAllUsersFromAPI } from "@/lib/api";
 import { getAllBookings, getAllTestimonials, User, Booking, Testimonial } from "@/lib/db";
 import { format } from "date-fns";
+import { AdminUsersView } from "@/components/dashboardViews/AdminUsersView";
+import { AdminBookingsView } from "@/components/dashboardViews/AdminBookingsView";
+import { AdminTestimonialsView } from "@/components/dashboardViews/AdminTestimonialsView";
 
 const AdminDashboard = () => {
   const { user, isAuthenticated, isAdmin, logout, isLoading: authLoading } = useAuth();
