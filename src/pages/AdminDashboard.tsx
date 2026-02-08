@@ -21,6 +21,7 @@ import {
   RefreshCw,
   Home,
   ChevronDown,
+  LineChart,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
