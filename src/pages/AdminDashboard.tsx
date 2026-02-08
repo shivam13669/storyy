@@ -30,6 +30,9 @@ import { format } from "date-fns";
 import { AdminUsersView } from "@/components/dashboardViews/AdminUsersView";
 import { AdminBookingsView } from "@/components/dashboardViews/AdminBookingsView";
 import { AdminTestimonialsView } from "@/components/dashboardViews/AdminTestimonialsView";
+import { AdminCouponsView } from "@/components/dashboardViews/AdminCouponsView";
+import { AdminRevenueView } from "@/components/dashboardViews/AdminRevenueView";
+import { AdminTestimonialForm } from "@/components/AdminTestimonialForm";
 
 const AdminDashboard = () => {
   const { user, isAuthenticated, isAdmin, logout, isLoading: authLoading } = useAuth();
