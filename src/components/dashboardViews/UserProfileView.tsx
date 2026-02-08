@@ -23,7 +23,7 @@ interface UserProfileViewProps {
   onChangePassword?: () => void;
 }
 
-export function UserProfileView({ user, onUserUpdate }: UserProfileViewProps) {
+export function UserProfileView({ user, onUserUpdate, onChangePassword }: UserProfileViewProps) {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
