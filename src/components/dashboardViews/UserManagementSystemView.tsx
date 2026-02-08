@@ -268,13 +268,12 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
       </div>
 
       {/* User Directory Table */}
-      <Card className="border-0 shadow-md rounded-2xl">
-        <CardHeader>
-          <CardTitle>User Directory</CardTitle>
-          <CardDescription>Search and filter users, manage their account status</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+      <div className="bg-white border border-gray-200 rounded-xl">
+        <div className="p-6 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">User Directory</h3>
+          <p className="text-sm text-gray-600 mt-1">Search and filter users, manage their account status</p>
+        </div>
+        <div className="p-6 overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -367,9 +366,8 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                 )}
               </TableBody>
             </Table>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Delete Confirmation */}
       <AlertDialog open={deleteConfirmId !== null} onOpenChange={() => setDeleteConfirmId(null)}>
