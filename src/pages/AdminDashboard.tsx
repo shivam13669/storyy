@@ -218,6 +218,7 @@ const AdminDashboard = () => {
         <nav className="flex-1 overflow-y-auto p-4 space-y-2">
           {[
             { id: "overview", label: "Overview", icon: BarChart3 },
+            { id: "reports", label: "Reports & Analytics", icon: LineChart },
             { id: "users", label: "Travelers", icon: Users },
             { id: "bookings", label: "Bookings", icon: Briefcase },
             { id: "reviews", label: "Testimonials", icon: FileText },
