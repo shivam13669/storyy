@@ -269,8 +269,14 @@ const Dashboard = () => {
               {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">My Trips Dashboard</h2>
-              <p className="text-sm text-gray-600">Manage your bookings and adventures</p>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {activeNav === "profile" ? "My Profile" : "My Trips Dashboard"}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {activeNav === "profile"
+                  ? `Hi, ${user?.fullName?.split(" ")[0]}`
+                  : "Manage your bookings and adventures"}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
