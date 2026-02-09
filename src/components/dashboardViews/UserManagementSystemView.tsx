@@ -282,21 +282,25 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
       </div>
 
       {/* Search and Filter */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-          <Input
-            placeholder="Search by name, email, phone..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Button variant="outline" className="flex items-center gap-2">
-          <Filter className="w-4 h-4" />
-          Filter
-        </Button>
-      </div>
+      <Card className="border-0 shadow-md rounded-2xl">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search by name, email, phone..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button variant="outline" className="flex items-center gap-2">
+              <Filter className="w-4 h-4" />
+              Filter
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Users List */}
       <Card className="border-0 shadow-md rounded-2xl">
