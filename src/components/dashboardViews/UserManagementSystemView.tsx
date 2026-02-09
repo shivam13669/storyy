@@ -282,7 +282,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
       </div>
 
       {/* Search and Filter */}
-      <Card className="border-0 shadow-md rounded-2xl">
+      <Card className="border border-gray-200 shadow-lg rounded-2xl bg-white">
         <CardContent className="p-6">
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
