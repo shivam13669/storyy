@@ -405,7 +405,7 @@ const AdminDashboard = () => {
                       className="w-full mt-4 text-primary"
                       onClick={() => navigate("/admin/users")}
                     >
-                      View all customer →
+                      View all customers →
                     </Button>
                   </CardContent>
                 </Card>
