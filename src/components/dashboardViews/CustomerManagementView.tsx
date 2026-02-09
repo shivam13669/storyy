@@ -22,14 +22,17 @@ interface CustomerManagementViewProps {
 }
 
 export function CustomerManagementView({ users, onDataChange }: CustomerManagementViewProps) {
+  // Filter out admins - only show customers
+  const customersOnly = users.filter(u => u.role !== "admin");
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState(users);
+  const [filteredUsers, setFilteredUsers] = useState(customersOnly);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    const filtered = users.filter(
+    const filtered = customersOnly.filter(
       (user) =>
         user.fullName.toLowerCase().includes(query.toLowerCase()) ||
         user.email.toLowerCase().includes(query.toLowerCase()) ||
@@ -39,10 +42,10 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
   };
 
   // Calculate metrics
-  const totalCustomers = users.length;
-  const maleCustomers = Math.round(users.length * 0.45); // Mock data
-  const femaleCustomers = Math.round(users.length * 0.55); // Mock data
-  const thisMonth = users.filter(
+  const totalCustomers = customersOnly.length;
+  const maleCustomers = Math.round(customersOnly.length * 0.45); // Mock data
+  const femaleCustomers = Math.round(customersOnly.length * 0.55); // Mock data
+  const thisMonth = customersOnly.filter(
     (u) => new Date(u.signupDate).getMonth() === new Date().getMonth()
   ).length;
 
