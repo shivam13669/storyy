@@ -54,6 +54,7 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeNav, setActiveNav] = useState("overview");
   const [customerTab, setCustomerTab] = useState("customer");
+  const [adminTab, setAdminTab] = useState("management");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
