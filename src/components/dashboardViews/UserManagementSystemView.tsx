@@ -180,12 +180,14 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
   };
 
   // Calculate metrics
-  const totalDoctors = users.filter((u) => u.role === "admin").length;
-  const maleDoctors = Math.round(totalDoctors * 0.45); // Mock data
-  const femaleDoctors = Math.round(totalDoctors * 0.55); // Mock data
+  const totalCustomers = users.length;
   const thisMonth = users.filter(
-    (u) => u.role === "admin" && new Date(u.signupDate).getMonth() === new Date().getMonth()
+    (u) => new Date(u.signupDate).getMonth() === new Date().getMonth()
   ).length;
+  const thisYear = users.filter(
+    (u) => new Date(u.signupDate).getFullYear() === new Date().getFullYear()
+  ).length;
+  const suspendedCount = users.filter((u) => u.isSuspended).length;
 
   return (
     <div className="space-y-6">
@@ -203,11 +205,11 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
               <div className="bg-blue-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-blue-600">👨‍⚕️</span>
+                <span className="text-2xl font-bold text-blue-600">👥</span>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Doctors</p>
-                <p className="text-2xl font-bold text-gray-900">{totalDoctors}</p>
+                <p className="text-sm text-gray-600">Total Customers</p>
+                <p className="text-2xl font-bold text-gray-900">{totalCustomers}</p>
               </div>
             </div>
           </CardContent>
@@ -217,39 +219,39 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
               <div className="bg-green-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-green-600">👨</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Male Doctors</p>
-                <p className="text-2xl font-bold text-gray-900">{maleDoctors}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md rounded-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-pink-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-pink-600">👩</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Female Doctors</p>
-                <p className="text-2xl font-bold text-gray-900">{femaleDoctors}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md rounded-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-orange-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-orange-600">📅</span>
+                <span className="text-2xl font-bold text-green-600">📅</span>
               </div>
               <div>
                 <p className="text-sm text-gray-600">This Month</p>
                 <p className="text-2xl font-bold text-gray-900">{thisMonth}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md rounded-2xl">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-purple-100 p-3 rounded-xl">
+                <span className="text-2xl font-bold text-purple-600">📊</span>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">This Year</p>
+                <p className="text-2xl font-bold text-gray-900">{thisYear}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md rounded-2xl">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-red-100 p-3 rounded-xl">
+                <span className="text-2xl font-bold text-red-600">⛔</span>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Suspended</p>
+                <p className="text-2xl font-bold text-gray-900">{suspendedCount}</p>
               </div>
             </div>
           </CardContent>
