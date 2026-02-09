@@ -65,6 +65,22 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
     return colors[id % colors.length];
   };
 
+  const getNumericCountryCode = (code: string) => {
+    const countryCodeMap: { [key: string]: string } = {
+      "IN": "91",
+      "US": "1",
+      "UK": "44",
+      "CA": "1",
+      "AU": "61",
+      "DE": "49",
+      "FR": "33",
+      "JP": "81",
+      "CN": "86",
+      "BR": "55",
+    };
+    return countryCodeMap[code] || code;
+  };
+
   const handleExportList = () => {
     const csvContent = [
       ["Name", "Email", "Phone", "Joined Date"],
