@@ -92,12 +92,20 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
   const handleExportList = () => {
     const csvContent = [
       ["Name", "Email", "Phone", "Joined Date"],
-      ...filteredUsers.map((user) => [
-        user.fullName,
-        user.email,
-        `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
-        format(new Date(user.signupDate), "dd-MMM-yyyy"),
-      ]),
+      ...filteredUsers.map((user) => {
+        const date = new Date(user.signupDate);
+        const day = date.getDate();
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
+
+        return [
+          user.fullName,
+          user.email,
+          `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
+          formattedDate,
+        ];
+      }),
     ]
       .map((row) => row.map((cell) => `"${cell}"`).join(","))
       .join("\n");
