@@ -20,7 +20,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { AdminResetPasswordModal } from "@/components/AdminResetPasswordModal";
 import { suspendUser, unsuspendUser, deleteUser, resetUserPassword } from "@/lib/api";
-import { Power, PowerOff, Trash2, Lock, X } from "lucide-react";
+import { Power, PowerOff, Trash2, Lock, X, User, Mail, Phone } from "lucide-react";
 import { format } from "date-fns";
 
 interface User {
@@ -170,15 +170,21 @@ export function UserDetailsModal({
               <h4 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h4>
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-gray-700">
-                  <span className="text-xl">👤</span>
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <User className="w-4 h-4 text-blue-600" />
+                  </div>
                   <span className="font-medium">{user.fullName}</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-700">
-                  <span className="text-xl">📱</span>
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Phone className="w-4 h-4 text-green-600" />
+                  </div>
                   <span className="font-medium">+{getCountryDialCode(user.countryCode)} {user.mobileNumber}</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-700">
-                  <span className="text-xl">📧</span>
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Mail className="w-4 h-4 text-purple-600" />
+                  </div>
                   <span className="font-medium">{user.email}</span>
                 </div>
               </div>
