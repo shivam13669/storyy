@@ -355,12 +355,9 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
 
                       {/* Role Column */}
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-1 text-gray-700">
-                          <span>👤</span>
-                          <span className="text-sm font-medium">
-                            {user.role === "admin" ? "Admin" : "Customer"}
-                          </span>
-                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {user.role === "admin" ? "Admin" : "Customer"}
+                        </span>
                       </td>
 
                       {/* Status Column */}
