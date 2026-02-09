@@ -233,7 +233,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card className="border-0 shadow-md rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
@@ -242,7 +242,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
               </div>
               <div>
                 <p className="text-sm text-gray-600">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role !== "admin").length}</p>
               </div>
             </div>
           </CardContent>
@@ -256,21 +256,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
               </div>
               <div>
                 <p className="text-sm text-gray-600">Active Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => !u.isSuspended).length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md rounded-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-pink-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-pink-600">👨</span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Admins</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role === "admin").length}</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role !== "admin" && !u.isSuspended).length}</p>
               </div>
             </div>
           </CardContent>
@@ -284,7 +270,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
               </div>
               <div>
                 <p className="text-sm text-gray-600">Suspended</p>
-                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.isSuspended).length}</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role !== "admin" && u.isSuspended).length}</p>
               </div>
             </div>
           </CardContent>
