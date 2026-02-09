@@ -218,10 +218,10 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
                       <h4 className="font-semibold text-gray-900">{user.fullName}</h4>
                       <div className="flex items-center gap-3 text-sm text-gray-600 mt-1">
                         <span className="flex items-center gap-1">
-                          📧 {user.email}
+                          <Mail className="w-4 h-4" /> {user.email}
                         </span>
                         <span className="flex items-center gap-1">
-                          📱 +{getNumericCountryCode(user.countryCode)} {user.mobileNumber}
+                          <Phone className="w-4 h-4" /> +{getNumericCountryCode(user.countryCode)} {user.mobileNumber}
                         </span>
                       </div>
                     </div>
