@@ -201,24 +201,11 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
           `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
           user.role === "admin" ? "Admin" : "Customer",
           user.isSuspended ? "Suspended" : "Active",
-          `'${formattedDate}`, // Apostrophe forces Excel to treat as text
+          formattedDate,
         ];
       }),
     ]
-      .map((row, rowIndex) => {
-        if (rowIndex === 0) {
-          // Header row - quote everything
-          return row.map((cell) => `"${cell}"`).join(",");
-        }
-        // Data rows - handle date specially (last column)
-        return row.map((cell, colIndex) => {
-          if (colIndex === 5 && cell.startsWith("'")) {
-            // Date column - don't quote, keep apostrophe at start
-            return cell;
-          }
-          return `"${cell}"`;
-        }).join(",");
-      })
+      .map((row) => row.map((cell) => `"${cell}"`).join(","))
       .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
