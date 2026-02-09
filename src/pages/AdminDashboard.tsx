@@ -462,7 +462,7 @@ const AdminDashboard = () => {
                       variant="link"
                       size="sm"
                       className="w-full mt-4 text-primary"
-                      onClick={() => navigate("/admin/bookings")}
+                      onClick={() => setActiveNav("bookings")}
                     >
                       View all bookings →
                     </Button>
