@@ -44,8 +44,13 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
   ).length;
 
   const getInitials = (name: string) => {
-    return name
-      .split(" ")
+    const parts = name.split(" ");
+    if (parts.length === 1) {
+      // Single name: take first 2 letters
+      return name.substring(0, 2).toUpperCase();
+    }
+    // Multiple names: take first letter of each
+    return parts
       .map((n) => n[0])
       .join("")
       .toUpperCase();
