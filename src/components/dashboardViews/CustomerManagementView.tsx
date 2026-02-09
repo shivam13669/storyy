@@ -87,7 +87,7 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
       ...filteredUsers.map((user) => [
         user.fullName,
         user.email,
-        `+${user.countryCode} ${user.mobileNumber}`,
+        `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
         format(new Date(user.signupDate), "MMM dd, yyyy"),
       ]),
     ]
