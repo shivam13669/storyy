@@ -188,14 +188,22 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
   const handleExportList = () => {
     const csvContent = [
       ["Name", "Email", "Phone", "Role", "Status", "Joined Date"],
-      ...filteredUsers.map((user) => [
-        user.fullName,
-        user.email,
-        `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
-        user.role === "admin" ? "Admin" : "Customer",
-        user.isSuspended ? "Suspended" : "Active",
-        format(new Date(user.signupDate), "dd-MMM-yyyy"),
-      ]),
+      ...filteredUsers.map((user) => {
+        const date = new Date(user.signupDate);
+        const day = date.getDate();
+        const month = date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
+
+        return [
+          user.fullName,
+          user.email,
+          `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
+          user.role === "admin" ? "Admin" : "Customer",
+          user.isSuspended ? "Suspended" : "Active",
+          formattedDate,
+        ];
+      }),
     ]
       .map((row) => row.map((cell) => `"${cell}"`).join(","))
       .join("\n");
