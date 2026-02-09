@@ -171,6 +171,22 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
     return isSuspended ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800";
   };
 
+  const getNumericCountryCode = (code: string) => {
+    const countryCodeMap: { [key: string]: string } = {
+      "IN": "91",
+      "US": "1",
+      "UK": "44",
+      "CA": "1",
+      "AU": "61",
+      "DE": "49",
+      "FR": "33",
+      "JP": "81",
+      "CN": "86",
+      "BR": "55",
+    };
+    return countryCodeMap[code] || code;
+  };
+
   // Calculate metrics
   const totalCustomers = users.length;
   const thisMonth = users.filter(
