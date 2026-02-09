@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   LogOut,
   BarChart3,
@@ -47,6 +48,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeNav, setActiveNav] = useState("overview");
+  const [customerTab, setCustomerTab] = useState("customer");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -221,7 +223,6 @@ const AdminDashboard = () => {
             { id: "overview", label: "Overview", icon: BarChart3 },
             { id: "reports", label: "Reports & Analytics", icon: LineChart },
             { id: "customers", label: "Customers", icon: Users },
-            { id: "users", label: "User Management", icon: Users },
             { id: "bookings", label: "Bookings", icon: Briefcase },
             { id: "reviews", label: "Testimonials", icon: FileText },
             { id: "coupons", label: "Coupons", icon: Briefcase },
@@ -521,9 +522,33 @@ const AdminDashboard = () => {
           ) : activeNav === "reports" ? (
             <AdminReportsView bookings={bookings} users={users} testimonials={testimonials} />
           ) : activeNav === "customers" ? (
-            <CustomerManagementView users={users} onDataChange={loadData} />
-          ) : activeNav === "users" ? (
-            <UserManagementSystemView users={users} onDataChange={loadData} />
+            <div className="space-y-6">
+              {/* Header */}
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Customers</h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Manage customers and user accounts
+                </p>
+              </div>
+
+              {/* Tabs Section */}
+              <Tabs value={customerTab} onValueChange={setCustomerTab} className="space-y-6">
+                <TabsList className="grid w-auto grid-cols-2">
+                  <TabsTrigger value="customer">Customer</TabsTrigger>
+                  <TabsTrigger value="users">User Management</TabsTrigger>
+                </TabsList>
+
+                {/* CUSTOMER TAB */}
+                <TabsContent value="customer">
+                  <CustomerManagementView users={users} onDataChange={loadData} />
+                </TabsContent>
+
+                {/* USER MANAGEMENT TAB */}
+                <TabsContent value="users">
+                  <UserManagementSystemView users={users} onDataChange={loadData} />
+                </TabsContent>
+              </Tabs>
+            </div>
           ) : activeNav === "bookings" ? (
             <AdminBookingsView bookings={bookings} users={users} />
           ) : activeNav === "reviews" ? (
