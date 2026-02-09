@@ -187,18 +187,20 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
 
   const handleExportList = () => {
     const csvContent = [
-      ["Name", "Email", "Phone", "Joined Date"],
+      ["Name", "Email", "Phone", "Role", "Status", "Joined Date"],
       ...filteredUsers.map((user) => [
         user.fullName,
         user.email,
         `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
-        format(new Date(user.signupDate), "MMM dd, yyyy"),
+        user.role === "admin" ? "Admin" : "Customer",
+        user.isSuspended ? "Suspended" : "Active",
+        format(new Date(user.signupDate), "dd-MMM-yyyy"),
       ]),
     ]
-      .map((row) => row.join(","))
+      .map((row) => row.map((cell) => `"${cell}"`).join(","))
       .join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
