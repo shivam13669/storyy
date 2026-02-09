@@ -129,7 +129,7 @@ const AdminDashboard = () => {
 
   const stats = [
     {
-      label: "Total Travelers",
+      label: "Total Customers",
       value: users.length,
       icon: Users,
       color: "bg-blue-50",
@@ -372,12 +372,12 @@ const AdminDashboard = () => {
 
               {/* Main Grid - Row 1: Users, Bookings, Reviews */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Recent Travelers */}
+                {/* Recent Customers */}
                 <Card className="border-0 shadow-md rounded-2xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="w-5 h-5" />
-                      Recent Travelers
+                      Recent Customers
                     </CardTitle>
                     <CardDescription>Latest registrations</CardDescription>
                   </CardHeader>
@@ -502,7 +502,7 @@ const AdminDashboard = () => {
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
                     <div className="p-4 border border-gray-200 rounded-lg">
                       <div className="text-3xl font-bold text-blue-600">{users.length}</div>
-                      <div className="text-sm text-gray-600 mt-1">Total Travelers</div>
+                      <div className="text-sm text-gray-600 mt-1">Total Customers</div>
                     </div>
                     <div className="p-4 border border-gray-200 rounded-lg">
                       <div className="text-3xl font-bold text-green-600">{bookings.length}</div>
