@@ -31,6 +31,8 @@ import {
   Eye,
   Download,
   Filter,
+  Mail,
+  Phone,
 } from "lucide-react";
 import { format } from "date-fns";
 import { suspendUser, unsuspendUser, deleteUser, resetUserPassword } from "@/lib/api";
