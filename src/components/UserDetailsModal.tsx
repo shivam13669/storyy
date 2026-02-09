@@ -128,18 +128,27 @@ export function UserDetailsModal({
     return colors[id % colors.length];
   };
 
+  const getCountryDialCode = (countryCode: string) => {
+    const dialCodes: { [key: string]: string } = {
+      "IN": "91",
+      "US": "1",
+      "GB": "44",
+      "CA": "1",
+      "AU": "61",
+      "NZ": "64",
+      "SG": "65",
+      "HK": "852",
+    };
+    return dialCodes[countryCode] || countryCode;
+  };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader className="flex flex-row items-center justify-between space-y-0 pr-0">
-            <div>
-              <DialogTitle className="text-2xl">User Details</DialogTitle>
-              <DialogDescription>Complete information about {user.fullName}</DialogDescription>
-            </div>
-            <button onClick={onClose} className="mt-0">
-              <X className="w-5 h-5" />
-            </button>
+          <DialogHeader>
+            <DialogTitle className="text-2xl">User Details</DialogTitle>
+            <DialogDescription>Complete information about {user.fullName}</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6">
@@ -162,15 +171,15 @@ export function UserDetailsModal({
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-gray-700">
                   <span className="text-xl">👤</span>
-                  <span>{user.fullName}</span>
+                  <span className="font-medium">{user.fullName}</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-700">
                   <span className="text-xl">📱</span>
-                  <span>+{user.countryCode} {user.mobileNumber}</span>
+                  <span className="font-medium">+{getCountryDialCode(user.countryCode)} {user.mobileNumber}</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-700">
                   <span className="text-xl">📧</span>
-                  <span>{user.email}</span>
+                  <span className="font-medium">{user.email}</span>
                 </div>
               </div>
             </div>
