@@ -348,10 +348,29 @@ const AdminDashboard = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 {stats.map((stat, index) => {
                   const Icon = stat.icon;
+
+                  // Determine which section to navigate to based on card label
+                  const getNavigationSection = (label: string) => {
+                    switch (label) {
+                      case "Total Customers":
+                        return "customers";
+                      case "Total Bookings":
+                      case "Confirmed Trips":
+                      case "Pending Bookings":
+                        return "bookings";
+                      case "Reviews & Ratings":
+                      case "Published Reviews":
+                        return "reviews";
+                      default:
+                        return "overview";
+                    }
+                  };
+
                   return (
                     <Card
                       key={index}
                       className="border-0 shadow-md hover:shadow-lg transition-shadow cursor-pointer rounded-2xl"
+                      onClick={() => setActiveNav(getNavigationSection(stat.label))}
                     >
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between">
