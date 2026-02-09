@@ -1,8 +1,7 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { UserDetailsModal } from "@/components/UserDetailsModal";
 import {
   DropdownMenu,
@@ -30,6 +29,8 @@ import {
   Trash2,
   RefreshCw,
   Eye,
+  Download,
+  Filter,
 } from "lucide-react";
 import { format } from "date-fns";
 import { suspendUser, unsuspendUser, deleteUser, resetUserPassword } from "@/lib/api";
@@ -161,16 +162,6 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
     return colors[id % colors.length];
   };
 
-  const getRoleBadgeStyle = (role: string) => {
-    if (role === "admin") return "bg-purple-100 text-purple-800";
-    if (role === "user") return "bg-blue-100 text-blue-800";
-    return "bg-gray-100 text-gray-800";
-  };
-
-  const getStatusColor = (isSuspended: boolean) => {
-    return isSuspended ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800";
-  };
-
   const getNumericCountryCode = (code: string) => {
     const countryCodeMap: { [key: string]: string } = {
       "IN": "91",
@@ -187,24 +178,41 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
     return countryCodeMap[code] || code;
   };
 
-  // Calculate metrics
-  const totalCustomers = users.length;
-  const thisMonth = users.filter(
-    (u) => new Date(u.signupDate).getMonth() === new Date().getMonth()
-  ).length;
-  const thisYear = users.filter(
-    (u) => new Date(u.signupDate).getFullYear() === new Date().getFullYear()
-  ).length;
-  const suspendedCount = users.filter((u) => u.isSuspended).length;
+  const handleExportList = () => {
+    const csvContent = [
+      ["Name", "Email", "Phone", "Joined Date"],
+      ...filteredUsers.map((user) => [
+        user.fullName,
+        user.email,
+        `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
+        format(new Date(user.signupDate), "MMM dd, yyyy"),
+      ]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `users_${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+  };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-        <p className="text-gray-600 mt-1">
-          Manage user accounts - suspend, reactivate or delete users
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-2xl font-bold text-gray-900">User Management</h3>
+          <p className="text-sm text-gray-600 mt-1">
+            Manage and view all registered users in your system
+          </p>
+        </div>
+        <Button onClick={handleExportList} className="flex items-center gap-2">
+          <Download className="w-4 h-4" />
+          Export List
+        </Button>
       </div>
 
       {/* Metrics Cards */}
@@ -216,8 +224,8 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                 <span className="text-2xl font-bold text-blue-600">👥</span>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Customers</p>
-                <p className="text-2xl font-bold text-gray-900">{totalCustomers}</p>
+                <p className="text-sm text-gray-600">Total Users</p>
+                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
               </div>
             </div>
           </CardContent>
@@ -227,11 +235,11 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
               <div className="bg-green-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-green-600">📅</span>
+                <span className="text-2xl font-bold text-green-600">✅</span>
               </div>
               <div>
-                <p className="text-sm text-gray-600">This Month</p>
-                <p className="text-2xl font-bold text-gray-900">{thisMonth}</p>
+                <p className="text-sm text-gray-600">Active Users</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => !u.isSuspended).length}</p>
               </div>
             </div>
           </CardContent>
@@ -240,12 +248,12 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
         <Card className="border-0 shadow-md rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="bg-purple-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-purple-600">📊</span>
+              <div className="bg-pink-100 p-3 rounded-xl">
+                <span className="text-2xl font-bold text-pink-600">👨</span>
               </div>
               <div>
-                <p className="text-sm text-gray-600">This Year</p>
-                <p className="text-2xl font-bold text-gray-900">{thisYear}</p>
+                <p className="text-sm text-gray-600">Admins</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.role === "admin").length}</p>
               </div>
             </div>
           </CardContent>
@@ -254,46 +262,42 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
         <Card className="border-0 shadow-md rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="bg-red-100 p-3 rounded-xl">
-                <span className="text-2xl font-bold text-red-600">⛔</span>
+              <div className="bg-orange-100 p-3 rounded-xl">
+                <span className="text-2xl font-bold text-orange-600">⛔</span>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Suspended</p>
-                <p className="text-2xl font-bold text-gray-900">{suspendedCount}</p>
+                <p className="text-2xl font-bold text-gray-900">{users.filter(u => u.isSuspended).length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Search Bar and Actions */}
-      <div className="flex gap-3 mb-6">
+      {/* Search and Filter */}
+      <div className="flex items-center gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
           <Input
-            placeholder="Search by name, email, or username..."
+            placeholder="Search by name, email, phone..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            className="pl-12 h-11 bg-white border border-gray-300 rounded-lg"
+            className="pl-10"
           />
         </div>
-        <Button
-          onClick={handleRefresh}
-          disabled={refreshLoading}
-          variant="outline"
-          className="h-11"
-        >
-          <RefreshCw className={`w-4 h-4 ${refreshLoading ? "animate-spin" : ""}`} />
+        <Button variant="outline" className="flex items-center gap-2">
+          <Filter className="w-4 h-4" />
+          Filter
         </Button>
       </div>
 
-      {/* User Directory Cards */}
+      {/* Users List */}
       <Card className="border-0 shadow-md rounded-2xl">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">User Directory</h3>
-          <p className="text-sm text-gray-600 mt-1">Search and filter users, manage their account status</p>
-        </div>
-        <div className="p-6">
+        <CardHeader>
+          <CardTitle>Users List</CardTitle>
+          <CardDescription>Complete list of registered users</CardDescription>
+        </CardHeader>
+        <CardContent>
           <div className="space-y-3">
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
@@ -321,56 +325,16 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-gray-600">
-                      Joined: {format(new Date(user.signupDate), "MMM d, yyyy")}
+                      Joined: {format(new Date(user.signupDate), "MMM dd, yyyy")}
                     </p>
-                    <div className="flex items-center gap-2 mt-2 justify-end">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleViewDetails(user)}
-                      >
-                        <Eye className="w-4 h-4 text-gray-600" />
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem
-                            onClick={() => handleViewDetails(user)}
-                            className="flex items-center gap-2"
-                          >
-                            <Eye className="w-4 h-4" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setSuspendConfirmId(user.id)}
-                            className="flex items-center gap-2"
-                          >
-                            {user.isSuspended ? (
-                              <>
-                                <PowerOff className="w-4 h-4" />
-                                Reactivate
-                              </>
-                            ) : (
-                              <>
-                                <Power className="w-4 h-4" />
-                                Suspend User
-                              </>
-                            )}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setDeleteConfirmId(user.id)}
-                            className="flex items-center gap-2 text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Delete User
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="mt-2"
+                      onClick={() => handleViewDetails(user)}
+                    >
+                      <Eye className="w-4 h-4 text-gray-600" />
+                    </Button>
                   </div>
                 </div>
               ))
@@ -380,7 +344,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
               </div>
             )}
           </div>
-        </div>
+        </CardContent>
       </Card>
 
       {/* Delete Confirmation */}
