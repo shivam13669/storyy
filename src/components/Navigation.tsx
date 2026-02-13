@@ -12,7 +12,7 @@ const navItems = [
   { name: "Destinations", to: "/destinations", type: "route" as const },
   { name: "Services", to: "/services", type: "route" as const },
   { name: "Testimonials", to: "/testimonials", type: "route" as const },
-  { name: "About", to: "/about", type: "route" as const },
+  { name: "Blog", to: "/blog", type: "route" as const },
   { name: "Contact", to: "/contact", type: "route" as const },
 ];
 
