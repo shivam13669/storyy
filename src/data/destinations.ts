@@ -103,7 +103,7 @@ export const destinations: Destination[] = [
     },
     packages: [
       {
-        slug: "xtreme-ladakh-expedition",
+        slug: "khardungla-changla-loop",
         name: "Khardungla Changla Loop",
         duration: "5 nights · 6 days",
         description:
@@ -379,7 +379,7 @@ export const destinations: Destination[] = [
         ],
       },
       {
-        slug: "khardungla-changla-loop",
+        slug: "indias-last-turn",
         name: "India's Last Turn",
         duration: "6 nights · 7 days",
         description:
