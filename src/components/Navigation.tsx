@@ -175,8 +175,8 @@ const Navigation = () => {
                   </a>
                 );
               })}
-              <div className="px-3 py-2 space-y-2">
-                <CurrencyPicker value={currency} onChange={setCurrencyWithRegion} className="w-full" />
+              <div className="px-3 py-2 flex items-center gap-2">
+                <CurrencyPicker value={currency} onChange={setCurrencyWithRegion} className="flex-1" />
                 {isAuthenticated && user ? (
                   <>
                     <div className="text-white/90 text-sm font-medium px-2 py-1">
@@ -215,7 +215,7 @@ const Navigation = () => {
                       setIsLoginModalOpen(true);
                       setIsOpen(false);
                     }}
-                    className="w-full px-4 py-2 rounded-md bg-white/10 text-white text-sm font-medium hover:bg-white/20 transition-colors"
+                    className="flex-none px-4 py-2 rounded-md bg-white/10 text-white text-sm font-medium hover:bg-white/20 transition-colors"
                   >
                     Login
                   </button>
