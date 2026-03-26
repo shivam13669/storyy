@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { createTestimonial } from "@/lib/db";
+import { createTestimonial } from "@/lib/api";
 import { AlertCircle, CheckCircle } from "lucide-react";
 
 interface AdminTestimonialFormProps {
@@ -60,19 +60,17 @@ export function AdminTestimonialForm({
 
     setLoading(true);
     try {
-      await createTestimonial({
+      await createTestimonial(
         userId,
         userName,
-        email: userEmail,
-        tripName: formData.tripName,
-        quote: formData.quote,
-        rating: parseInt(formData.rating),
-        role: formData.role || undefined,
-        location: formData.location || undefined,
-        highlight: formData.highlight || undefined,
-        submittedDate: new Date().toISOString(),
-        isVisible: true,
-      });
+        userEmail,
+        formData.tripName,
+        formData.quote,
+        parseInt(formData.rating),
+        formData.role || undefined,
+        formData.location || undefined,
+        formData.highlight || undefined
+      );
 
       setSuccess(true);
       toast({ title: "Success", description: "Testimonial submitted successfully" });

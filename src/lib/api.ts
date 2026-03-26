@@ -292,6 +292,280 @@ export async function changeUserPassword(
   }
 }
 
+// ============ Bookings API ============
+
+export interface Booking {
+  id: number;
+  userId: number;
+  tripName: string;
+  status: string;
+  bookingDate: string;
+  tripDate: string;
+  details: string | null;
+}
+
+export async function createBooking(
+  userId: number,
+  tripName: string,
+  bookingDate: string,
+  tripDate: string,
+  status: string = 'pending',
+  details?: string
+): Promise<{ booking: Booking; message: string }> {
+  try {
+    const response = await fetch(`${API_URL}/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, tripName, bookingDate, tripDate, status, details }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to create booking');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to create booking: Unknown error');
+  }
+}
+
+export async function getAllBookings(): Promise<{ bookings: Booking[] }> {
+  try {
+    const response = await fetch(`${API_URL}/bookings`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to fetch bookings');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to fetch bookings: Unknown error');
+  }
+}
+
+export async function getBookingsByUser(userId: number): Promise<{ bookings: Booking[] }> {
+  try {
+    const response = await fetch(`${API_URL}/bookings/user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to fetch user bookings');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to fetch user bookings: Unknown error');
+  }
+}
+
+export async function deleteBooking(bookingId: number): Promise<void> {
+  try {
+    const response = await fetch(`${API_URL}/bookings/${bookingId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to delete booking');
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to delete booking');
+  }
+}
+
+// ============ Testimonials API ============
+
+export interface Testimonial {
+  id: number;
+  userId: number;
+  userName: string;
+  email: string;
+  tripName: string;
+  quote: string;
+  rating: number;
+  role?: string;
+  location?: string;
+  highlight?: string;
+  submittedDate: string;
+  isVisible: boolean;
+}
+
+export async function createTestimonial(
+  userId: number,
+  userName: string,
+  email: string,
+  tripName: string,
+  quote: string,
+  rating: number,
+  role?: string,
+  location?: string,
+  highlight?: string
+): Promise<{ testimonial: Testimonial; message: string }> {
+  try {
+    const response = await fetch(`${API_URL}/testimonials`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        userName,
+        email,
+        tripName,
+        quote,
+        rating,
+        role,
+        location,
+        highlight,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to create testimonial');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to create testimonial: Unknown error');
+  }
+}
+
+export async function getAllTestimonials(): Promise<{ testimonials: Testimonial[] }> {
+  try {
+    const response = await fetch(`${API_URL}/testimonials`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to fetch testimonials');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to fetch testimonials: Unknown error');
+  }
+}
+
+export async function getTestimonialsByUser(userId: number): Promise<{ testimonials: Testimonial[] }> {
+  try {
+    const response = await fetch(`${API_URL}/testimonials/user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to fetch user testimonials');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to fetch user testimonials: Unknown error');
+  }
+}
+
+export async function deleteTestimonial(testimonialId: number): Promise<void> {
+  try {
+    const response = await fetch(`${API_URL}/testimonials/${testimonialId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to delete testimonial');
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to delete testimonial');
+  }
+}
+
+export async function updateTestimonial(
+  testimonialId: number,
+  updates: Partial<Testimonial>
+): Promise<{ testimonial: Testimonial; message: string }> {
+  try {
+    const response = await fetch(`${API_URL}/testimonials/${testimonialId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to update testimonial');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to update testimonial: Unknown error');
+  }
+}
+
 export async function checkHealth(): Promise<{ status: string }> {
   const response = await fetch(`${API_URL.replace('/api', '')}/api/health`, {
     method: 'GET',

@@ -23,11 +23,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { getBookingsByUserId, getTestimonialsByUserId, Booking, Testimonial } from "@/lib/db";
 import { format } from "date-fns";
 import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
-import { changeUserPassword } from "@/lib/api";
+import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, Booking, Testimonial } from "@/lib/api";
 
 // Country code to phone code mapping
 const countryCodeToPhoneCode: { [key: string]: string } = {
@@ -85,12 +84,17 @@ const Dashboard = () => {
 
     setLoading(true);
     try {
-      const userBookings = await getBookingsByUserId(user.id);
-      const userTestimonials = await getTestimonialsByUserId(user.id);
-      setBookings(userBookings || []);
-      setTestimonials(userTestimonials || []);
+      const bookingsResponse = await getBookingsByUser(user.id);
+      const testimonialsResponse = await getTestimonialsByUser(user.id);
+      setBookings(bookingsResponse.bookings || []);
+      setTestimonials(testimonialsResponse.testimonials || []);
     } catch (error) {
       console.error("Error loading data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load your data",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }

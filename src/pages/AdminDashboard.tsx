@@ -31,8 +31,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { getAllUsers as getAllUsersFromAPI } from "@/lib/api";
-import { getAllBookings, getAllTestimonials, User, Booking, Testimonial } from "@/lib/db";
+import { getAllUsers as getAllUsersFromAPI, getAllBookings, getAllTestimonials, Booking, Testimonial } from "@/lib/api";
+import { User } from "@/lib/db";
 import { format } from "date-fns";
 import { AdminUsersView } from "@/components/dashboardViews/AdminUsersView";
 import { AdminBookingsView } from "@/components/dashboardViews/AdminBookingsView";
@@ -78,14 +78,14 @@ const AdminDashboard = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [usersResponse, allBookings, allTestimonials] = await Promise.all([
+      const [usersResponse, bookingsResponse, testimonialsResponse] = await Promise.all([
         getAllUsersFromAPI(),
         getAllBookings(),
         getAllTestimonials(),
       ]);
       setUsers(usersResponse.users || []);
-      setBookings(allBookings || []);
-      setTestimonials(allTestimonials || []);
+      setBookings(bookingsResponse.bookings || []);
+      setTestimonials(testimonialsResponse.testimonials || []);
     } catch (error) {
       console.error("Error loading data:", error);
       toast({ title: "Error", description: "Failed to load data" });

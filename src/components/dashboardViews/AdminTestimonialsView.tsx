@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { deleteTestimonial } from "@/lib/db";
+import { deleteTestimonial } from "@/lib/api";
 import { Trash2, Star } from "lucide-react";
 
 interface Testimonial {

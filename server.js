@@ -2,8 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { initDB } from './backend/db.js';
+import { initDB } from './backend/db/index.js';
 import authRoutes from './backend/routes/auth.js';
+import bookingRoutes from './backend/routes/bookings.js';
+import testimonialRoutes from './backend/routes/testimonials.js';
 import proxyMiddleware from 'express-http-proxy';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,6 +32,8 @@ initDB().catch(err => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/testimonials', testimonialRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
