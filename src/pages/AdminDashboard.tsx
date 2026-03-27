@@ -32,7 +32,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getAllUsers as getAllUsersFromAPI, getAllBookings, getAllTestimonials, Booking, Testimonial } from "@/lib/api";
-import { User } from "@/lib/db";
+import type { User } from "@/lib/db";
 import { format } from "date-fns";
 import { AdminUsersView } from "@/components/dashboardViews/AdminUsersView";
 import { AdminBookingsView } from "@/components/dashboardViews/AdminBookingsView";

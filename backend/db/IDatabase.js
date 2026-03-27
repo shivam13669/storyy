@@ -149,6 +149,24 @@ export class IDatabase {
     throw new Error('Method not implemented');
   }
 
+  /**
+   * Get testimonial by ID
+   * @param {number} id - Testimonial ID
+   * @returns {Promise<Object|null>} Testimonial object or null
+   */
+  async getTestimonialById(id) {
+    throw new Error('Method not implemented');
+  }
+
+  /**
+   * Toggle testimonial visibility
+   * @param {number} id - Testimonial ID
+   * @returns {Promise<boolean>} New visibility value
+   */
+  async toggleTestimonialVisibility(id) {
+    throw new Error('Method not implemented');
+  }
+
   // ============ Check Operations ============
   /**
    * Check if email already exists

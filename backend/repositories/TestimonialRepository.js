@@ -76,18 +76,7 @@ export class TestimonialRepository {
    */
   static async toggleVisibility(id) {
     const db = getDB();
-    const testimonials = await db.db.exec(
-      `SELECT isVisible FROM testimonials WHERE id = ?`,
-      [id]
-    );
-
-    if (!testimonials || testimonials.length === 0) {
-      throw new Error('Testimonial not found');
-    }
-
-    const currentValue = testimonials[0].values[0][0];
-    const newValue = currentValue === 1 ? 0 : 1;
-
-    return this.update(id, { isVisible: newValue });
+    const isVisible = await db.toggleTestimonialVisibility(id);
+    return isVisible;
   }
 }

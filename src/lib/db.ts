@@ -1,4 +1,23 @@
 // Database service using SQLite3 (sql.js - works in browser)
+/**
+ * DEPRECATED - Frontend Database (Legacy)
+ *
+ * This file is kept for backwards compatibility and type definitions only.
+ * All actual database operations should go through the backend API (@/lib/api.ts).
+ *
+ * The backend has a proper database abstraction layer:
+ * Routes → Repositories → IDatabase → SQLiteDatabase (or PostgreSQL, Supabase, etc.)
+ *
+ * Frontend should NOT access this directly. Use backend APIs instead:
+ * - createBooking() → /api/bookings (POST)
+ * - deleteBooking() → /api/bookings/:id (DELETE)
+ * - createTestimonial() → /api/testimonials (POST)
+ * - deleteTestimonial() → /api/testimonials/:id (DELETE)
+ *
+ * This module contains localStorage-based database logic and is isolated from
+ * the production backend database. It is not used in the admin dashboard.
+ */
+
 import bcrypt from 'bcryptjs';
 
 type Database = any;

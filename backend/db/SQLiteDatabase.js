@@ -503,6 +503,49 @@ export class SQLiteDatabase extends IDatabase {
     return this._mapTestimonialRow(result[0].values[0]);
   }
 
+  async getTestimonialById(id) {
+    try {
+      const result = this.db.exec(
+        `SELECT id, userId, userName, email, tripName, quote, rating, role, location, highlight, submittedDate, isVisible FROM testimonials WHERE id = ?`,
+        [id]
+      );
+
+      if (!result || result.length === 0 || result[0].values.length === 0) {
+        return null;
+      }
+
+      return this._mapTestimonialRow(result[0].values[0]);
+    } catch (error) {
+      throw new Error(`Failed to get testimonial by id: ${error.message}`);
+    }
+  }
+
+  async toggleTestimonialVisibility(id) {
+    try {
+      const result = this.db.exec(
+        `SELECT isVisible FROM testimonials WHERE id = ?`,
+        [id]
+      );
+
+      if (!result || result.length === 0 || result[0].values.length === 0) {
+        throw new Error('Testimonial not found');
+      }
+
+      const currentValue = result[0].values[0][0];
+      const newValue = currentValue === 1 ? 0 : 1;
+
+      this.db.run(
+        `UPDATE testimonials SET isVisible = ? WHERE id = ?`,
+        [newValue, id]
+      );
+
+      this._save();
+      return newValue === 1;
+    } catch (error) {
+      throw new Error(`Failed to toggle testimonial visibility: ${error.message}`);
+    }
+  }
+
   _mapTestimonialRow(row) {
     return {
       id: row[0],
