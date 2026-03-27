@@ -314,19 +314,19 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
                   </button>
 
                   {showPackageDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-hidden flex flex-col">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-xl z-10 max-h-64 overflow-hidden flex flex-col">
                       {/* Search input */}
-                      <div className="p-2 border-b border-gray-200">
+                      <div className="p-3 border-b border-gray-200 bg-gray-50">
                         <Input
                           placeholder="Search packages..."
                           value={packageSearch}
                           onChange={(e) => setPackageSearch(e.target.value)}
-                          className="text-sm"
+                          className="text-sm h-9"
                         />
                       </div>
 
                       {/* Options */}
-                      <div className="overflow-y-auto">
+                      <div className="overflow-y-auto flex-1">
                         {/* All Packages option */}
                         <button
                           type="button"
@@ -335,65 +335,85 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
                             setShowPackageDropdown(false);
                             setPackageSearch("");
                           }}
-                          className={`w-full px-4 py-2 text-left text-sm hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100 ${
+                          className={`w-full px-4 py-3 text-left text-sm flex items-center gap-3 transition-colors ${
                             formData.applicablePackages === "all"
-                              ? "bg-blue-50 text-blue-700 font-medium"
-                              : "text-gray-700"
+                              ? "bg-blue-600 text-white font-medium"
+                              : "text-gray-900 hover:bg-gray-100"
                           }`}
                         >
                           <input
                             type="checkbox"
                             checked={formData.applicablePackages === "all"}
                             readOnly
-                            className="w-4 h-4 rounded border-gray-300"
+                            className="w-4 h-4 rounded border-gray-300 cursor-pointer"
                           />
-                          All Packages
+                          <span className="font-medium">All Packages</span>
                         </button>
 
-                        {/* Individual packages */}
+                        {/* Individual packages with destination grouping */}
                         {filteredPackages.length > 0 ? (
-                          filteredPackages.map((pkg) => (
-                            <button
-                              key={pkg.slug}
-                              type="button"
-                              onClick={() => {
-                                if (formData.applicablePackages === "all") {
-                                  setFormData({ ...formData, applicablePackages: [pkg.slug] });
-                                } else {
-                                  const currentPackages = Array.isArray(formData.applicablePackages)
-                                    ? formData.applicablePackages
-                                    : [];
-                                  const isSelected = currentPackages.includes(pkg.slug);
-                                  const updated = isSelected
-                                    ? currentPackages.filter((p) => p !== pkg.slug)
-                                    : [...currentPackages, pkg.slug];
-                                  setFormData({ ...formData, applicablePackages: updated });
-                                }
-                              }}
-                              className={`w-full px-4 py-2 text-left text-sm hover:bg-blue-50 flex items-center gap-2 border-b border-gray-100 ${
-                                Array.isArray(formData.applicablePackages) &&
-                                formData.applicablePackages.includes(pkg.slug)
-                                  ? "bg-blue-50 text-blue-700"
-                                  : "text-gray-700"
-                              }`}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={
-                                  Array.isArray(formData.applicablePackages) &&
-                                  formData.applicablePackages.includes(pkg.slug)
-                                }
-                                readOnly
-                                className="w-4 h-4 rounded border-gray-300"
-                              />
-                              <div>
-                                <div className="font-medium">{pkg.name}</div>
-                                <div className="text-xs text-gray-500">{pkg.destination}</div>
-                              </div>
-                            </button>
-                          ))
+                          <div>
+                            {Array.from(new Set(filteredPackages.map((p) => p.destination))).map(
+                              (destination) => (
+                                <div key={destination}>
+                                  {/* Destination header */}
+                                  <div className="px-4 py-2 text-xs font-semibold text-gray-600 bg-gray-50 border-t border-gray-200">
+                                    {destination}
+                                  </div>
+                                  {/* Packages under destination */}
+                                  {filteredPackages
+                                    .filter((pkg) => pkg.destination === destination)
+                                    .map((pkg) => (
+                                      <button
+                                        key={pkg.slug}
+                                        type="button"
+                                        onClick={() => {
+                                          if (formData.applicablePackages === "all") {
+                                            setFormData({
+                                              ...formData,
+                                              applicablePackages: [pkg.slug],
+                                            });
+                                          } else {
+                                            const currentPackages = Array.isArray(
+                                              formData.applicablePackages
+                                            )
+                                              ? formData.applicablePackages
+                                              : [];
+                                            const isSelected = currentPackages.includes(pkg.slug);
+                                            const updated = isSelected
+                                              ? currentPackages.filter((p) => p !== pkg.slug)
+                                              : [...currentPackages, pkg.slug];
+                                            setFormData({
+                                              ...formData,
+                                              applicablePackages: updated,
+                                            });
+                                          }
+                                        }}
+                                        className={`w-full px-4 py-3 text-left text-sm flex items-center gap-3 transition-colors ${
+                                          Array.isArray(formData.applicablePackages) &&
+                                          formData.applicablePackages.includes(pkg.slug)
+                                            ? "bg-blue-50 text-blue-700 font-medium"
+                                            : "text-gray-900 hover:bg-gray-50"
+                                        }`}
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          checked={
+                                            Array.isArray(formData.applicablePackages) &&
+                                            formData.applicablePackages.includes(pkg.slug)
+                                          }
+                                          readOnly
+                                          className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                                        />
+                                        <span className="font-medium">{pkg.name}</span>
+                                      </button>
+                                    ))}
+                                </div>
+                              )
+                            )}
+                          </div>
                         ) : (
-                          <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                          <div className="px-4 py-8 text-sm text-gray-500 text-center">
                             No packages found
                           </div>
                         )}
