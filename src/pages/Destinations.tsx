@@ -1,5 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { MobileSortSheet } from "@/components/MobileSortSheet";
 const DestinationsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { slug: urlSlug } = useParams<{ slug?: string }>();
   const { formatPrice } = useCurrency();
   const destinationScrollRef = useRef<HTMLDivElement>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -22,19 +23,18 @@ const DestinationsPage = () => {
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   useLayoutEffect(() => {
-    if (location.pathname === "/destinations") {
+    if (location.pathname === "/destinations" || location.pathname.startsWith("/destinations/")) {
       window.scrollTo({ top: 0, left: 0 });
     }
   }, [location.key, location.pathname]);
 
-  // Read the 'dest' query parameter to set initial destination
-  const searchParams = new URLSearchParams(location.search);
-  const destParam = searchParams.get("dest");
-  const initialSlug = destParam && destinations.some((d) => d.slug === destParam)
-    ? destParam
-    : "all";
-
-  const [activeSlug, setActiveSlug] = useState(initialSlug);
+  // Determine the active slug from URL parameter or default to "all"
+  const activeSlug = useMemo(() => {
+    if (!urlSlug) return "all";
+    // Validate that the slug exists in destinations
+    const isValidSlug = destinations.some((d) => d.slug === urlSlug);
+    return isValidSlug ? urlSlug : "all";
+  }, [urlSlug]);
 
   const [filters, setFilters] = useState<FilterState>({
     search: "",
@@ -215,7 +215,7 @@ const DestinationsPage = () => {
               }}
             >
             <button
-              onClick={() => setActiveSlug("all")}
+              onClick={() => navigate("/destinations")}
               aria-pressed={activeSlug === "all"}
               className={[
                 "inline-flex shrink-0 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 snap-start min-w-max",
@@ -232,7 +232,7 @@ const DestinationsPage = () => {
               return (
                 <button
                   key={d.slug}
-                  onClick={() => setActiveSlug(d.slug)}
+                  onClick={() => navigate(`/destinations/${d.slug}`)}
                   aria-pressed={active}
                   className={[
                     "inline-flex shrink-0 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 snap-start min-w-max",
