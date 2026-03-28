@@ -599,7 +599,8 @@ const BlogPost = () => {
           color: #333;
           line-height: 1.8;
           font-size: 1.125rem;
-          text-align: left;
+          text-align: justify;
+          text-align-last: left;
         }
         .blog-content ul, .blog-content ol {
           margin-inline-start: 25px;
@@ -616,7 +617,8 @@ const BlogPost = () => {
           color: #333;
           line-height: 1.6;
           font-size: 1.05rem;
-          text-align: left;
+          text-align: justify;
+          text-align-last: left;
         }
         .blog-content table {
           width: 100%;
