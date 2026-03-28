@@ -16,6 +16,7 @@ import {
 import { parsePrice } from "@/context/CurrencyContext";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
+import { validateCoupon, calculateDiscount, Coupon, incrementCouponUsage } from "@/utils/couponUtils";
 
 // Email validation function
 const validateEmail = (email: string) => {
@@ -114,6 +115,11 @@ const BookingPage = () => {
     return 1;
   });
 
+  // Coupon state
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponError, setCouponError] = useState("");
+
   // Find package data
   let destination: Destination | undefined;
   let travelPackage: DestinationPackage | undefined;
@@ -136,30 +142,51 @@ const BookingPage = () => {
   const selectedBike = travelPackage.bikes?.find(b => b.id === formData.selectedBikeId);
   const isTransHimalayan = travelPackage.slug === "trans-himalayan-ride";
 
-  // Determine bike price based on seating preference
+  // Determine bike price based on seating preference for trans-himalayan or backup vehicles, or use multiplier for others
   let bikePrice = basePrice;
   if (selectedBike) {
-    // For backup vehicle, use seating prices
-    if (selectedBike.isBackupVehicle && selectedBike.seatingPrices && formData.seatingPreference) {
+    // Use seating prices if available (for trans-himalayan or backup vehicles)
+    if (selectedBike.seatingPrices && formData.seatingPreference) {
       bikePrice = selectedBike.seatingPrices[formData.seatingPreference] || basePrice;
-    }
-    // For regular bikes, use seating prices for solo/dual-sharing only, not seat-in-backup
-    else if (!selectedBike.isBackupVehicle && selectedBike.seatingPrices && formData.seatingPreference !== "seat-in-backup" && formData.seatingPreference in selectedBike.seatingPrices) {
-      bikePrice = selectedBike.seatingPrices[formData.seatingPreference];
-    }
-    // For regular bikes with seat-in-backup selected, show their solo price
-    else if (!selectedBike.isBackupVehicle && formData.seatingPreference === "seat-in-backup" && selectedBike.seatingPrices && "solo" in selectedBike.seatingPrices) {
-      bikePrice = selectedBike.seatingPrices["solo"];
-    }
-    // Otherwise use price multiplier if available
-    else if (selectedBike.priceMultiplier) {
+    } else if (selectedBike.priceMultiplier) {
+      // Otherwise use price multiplier if available
       bikePrice = basePrice * selectedBike.priceMultiplier;
     }
     // If neither seatingPrices nor priceMultiplier exist, keep basePrice
   }
 
   const totalTravelers = 1 + formData.guests.length; // Primary traveler + co-travelers
-  const finalPrice = Math.round(bikePrice * totalTravelers);
+  const baseTotal = Math.round(bikePrice * totalTravelers);
+
+  // Calculate discount from coupon
+  const discountAmount = appliedCoupon ? calculateDiscount(appliedCoupon, baseTotal) : 0;
+  const finalPrice = Math.max(0, baseTotal - discountAmount);
+
+  // Handle coupon application
+  const handleApplyCoupon = () => {
+    setCouponError("");
+
+    if (!couponCode.trim()) {
+      setCouponError("Please enter a coupon code");
+      return;
+    }
+
+    const validation = validateCoupon(couponCode, packageSlug || "");
+    if (!validation.valid) {
+      setCouponError(validation.error || "Invalid coupon code");
+      setAppliedCoupon(null);
+      return;
+    }
+
+    setAppliedCoupon(validation.coupon!);
+    setCouponCode("");
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setCouponError("");
+  };
 
   const handleStepChange = (step: BookingStep) => {
     setCurrentStep(step);
@@ -253,9 +280,6 @@ const BookingPage = () => {
         primaryAadhaar: formData.aadhaarNumber,
         bikeModel: selectedBike?.name || 'Not selected',
         engine: selectedBike?.cc || 'N/A',
-        seatingPreference: formData.seatingPreference === "solo" ? "Solo" :
-                          formData.seatingPreference === "dual-sharing" ? "Dual Sharing" :
-                          formData.seatingPreference === "seat-in-backup" ? "Seat in Backup" : "N/A",
         coTravelerName: coTravelersList || 'No co-travelers',
         coTravelerAadhaar: coTravelersList || 'No co-travelers',
         coTravelerCount: formData.guests.length,
@@ -265,8 +289,15 @@ const BookingPage = () => {
           : '₹0',
         pricePerTraveler: `₹${Math.round(bikePrice).toLocaleString("en-IN")}`,
         travelersPrice: `₹${Math.round(bikePrice).toLocaleString("en-IN")} × ${totalTravelers}`,
+        couponCode: appliedCoupon ? appliedCoupon.code : 'None',
+        couponDiscount: appliedCoupon ? `₹${discountAmount.toLocaleString("en-IN")}` : '₹0',
         totalPrice: `₹${finalPrice.toLocaleString("en-IN")}`,
       };
+
+      // Increment coupon usage if applied
+      if (appliedCoupon) {
+        incrementCouponUsage(appliedCoupon.id);
+      }
 
       // Send email via EmailJS
       await emailjs.send(
@@ -376,7 +407,14 @@ const BookingPage = () => {
                 destination={destination}
                 selectedBike={selectedBike}
                 finalPrice={finalPrice}
-                bikePrice={bikePrice}
+                baseTotal={baseTotal}
+                appliedCoupon={appliedCoupon}
+                couponCode={couponCode}
+                couponError={couponError}
+                discountAmount={discountAmount}
+                onApplyCoupon={handleApplyCoupon}
+                onRemoveCoupon={handleRemoveCoupon}
+                onCouponCodeChange={setCouponCode}
               />
             )}
 
