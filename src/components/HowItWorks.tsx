@@ -34,7 +34,7 @@ const HowItWorks = () => {
             How It Works
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Your seamless journey from booking to unforgettable travel experiences.
+            Book your trip in minutes and explore the world with confidence.
           </p>
         </div>
 
@@ -44,13 +44,13 @@ const HowItWorks = () => {
             gap: "40px"
           }}
         >
-          {/* Connector line - positioned to pass through the center of number circles */}
+          {/* Connector line - positioned to pass through the center icon area */}
           <div
-            className="hidden lg:block absolute left-[8%] right-[8%] pointer-events-none"
+            className="hidden lg:block absolute left-[12.5%] right-[12.5%] pointer-events-none"
             style={{
-              top: "90px",
+              top: "120px",
               height: "2px",
-              background: "linear-gradient(90deg, #bbf7d0, #22c55e, #bbf7d0)",
+              background: "linear-gradient(90deg, transparent, #22c55e 10%, #22c55e 90%, transparent)",
               opacity: 0.6
             }}
           />
@@ -63,10 +63,10 @@ const HowItWorks = () => {
             >
               {/* Step card */}
               <div
-                className="bg-gradient-to-b from-white to-emerald-50 rounded-[26px] border transition-all duration-350 hover:-translate-y-2.5 relative w-full h-full"
+                className="bg-white rounded-[26px] border transition-all duration-350 hover:-translate-y-2.5 relative w-full h-full"
                 style={{
                   padding: "80px 36px 48px 36px",
-                  borderColor: "rgba(34, 197, 94, 0.15)",
+                  borderColor: "rgba(200, 200, 200, 0.3)",
                   boxShadow: "0 18px 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
                   display: "flex",
                   flexDirection: "column",
