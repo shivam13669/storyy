@@ -1,16 +1,20 @@
 // Determine API URL based on environment
 function getApiUrl() {
-  // Check for environment variable first (useful for different deployments)
+  // In production (Vercel, etc), use full backend URL
+  if (import.meta.env.VITE_BACKEND_URL) {
+    return `${import.meta.env.VITE_BACKEND_URL}/api`;
+  }
+
+  // Check for VITE_API_URL (alternative variable)
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
 
-  // Always use relative path /api
+  // Development: Use relative path /api
   // This works with:
   // - Vite proxy in development (routes to backend)
   // - Same-server setup in production
   // - Builder.io preview environments
-  // - Replit deployments
   return '/api';
 }
 
