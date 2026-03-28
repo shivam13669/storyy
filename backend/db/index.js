@@ -1,4 +1,5 @@
 import { PostgresDatabase } from './PostgresDatabase.js';
+import { SQLiteDatabase } from './SQLiteDatabase.js';
 
 let database = null;
 
@@ -8,7 +9,15 @@ let database = null;
 export async function initDB() {
   if (database) return database;
 
-  database = new PostgresDatabase();
+  // Use PostgreSQL if DATABASE_URL is set, otherwise fall back to SQLite for development
+  if (process.env.DATABASE_URL) {
+    database = new PostgresDatabase();
+    console.log('🔗 Using PostgreSQL database');
+  } else {
+    database = new SQLiteDatabase();
+    console.log('💾 Using SQLite database (development mode)');
+  }
+
   await database.init();
   return database;
 }

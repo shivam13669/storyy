@@ -55,7 +55,16 @@ export async function signup(data: SignupData): Promise<{ user: AuthUser; messag
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Signup failed with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Signup failed');
@@ -83,7 +92,16 @@ export async function login(data: LoginData): Promise<{ user: AuthUser; message:
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Login failed with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Login failed');
@@ -110,7 +128,16 @@ export async function getUser(userId: number): Promise<{ user: AuthUser }> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to fetch user');
@@ -137,7 +164,16 @@ export async function getAllUsers(): Promise<{ users: any[] }> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to fetch users');
@@ -164,7 +200,16 @@ export async function toggleTestimonialPermission(userId: number): Promise<void>
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to toggle testimonial permission with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to toggle testimonial permission');
@@ -186,7 +231,16 @@ export async function suspendUser(userId: number): Promise<void> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to suspend user with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to suspend user');
@@ -208,7 +262,16 @@ export async function unsuspendUser(userId: number): Promise<void> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to unsuspend user with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to unsuspend user');
@@ -230,7 +293,16 @@ export async function deleteUser(userId: number): Promise<void> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to delete user with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to delete user');
@@ -253,7 +325,16 @@ export async function resetUserPassword(userId: number, password: string): Promi
       body: JSON.stringify({ password }),
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to reset password with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to reset password');
@@ -279,7 +360,16 @@ export async function changeUserPassword(
       body: JSON.stringify({ oldPassword, newPassword }),
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to change password with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to change password');
@@ -321,7 +411,16 @@ export async function createBooking(
       body: JSON.stringify({ userId, tripName, bookingDate, tripDate, status, details }),
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to create booking with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to create booking');
@@ -345,7 +444,16 @@ export async function getAllBookings(): Promise<{ bookings: Booking[] }> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to fetch bookings with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to fetch bookings');
@@ -369,7 +477,16 @@ export async function getBookingsByUser(userId: number): Promise<{ bookings: Boo
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user bookings with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to fetch user bookings');
@@ -393,7 +510,16 @@ export async function deleteBooking(bookingId: number): Promise<void> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to delete booking with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to delete booking');
@@ -453,7 +579,16 @@ export async function createTestimonial(
       }),
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to create testimonial with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to create testimonial');
@@ -477,7 +612,16 @@ export async function getAllTestimonials(): Promise<{ testimonials: Testimonial[
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to fetch testimonials with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to fetch testimonials');
@@ -501,7 +645,16 @@ export async function getTestimonialsByUser(userId: number): Promise<{ testimoni
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user testimonials with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to fetch user testimonials');
@@ -525,7 +678,16 @@ export async function deleteTestimonial(testimonialId: number): Promise<void> {
       },
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to delete testimonial with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to delete testimonial');
@@ -551,7 +713,16 @@ export async function updateTestimonial(
       body: JSON.stringify(updates),
     });
 
-    const result = await response.json();
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      // Response body is not valid JSON
+      if (!response.ok) {
+        throw new Error(`Failed to update testimonial with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to update testimonial');
