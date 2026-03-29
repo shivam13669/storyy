@@ -563,7 +563,7 @@ const Dashboard = () => {
                     <div>
                       <p className="text-sm text-gray-600">Phone</p>
                       <p className="text-lg font-semibold text-gray-900 mt-1">
-                        +{user?.countryCode} {user?.mobileNumber}
+                        +{user?.countryCode ? countryCodeToPhoneCode[user.countryCode] || user.countryCode : ""} {user?.mobileNumber}
                       </p>
                     </div>
                     <div>
