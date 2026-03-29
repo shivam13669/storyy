@@ -13,14 +13,11 @@ export function CurrencyPicker({
   className,
 }: {
   value: string;
-  onChange?: (code: string) => void;
+  onChange: (code: string) => void;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-
-  // Default to no-op function if onChange is not provided
-  const handleChange = onChange || (() => {});
 
   const display = getCurrencyByCode(value);
   const flagCc = (FLAG_BY_CURRENCY[display.code] || display.code.slice(0, 2)).toLowerCase();
@@ -80,7 +77,7 @@ export function CurrencyPicker({
                   key={c.code}
                   c={c}
                   onSelect={() => {
-                    handleChange(c.code);
+                    onChange(c.code);
                     setOpen(false);
                   }}
                 />
@@ -94,7 +91,7 @@ export function CurrencyPicker({
                   key={c.code}
                   c={c}
                   onSelect={() => {
-                    handleChange(c.code);
+                    onChange(c.code);
                     setOpen(false);
                   }}
                 />
@@ -126,7 +123,7 @@ function CurrencyItem({ c, onSelect }: { c: Currency; onSelect: () => void }) {
       onClick={onSelect}
       className="flex w-full items-start gap-2 rounded-lg border border-border bg-card p-3 text-left hover:border-primary/50 hover:bg-primary/5"
     >
-      <img src={`https://flagcdn.com/24x18/${(FLAG_BY_CURRENCY[c.code] || c.code.slice(0,2)).toLowerCase()}.png`} alt={c.code} width={18} height={14} className="rounded-sm" />
+      <img src={`https://flagcdn.com/24x18/${(FLAG_BY_CURRENCY[c.code] || c.code.slice(0, 2)).toLowerCase()}.png`} alt={c.code} width={18} height={14} className="rounded-sm" />
       <span className="flex flex-col">
         <span className="text-sm font-medium">{c.code} - {c.symbol}</span>
         <span className="text-xs text-muted-foreground">{c.name}</span>
