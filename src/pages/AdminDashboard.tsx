@@ -225,6 +225,14 @@ const AdminDashboard = () => {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+          <button
+            onClick={() => navigate("/")}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium text-sm text-slate-300 hover:text-white"
+          >
+            <Home className="w-5 h-5 flex-shrink-0" />
+            <span>Go to Home</span>
+          </button>
+
           {[
             { id: "overview", label: "Overview", icon: BarChart3 },
             { id: "admin", label: "Admin", icon: Users },
