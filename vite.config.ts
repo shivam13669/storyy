@@ -34,6 +34,8 @@ export default defineConfig(({ mode }) => {
       // Ensure HMR is completely disabled in builds
       minify: 'terser',
       sourcemap: false,
+      // Increase chunk size warning limit to reduce noise
+      chunkSizeWarningLimit: 1000,
       // Don't include dev code in production
       rollupOptions: {
         output: {
