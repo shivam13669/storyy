@@ -268,7 +268,10 @@ const Dashboard = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveNav(item.id)}
+                onClick={() => {
+                  setActiveNav(item.id);
+                  setSidebarOpen(false);
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium text-sm ${
                   isActive
                     ? "bg-blue-600 text-white"
@@ -455,7 +458,10 @@ const Dashboard = () => {
                         variant="link"
                         size="sm"
                         className="w-full mt-4 text-primary"
-                        onClick={() => navigate("/my-bookings")}
+                        onClick={() => {
+                          setSidebarOpen(false);
+                          navigate("/my-bookings");
+                        }}
                       >
                         View all bookings →
                       </Button>
@@ -505,7 +511,10 @@ const Dashboard = () => {
                         variant="link"
                         size="sm"
                         className="w-full mt-4 text-primary"
-                        onClick={() => navigate("/my-reviews")}
+                        onClick={() => {
+                          setSidebarOpen(false);
+                          navigate("/my-reviews");
+                        }}
                       >
                         View all reviews →
                       </Button>
