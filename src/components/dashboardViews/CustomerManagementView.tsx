@@ -133,7 +133,7 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h3 className="text-2xl font-bold text-gray-900">Customer Management</h3>
           <p className="text-sm text-gray-600 mt-1">
@@ -208,8 +208,8 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
       {/* Search and Filter */}
       <Card className="border border-gray-200 shadow-lg rounded-2xl bg-white">
         <CardContent className="p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex-1 relative">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex-1 relative">
               <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="Search by name, email, phone, or blood group..."
@@ -238,9 +238,9 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
               filteredUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                  className="flex flex-col gap-4 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div className="flex items-center gap-4 flex-1">
+                  <div className="flex items-start gap-4 flex-1 min-w-0">
                     <div
                       className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm uppercase ${getAvatarColor(user.id)}`}
                     >
@@ -248,7 +248,7 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
                     </div>
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900">{user.fullName}</h4>
-                      <div className="flex items-center gap-3 text-sm text-gray-600 mt-1">
+                      <div className="flex flex-col gap-1 text-sm text-gray-600 mt-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
                         <span className="flex items-center gap-1">
                           <Mail className="w-4 h-4" /> {user.email}
                         </span>
@@ -258,7 +258,7 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <p className="text-sm text-gray-600">
                       Joined: {format(new Date(user.signupDate), "dd/MM/yyyy")}
                     </p>
