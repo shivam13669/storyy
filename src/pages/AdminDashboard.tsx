@@ -51,7 +51,7 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const [activeNav, setActiveNav] = useState("overview");
   const [customerTab, setCustomerTab] = useState("customer");
   const [adminTab, setAdminTab] = useState("management");
