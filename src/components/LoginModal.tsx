@@ -181,7 +181,6 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
       toast.error(errorMessage);
-      console.error('Login error:', error);
     } finally {
       setIsLoggingIn(false);
     }
@@ -286,7 +285,6 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'OTP verification failed';
       toast.error(errorMessage);
-      console.error('OTP verification error:', error);
     } finally {
       setIsVerifyingOTP(false);
     }
@@ -304,7 +302,6 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to resend OTP';
       toast.error(errorMessage);
-      console.error('Resend OTP error:', error);
     } finally {
       setIsSendingOTP(false);
     }
@@ -352,7 +349,6 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to reset password';
       toast.error(errorMessage);
-      console.error('Password reset error:', error);
     } finally {
       setIsResettingPassword(false);
     }
