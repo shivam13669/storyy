@@ -15,7 +15,7 @@ export class UserRepository {
 
     // Check if mobile number exists
     if (await db.mobileNumberExists(mobileNumber)) {
-      throw new Error('Phone number already registered');
+      throw new Error('Mobile number already registered');
     }
 
     const user = await db.createUser({
