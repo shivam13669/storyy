@@ -150,6 +150,13 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     country.code.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
+  // Reset to login tab when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab('login');
+    }
+  }, [isOpen]);
+
   const passwordValidation = validatePassword(signupPassword);
   const passwordsMatch = signupPassword && confirmPassword && signupPassword === confirmPassword;
   const isPasswordValid = passwordValidation.isValid && passwordsMatch;
