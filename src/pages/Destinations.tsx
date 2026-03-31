@@ -39,6 +39,11 @@ const DestinationsPage = () => {
 
   const [activeSlug, setActiveSlug] = useState(initialSlug);
 
+  // Update activeSlug when URL parameters change
+  useLayoutEffect(() => {
+    setActiveSlug(initialSlug);
+  }, [initialSlug]);
+
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     category: "All",

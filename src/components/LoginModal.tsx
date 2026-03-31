@@ -150,6 +150,13 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     country.code.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
+  // Reset to login tab when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab('login');
+    }
+  }, [isOpen]);
+
   const passwordValidation = validatePassword(signupPassword);
   const passwordsMatch = signupPassword && confirmPassword && signupPassword === confirmPassword;
   const isPasswordValid = passwordValidation.isValid && passwordsMatch;
@@ -209,14 +216,20 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setIsSigningUp(true);
     setIsSendingOTP(true);
     try {
-      // Store form data for later use
-      setSignupFormData({
+      const signupFormDataToUse = {
         fullName,
         email: signupEmail,
         password: signupPassword,
         mobileNumber,
         countryCode: selectedCountry.code,
-      });
+      };
+
+      // First, verify email is not already registered by attempting signup
+      // If email already exists, this will throw an error immediately
+      await signup(signupFormDataToUse);
+
+      // Store form data for later use
+      setSignupFormData(signupFormDataToUse);
 
       // Send OTP to email
       setOtpEmail(signupEmail);
@@ -228,7 +241,7 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       setShowOTPVerification(true);
       setOtpCode("");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to send OTP';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create account';
       toast.error(errorMessage);
     } finally {
       setIsSigningUp(false);
@@ -260,8 +273,8 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         setIsPasswordResetOTPVerified(true);
         // Keep the OTP verification screen visible and show password fields
       } else if (signupFormData) {
-        // For signup: create the account with the stored form data
-        const result = await signup(signupFormData);
+        // For signup: account was already created during handleSignup
+        // We just needed to verify the email via OTP
         toast.success("Account created successfully! Please log in now.");
 
         // Reset form

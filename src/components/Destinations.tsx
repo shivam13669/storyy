@@ -25,7 +25,7 @@ const Destinations = () => {
           {featuredDestinations.map((destination, index) => {
             const primaryPackage = destination.packages[0];
             const displayImage = primaryPackage?.image ?? destination.heroImage;
-            const destinationsLink = `/destinations?dest=${destination.slug}`;
+            const destinationsLink = `/destinations/${destination.slug}`;
 
             return (
               <Link
