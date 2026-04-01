@@ -137,6 +137,7 @@ export function ChangePasswordModal({
               />
               <button
                 type="button"
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setShowOldPassword(!showOldPassword)}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 disabled={loading}
@@ -165,6 +166,7 @@ export function ChangePasswordModal({
               />
               <button
                 type="button"
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setShowNewPassword(!showNewPassword)}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 disabled={loading}
@@ -228,6 +230,7 @@ export function ChangePasswordModal({
               />
               <button
                 type="button"
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 disabled={loading}
