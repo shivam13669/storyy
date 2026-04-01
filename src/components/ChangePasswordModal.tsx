@@ -147,11 +147,11 @@ export function ChangePasswordModal({
               type="button"
               variant="outline"
               onClick={onClose}
-              disabled={loading}
+              disabled={loading || success}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || success}>
               {loading ? "Updating..." : "Change Password"}
             </Button>
           </div>
