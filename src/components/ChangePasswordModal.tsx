@@ -164,8 +164,16 @@ export function ChangePasswordModal({
                 placeholder="Enter your current password"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    e.preventDefault();
+                    const eyeButton = oldPasswordInputRef.current?.parentElement?.querySelector('button');
+                    if (eyeButton && eyeButton instanceof HTMLButtonElement) {
+                      eyeButton.focus();
+                    }
+                  }
+                }}
                 disabled={loading}
-                tabIndex={1}
               />
               <button
                 type="button"
@@ -173,9 +181,14 @@ export function ChangePasswordModal({
                   e.preventDefault();
                   togglePasswordVisibility(setShowOldPassword, showOldPassword, oldPasswordInputRef);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    e.preventDefault();
+                    newPasswordInputRef.current?.focus();
+                  }
+                }}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 disabled={loading}
-                tabIndex={2}
               >
                 {showOldPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -198,8 +211,16 @@ export function ChangePasswordModal({
                 onChange={(e) => setNewPassword(e.target.value)}
                 onFocus={() => setIsNewPasswordFocused(true)}
                 onBlur={() => setIsNewPasswordFocused(false)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    e.preventDefault();
+                    const eyeButton = newPasswordInputRef.current?.parentElement?.querySelector('button');
+                    if (eyeButton && eyeButton instanceof HTMLButtonElement) {
+                      eyeButton.focus();
+                    }
+                  }
+                }}
                 disabled={loading}
-                tabIndex={3}
               />
               <button
                 type="button"
@@ -207,9 +228,14 @@ export function ChangePasswordModal({
                   e.preventDefault();
                   togglePasswordVisibility(setShowNewPassword, showNewPassword, newPasswordInputRef);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    e.preventDefault();
+                    confirmPasswordInputRef.current?.focus();
+                  }
+                }}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 disabled={loading}
-                tabIndex={4}
               >
                 {showNewPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -270,8 +296,16 @@ export function ChangePasswordModal({
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    e.preventDefault();
+                    const eyeButton = confirmPasswordInputRef.current?.parentElement?.querySelector('button');
+                    if (eyeButton && eyeButton instanceof HTMLButtonElement) {
+                      eyeButton.focus();
+                    }
+                  }
+                }}
                 disabled={loading}
-                tabIndex={5}
               />
               <button
                 type="button"
@@ -279,9 +313,17 @@ export function ChangePasswordModal({
                   e.preventDefault();
                   togglePasswordVisibility(setShowConfirmPassword, showConfirmPassword, confirmPasswordInputRef);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Tab' && !e.shiftKey) {
+                    const cancelButton = e.currentTarget.parentElement?.parentElement?.querySelector('.flex.gap-2.justify-end')?.querySelector('button');
+                    if (cancelButton instanceof HTMLButtonElement) {
+                      e.preventDefault();
+                      cancelButton.focus();
+                    }
+                  }
+                }}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
                 disabled={loading}
-                tabIndex={6}
               >
                 {showConfirmPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -298,11 +340,10 @@ export function ChangePasswordModal({
               variant="outline"
               onClick={onClose}
               disabled={loading || success}
-              tabIndex={7}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading || success} tabIndex={8}>
+            <Button type="submit" disabled={loading || success}>
               {loading ? "Updating..." : "Change Password"}
             </Button>
           </div>
