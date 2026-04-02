@@ -27,7 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
-import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, Booking, Testimonial } from "@/lib/api";
+import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, updateUser, Booking, Testimonial } from "@/lib/api";
 
 // Country code to phone code mapping
 const countryCodeToPhoneCode: { [key: string]: string } = {
@@ -50,7 +50,7 @@ const countryCodeToPhoneCode: { [key: string]: string } = {
 };
 
 const Dashboard = () => {
-  const { user, isAuthenticated, isAdmin, logout, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isAdmin, logout, refreshUser, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -62,6 +62,7 @@ const Dashboard = () => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(user?.fullName || "");
+  const [isSavingName, setIsSavingName] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Redirect if not authenticated or if admin (admin should go to admin dashboard)
@@ -704,16 +705,46 @@ const Dashboard = () => {
                           />
                           <Button
                             size="sm"
-                            onClick={() => {
-                              setIsEditingName(false);
-                              // Here you would normally call an API to update the name
-                              toast({
-                                title: "Success",
-                                description: "Name will update after you logout and login again"
-                              });
+                            onClick={async () => {
+                              if (!editedName.trim()) {
+                                toast({
+                                  title: "Error",
+                                  description: "Name cannot be empty",
+                                  variant: "destructive"
+                                });
+                                return;
+                              }
+
+                              setIsSavingName(true);
+                              try {
+                                if (!user?.id) {
+                                  throw new Error("User not authenticated");
+                                }
+
+                                // Call API to update name
+                                await updateUser(user.id, { fullName: editedName });
+
+                                // Refresh user data in context
+                                await refreshUser();
+
+                                setIsEditingName(false);
+                                toast({
+                                  title: "Success",
+                                  description: "Your name has been updated successfully"
+                                });
+                              } catch (error) {
+                                toast({
+                                  title: "Error",
+                                  description: error instanceof Error ? error.message : "Failed to update name",
+                                  variant: "destructive"
+                                });
+                              } finally {
+                                setIsSavingName(false);
+                              }
                             }}
+                            disabled={isSavingName}
                           >
-                            Save
+                            {isSavingName ? "Saving..." : "Save"}
                           </Button>
                           <Button
                             variant="outline"
