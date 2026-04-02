@@ -19,7 +19,9 @@ export function CurrencyPicker({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  const display = getCurrencyByCode(value);
+  // Handle loading state - show skeleton while currency is being detected
+  const isLoading = !value;
+  const display = getCurrencyByCode(value || "INR"); // Use INR as fallback for display
   const flagCc = (FLAG_BY_CURRENCY[display.code] || display.code.slice(0, 2)).toLowerCase();
   const flagSrc = `https://flagcdn.com/24x18/${flagCc}.png`;
 
@@ -43,17 +45,28 @@ export function CurrencyPicker({
       <DialogTrigger asChild>
         <button
           type="button"
+          disabled={isLoading}
           className={cn(
-            "flex h-10 items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 text-sm text-white cursor-pointer hover:bg-white/15",
+            "flex h-10 items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 text-sm text-white cursor-pointer hover:bg-white/15 transition-opacity",
+            isLoading && "opacity-50 cursor-wait",
             className
           )}
           aria-label="Choose currency"
           aria-haspopup="dialog"
           aria-expanded={open}
         >
-          <img src={flagSrc} alt={display.code} width={18} height={14} className="rounded-sm" />
-          <span className="font-medium">{display.code} {display.symbol}</span>
-          <ChevronDown className={cn("h-4 w-4 opacity-80 transition-transform", open && "rotate-180")} />
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 rounded-sm bg-white/30 animate-pulse" />
+              <div className="h-4 w-12 bg-white/30 rounded animate-pulse" />
+            </div>
+          ) : (
+            <>
+              <img src={flagSrc} alt={display.code} width={18} height={14} className="rounded-sm" />
+              <span className="font-medium">{display.code} {display.symbol}</span>
+              <ChevronDown className={cn("h-4 w-4 opacity-80 transition-transform", open && "rotate-180")} />
+            </>
+          )}
         </button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-3xl p-0">
