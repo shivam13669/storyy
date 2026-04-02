@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, CheckCircle, Copy, Trash2, ChevronDown } from "lucide-react";
+import { AlertCircle, CheckCircle, Copy, Trash2, ChevronDown, Edit2 } from "lucide-react";
 import { format } from "date-fns";
 import { destinations } from "@/data/destinations";
 import { Coupon } from "@/utils/couponUtils";
@@ -33,6 +33,7 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [editingCouponId, setEditingCouponId] = useState<string | number | null>(null);
 
   // Fetch coupons from API on component mount
   useEffect(() => {
@@ -151,30 +152,58 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/coupons`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code: formData.code.toUpperCase(),
-          discount: Number(formData.discount),
-          discountType: formData.discountType,
-          maxUses: Number(formData.maxUses),
-          expiryDate: formData.expiryDate,
-          applicablePackages: formData.applicablePackages,
-        }),
-      });
+      if (editingCouponId) {
+        // Update existing coupon
+        const response = await fetch(`${API_URL}/coupons/${editingCouponId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            discount: Number(formData.discount),
+            discountType: formData.discountType,
+            maxUses: Number(formData.maxUses),
+            expiryDate: formData.expiryDate,
+            applicablePackages: formData.applicablePackages,
+          }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create coupon');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update coupon');
+        }
+
+        const data = await response.json();
+        setCoupons(coupons.map((c) => (c.id === editingCouponId ? data.coupon : c)));
+        setSuccess("Coupon updated successfully!");
+        toast({ title: "Success", description: `Coupon ${data.coupon.code} updated` });
+      } else {
+        // Create new coupon
+        const response = await fetch(`${API_URL}/coupons`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            code: formData.code.toUpperCase(),
+            discount: Number(formData.discount),
+            discountType: formData.discountType,
+            maxUses: Number(formData.maxUses),
+            expiryDate: formData.expiryDate,
+            applicablePackages: formData.applicablePackages,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create coupon');
+        }
+
+        const data = await response.json();
+        setCoupons([...coupons, data.coupon]);
+        setSuccess("Coupon created successfully!");
+        toast({ title: "Success", description: `Coupon ${data.coupon.code} created` });
       }
-
-      const data = await response.json();
-      setCoupons([...coupons, data.coupon]);
-      setSuccess("Coupon created successfully!");
-      toast({ title: "Success", description: `Coupon ${data.coupon.code} created` });
 
       // Reset form
       setFormData({
@@ -187,16 +216,30 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
       });
       setPackageSearch("");
       setShowPackageDropdown(false);
+      setEditingCouponId(null);
 
       setTimeout(() => {
         setShowForm(false);
         setSuccess("");
       }, 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create coupon");
+      setError(err instanceof Error ? err.message : editingCouponId ? "Failed to update coupon" : "Failed to create coupon");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEditCoupon = (coupon: Coupon) => {
+    setEditingCouponId(coupon.id);
+    setFormData({
+      code: coupon.code,
+      discount: coupon.discount.toString(),
+      discountType: coupon.discountType,
+      maxUses: coupon.maxUses.toString(),
+      expiryDate: coupon.expiryDate.split('T')[0],
+      applicablePackages: coupon.applicablePackages,
+    });
+    setShowForm(true);
   };
 
   const handleDeleteCoupon = async (id: string | number) => {
@@ -235,17 +278,36 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
           <h3 className="text-xl font-semibold text-gray-900">Coupon Management</h3>
           <p className="text-sm text-gray-600 mt-1">Create and manage discount coupons</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2">
+        <Button
+          onClick={() => {
+            setShowForm(!showForm);
+            if (showForm) {
+              setEditingCouponId(null);
+              setFormData({
+                code: "",
+                discount: "",
+                discountType: "percentage",
+                maxUses: "100",
+                expiryDate: "",
+                applicablePackages: "all",
+              });
+              setPackageSearch("");
+            }
+          }}
+          className="flex items-center gap-2"
+        >
           {showForm ? "Cancel" : "+ Create Coupon"}
         </Button>
       </div>
 
-      {/* Create Coupon Form */}
+      {/* Create/Edit Coupon Form */}
       {showForm && (
         <Card className="border-0 shadow-md rounded-2xl">
           <CardHeader>
-            <CardTitle>Create New Coupon</CardTitle>
-            <CardDescription>Generate a new discount coupon for your customers</CardDescription>
+            <CardTitle>{editingCouponId ? "Edit Coupon" : "Create New Coupon"}</CardTitle>
+            <CardDescription>
+              {editingCouponId ? "Update the coupon details" : "Generate a new discount coupon for your customers"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {error && (
@@ -272,14 +334,14 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
                       placeholder="SUMMER2024"
                       value={formData.code}
                       onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                      disabled={loading}
+                      disabled={loading || editingCouponId !== null}
                     />
                     <Button
                       type="button"
                       variant="outline"
                       onClick={generateCouponCode}
-                      disabled={loading || formData.code.trim().length > 0}
-                      title={formData.code.trim().length > 0 ? "Clear the field to generate a code" : "Generate a random coupon code"}
+                      disabled={loading || editingCouponId !== null || formData.code.trim().length > 0}
+                      title={editingCouponId !== null ? "Cannot change code while editing" : formData.code.trim().length > 0 ? "Clear the field to generate a code" : "Generate a random coupon code"}
                     >
                       Generate
                     </Button>
@@ -467,7 +529,7 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
 
               <div className="flex gap-2 pt-4">
                 <Button type="submit" disabled={loading} className="flex-1">
-                  {loading ? "Creating..." : "Create Coupon"}
+                  {loading ? (editingCouponId ? "Updating..." : "Creating...") : (editingCouponId ? "Update Coupon" : "Create Coupon")}
                 </Button>
               </div>
             </form>
@@ -536,6 +598,14 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditCoupon(coupon)}
+                            title="Edit coupon"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -625,14 +695,24 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
                         {format(new Date(coupon.expiryDate), "MMM dd, yyyy")}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteCoupon(coupon.id)}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditCoupon(coupon)}
+                            title="Edit coupon"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteCoupon(coupon.id)}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
