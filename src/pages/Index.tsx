@@ -1,18 +1,26 @@
 import Navigation from "@/components/Navigation";
-import Hero from "@/components/Hero";
-import Destinations from "@/components/Destinations";
-import HowItWorks from "@/components/HowItWorks";
-import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import HeroSlider from "@/components/HeroSlider";
+import CategoryBoxes from "@/components/CategoryBoxes";
+import DiscoverNewHorizons from "@/components/DiscoverNewHorizons";
+import OurServices from "@/components/OurServices";
+import HotTours from "@/components/HotTours";
+import Team from "@/components/Team";
+import ParallaxCTA from "@/components/ParallaxCTA";
+import Gallery from "@/components/Gallery";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <Hero />
-      <Destinations />
-      <HowItWorks />
-      <TestimonialsCarousel />
+      <HeroSlider />
+      <CategoryBoxes />
+      <DiscoverNewHorizons />
+      <OurServices />
+      <HotTours />
+      <Team />
+      <ParallaxCTA />
+      <Gallery />
       <Footer />
     </div>
   );
