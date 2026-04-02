@@ -37,8 +37,8 @@ export async function detectUserRegion(): Promise<string> {
 
   // No detection succeeded - return empty string
   // This will be treated as an unknown region by CurrencyContext
-  // Unknown regions get 20% markup applied for safety/international pricing
-  console.log("[REGION] Could not detect region, returning unknown (will apply 20% markup)");
+  // Unknown regions trigger defaulting to India (in dev) or 50% markup in production
+  console.log("[REGION] Could not detect region, returning unknown (defaulting to India in dev, 50% markup in production)");
   return "";
 }
 

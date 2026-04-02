@@ -159,6 +159,8 @@ async function fetchExchangeRates(baseCurrency: string, signal?: AbortSignal): P
 }
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
+  // Start with empty string - don't show any currency until region is detected
+  // This prevents showing wrong prices to international users
   const [currency, setCurrencyState] = useState<string>("");
   const [detectedRegion, setDetectedRegion] = useState<string>("");
   const [isRegionLoaded, setIsRegionLoaded] = useState(false);
@@ -177,15 +179,23 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
         // localStorage not available
       }
 
-      // If no saved currency, use region's base currency
-      if (!savedCurrency) {
+      // Priority:
+      // 1. If user explicitly saved a currency preference AND region hasn't changed, use it
+      // 2. Otherwise, use region's base currency (this handles IP changes - e.g., traveling)
+
+      // Use saved currency only if we have the same detected region
+      // This way: India user traveling to USA will see USD, not cached INR
+      const savedRegion = localStorage.getItem("sb_region");
+      const useLocalStorageCurrency = savedCurrency && savedRegion === detected;
+
+      if (useLocalStorageCurrency) {
+        setCurrencyState(savedCurrency);
+        console.log(`[CURRENCY INIT] Using saved currency: ${savedCurrency} (region still: ${detected})`);
+      } else {
+        // Use region's base currency - this is most reliable
         const regionPricing = getRegionPricing(detected);
         setCurrencyState(regionPricing.baseCurrency);
-        console.log(`[CURRENCY INIT] No saved currency, using region default: ${regionPricing.baseCurrency} (${detected})`);
-      } else {
-        // Use saved currency if available
-        setCurrencyState(savedCurrency);
-        console.log(`[CURRENCY INIT] Using saved currency: ${savedCurrency}`);
+        console.log(`[CURRENCY INIT] Using region default: ${regionPricing.baseCurrency} (detected: ${detected})`);
       }
     });
   }, []);
@@ -245,6 +255,8 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
         const inferredRegion = getRegionFromCurrency(code);
         if (inferredRegion) {
           saveRegionPreference(inferredRegion);
+          // Update the detected region state immediately so UI reflects the change
+          setDetectedRegion(inferredRegion);
           console.log(`[CURRENCY] Selected ${code}, inferred region: ${inferredRegion}`);
         } else {
           console.log(`[CURRENCY] Selected ${code}, but region inference failed`);

@@ -70,29 +70,43 @@ app.get('/api/region', (req, res) => {
     return res.json({ region: cloudflareCountry.toUpperCase() });
   }
 
-  // Priority 3: Accept-Language header (less reliable but better than nothing)
-  const acceptLanguage = req.headers['accept-language'] || '';
-  const languageRegionMap = {
-    'hi': 'IN',
-    'en-IN': 'IN',
-    'en-US': 'US',
-    'en-GB': 'GB',
-    'fr': 'FR',
-    'de': 'DE',
-    'es': 'ES',
-    'ja': 'JP',
-    'zh': 'CN',
-  };
+  // Priority 3: Accept-Language header (less reliable, only use in production)
+  // In development, skip this as it's too unpredictable and causes inconsistent behavior
+  if (process.env.NODE_ENV === 'production') {
+    const acceptLanguage = req.headers['accept-language'] || '';
+    const languageRegionMap = {
+      'hi': 'IN',
+      'en-IN': 'IN',
+      'mr': 'IN',       // Marathi
+      'ta': 'IN',       // Tamil
+      'te': 'IN',       // Telugu
+      'kn': 'IN',       // Kannada
+      'ml': 'IN',       // Malayalam
+      'gu': 'IN',       // Gujarati
+      'bn': 'IN',       // Bengali
+      'pa': 'IN',       // Punjabi
+      'en-US': 'US',
+      'en': 'US',       // Default English to US (international standard)
+      'en-GB': 'GB',
+      'en-AU': 'AU',
+      'fr': 'FR',
+      'de': 'DE',
+      'es': 'ES',
+      'ja': 'JP',
+      'zh': 'CN',
+    };
 
-  const primaryLanguage = acceptLanguage.split(',')[0].trim().split(';')[0];
-  if (languageRegionMap[primaryLanguage]) {
-    console.log(`[REGION] Detected from Accept-Language: ${primaryLanguage} -> ${languageRegionMap[primaryLanguage]}`);
-    return res.json({ region: languageRegionMap[primaryLanguage] });
+    const primaryLanguage = acceptLanguage.split(',')[0].trim().split(';')[0];
+    if (languageRegionMap[primaryLanguage]) {
+      console.log(`[REGION] Detected from Accept-Language: ${primaryLanguage} -> ${languageRegionMap[primaryLanguage]}`);
+      return res.json({ region: languageRegionMap[primaryLanguage] });
+    }
   }
 
   // If no detection succeeded, return null
-  // Client will treat this as unknown region and apply 20% markup as safety measure
-  console.log('[REGION] Could not detect region, returning null');
+  // Client will treat this as unknown region and apply 50% markup as safety measure
+  // In development, this defaults to India for consistent testing
+  console.log('[REGION] Could not detect region, returning null (will default to India in dev, apply 50% markup in production)');
   res.json({ region: null });
 });
 
