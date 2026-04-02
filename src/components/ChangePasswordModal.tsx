@@ -185,6 +185,7 @@ export function ChangePasswordModal({
                   if (e.key === 'Tab' && !e.shiftKey) {
                     e.preventDefault();
                     newPasswordInputRef.current?.focus();
+                    newPasswordInputRef.current?.select();
                   }
                 }}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
@@ -232,6 +233,7 @@ export function ChangePasswordModal({
                   if (e.key === 'Tab' && !e.shiftKey) {
                     e.preventDefault();
                     confirmPasswordInputRef.current?.focus();
+                    confirmPasswordInputRef.current?.select();
                   }
                 }}
                 className="absolute right-3.5 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
