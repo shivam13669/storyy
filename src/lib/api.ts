@@ -271,7 +271,7 @@ export async function getUser(userId: number): Promise<{ user: AuthUser }> {
   }
 }
 
-export async function updateUser(userId: number, data: { fullName: string }): Promise<{ user: AuthUser; message: string }> {
+export async function updateUser(userId: number, data: { fullName?: string; mobileNumber?: string; countryCode?: string }): Promise<{ user: AuthUser; message: string }> {
   try {
     const response = await fetch(`${API_URL}/auth/user/${userId}`, {
       method: 'PATCH',

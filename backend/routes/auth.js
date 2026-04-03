@@ -129,15 +129,41 @@ router.get('/user/:id', async (req, res) => {
 router.patch('/user/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName } = req.body;
+    const { fullName, mobileNumber, countryCode } = req.body;
+    const updates = {};
 
-    // Validate input
-    if (!fullName) {
-      return res.status(400).json({ error: 'Full name is required' });
+    if (fullName !== undefined) {
+      if (!fullName) {
+        return res.status(400).json({ error: 'Full name is required' });
+      }
+      updates.fullName = fullName;
     }
 
-    // Update user
-    const user = await UserRepository.update(parseInt(id), { fullName });
+    if (mobileNumber !== undefined || countryCode !== undefined) {
+      if (!mobileNumber || !countryCode) {
+        return res.status(400).json({ error: 'Mobile number and country code are required' });
+      }
+
+      const currentUser = await UserRepository.getById(parseInt(id));
+      const normalizedMobileNumber = mobileNumber.trim();
+      const normalizedCountryCode = countryCode.trim().toUpperCase();
+
+      if (
+        (currentUser.mobileNumber !== normalizedMobileNumber || currentUser.countryCode !== normalizedCountryCode) &&
+        await getDB().mobileNumberExists(normalizedMobileNumber)
+      ) {
+        return res.status(409).json({ error: 'Mobile number already registered' });
+      }
+
+      updates.mobileNumber = normalizedMobileNumber;
+      updates.countryCode = normalizedCountryCode;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+
+    const user = await UserRepository.update(parseInt(id), updates);
 
     console.log(`✅ User updated: ${user.email}`);
 
