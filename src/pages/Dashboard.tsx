@@ -21,7 +21,11 @@ import {
   ChevronDown,
   Edit2,
   User,
+  Phone,
+  Search,
 } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -49,6 +53,69 @@ const countryCodeToPhoneCode: { [key: string]: string } = {
   'BD': '880',  // Bangladesh
 };
 
+// Countries list for phone number input
+const COUNTRIES = [
+  { code: "IN", name: "India", dial: "+91" },
+  { code: "US", name: "United States", dial: "+1" },
+  { code: "GB", name: "United Kingdom", dial: "+44" },
+  { code: "CA", name: "Canada", dial: "+1" },
+  { code: "AU", name: "Australia", dial: "+61" },
+  { code: "DE", name: "Germany", dial: "+49" },
+  { code: "FR", name: "France", dial: "+33" },
+  { code: "IT", name: "Italy", dial: "+39" },
+  { code: "ES", name: "Spain", dial: "+34" },
+  { code: "JP", name: "Japan", dial: "+81" },
+  { code: "CN", name: "China", dial: "+86" },
+  { code: "SG", name: "Singapore", dial: "+65" },
+  { code: "MY", name: "Malaysia", dial: "+60" },
+  { code: "TH", name: "Thailand", dial: "+66" },
+  { code: "PH", name: "Philippines", dial: "+63" },
+  { code: "ID", name: "Indonesia", dial: "+62" },
+  { code: "SL", name: "Sri Lanka", dial: "+94" },
+  { code: "NP", name: "Nepal", dial: "+977" },
+];
+
+const COUNTRY_DIGIT_REQUIREMENTS: Record<string, { min: number; max: number }> = {
+  IN: { min: 10, max: 10 },
+  US: { min: 10, max: 10 },
+  GB: { min: 10, max: 11 },
+  CA: { min: 10, max: 10 },
+  AU: { min: 9, max: 9 },
+  DE: { min: 10, max: 11 },
+  FR: { min: 9, max: 9 },
+  IT: { min: 10, max: 10 },
+  ES: { min: 9, max: 9 },
+  JP: { min: 10, max: 11 },
+  CN: { min: 11, max: 11 },
+  SG: { min: 8, max: 8 },
+  MY: { min: 9, max: 10 },
+  TH: { min: 9, max: 10 },
+  PH: { min: 10, max: 10 },
+  ID: { min: 9, max: 12 },
+  SL: { min: 9, max: 9 },
+  NP: { min: 10, max: 10 },
+};
+
+const validateInternationalMobile = (mobile: string, countryCode: string): boolean => {
+  const digitCount = mobile.replace(/\D/g, '').length;
+  const requirements = COUNTRY_DIGIT_REQUIREMENTS[countryCode];
+
+  if (!requirements) {
+    return false;
+  }
+
+  if (digitCount < requirements.min || digitCount > requirements.max) {
+    return false;
+  }
+
+  try {
+    const phoneNumber = parsePhoneNumberFromString(mobile, countryCode as any);
+    return phoneNumber ? phoneNumber.isValid() : false;
+  } catch {
+    return false;
+  }
+};
+
 const Dashboard = () => {
   const { user, isAuthenticated, isAdmin, logout, refreshUser, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -63,6 +130,16 @@ const Dashboard = () => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(user?.fullName || "");
   const [isSavingName, setIsSavingName] = useState(false);
+
+  // Phone number editing state
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
+  const [editedPhone, setEditedPhone] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]); // Default to India
+  const [openCountryPopover, setOpenCountryPopover] = useState(false);
+  const [countrySearch, setCountrySearch] = useState("");
+  const [isSavingPhone, setIsSavingPhone] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Redirect if not authenticated or if admin (admin should go to admin dashboard)
@@ -136,6 +213,73 @@ const Dashboard = () => {
       throw new Error("User not authenticated");
     }
     await changeUserPassword(user.id, oldPassword, newPassword);
+  };
+
+  const handleCountrySelect = (country: typeof COUNTRIES[0]) => {
+    setSelectedCountry(country);
+    setOpenCountryPopover(false);
+    setCountrySearch("");
+  };
+
+  const filteredCountries = COUNTRIES.filter((country) =>
+    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    country.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    country.dial.includes(countrySearch)
+  );
+
+  const handleSavePhone = async () => {
+    if (!editedPhone.trim()) {
+      setPhoneError("Phone number cannot be empty");
+      toast({
+        title: "Error",
+        description: "Phone number cannot be empty",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!validateInternationalMobile(editedPhone, selectedCountry.code)) {
+      setPhoneError("Please enter a valid mobile number for the selected country");
+      toast({
+        title: "Error",
+        description: "Please enter a valid mobile number for the selected country",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSavingPhone(true);
+    try {
+      if (!user?.id) {
+        throw new Error("User not authenticated");
+      }
+
+      // Call API to update phone number
+      await updateUser(user.id, {
+        mobileNumber: editedPhone,
+        countryCode: selectedCountry.code
+      });
+
+      // Refresh user data in context
+      await refreshUser();
+
+      setIsEditingPhone(false);
+      setEditedPhone("");
+      setPhoneError("");
+      toast({
+        title: "Success",
+        description: "Your phone number has been added successfully"
+      });
+    } catch (error) {
+      setPhoneError(error instanceof Error ? error.message : "Failed to save phone number");
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save phone number",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSavingPhone(false);
+    }
   };
 
   // Close user menu when clicking outside
@@ -772,13 +916,154 @@ const Dashboard = () => {
 
                     {/* Phone */}
                     <div className="border-t pt-6">
-                      <p className="text-sm text-gray-600 font-medium mb-2">Phone Number</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {user?.countryCode && user?.mobileNumber
-                          ? `+${countryCodeToPhoneCode[user.countryCode] || user.countryCode}${user.mobileNumber}`
-                          : "—"}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">Cannot be changed after signup</p>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm text-gray-600 font-medium">Phone Number</p>
+                        {!isEditingPhone && !user?.mobileNumber && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setIsEditingPhone(true);
+                              setEditedPhone("");
+                              setSelectedCountry(COUNTRIES[0]);
+                              setPhoneError("");
+                            }}
+                            className="flex items-center gap-2"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                            Add
+                          </Button>
+                        )}
+                      </div>
+
+                      {isEditingPhone ? (
+                        <div className="space-y-4">
+                          <div className="flex gap-2">
+                            {/* Country Code Selector */}
+                            <Popover open={openCountryPopover} onOpenChange={(open) => {
+                              setOpenCountryPopover(open);
+                              if (!open) {
+                                setCountrySearch("");
+                              }
+                            }}>
+                              <PopoverTrigger asChild>
+                                <button
+                                  type="button"
+                                  className="px-3 py-2.5 border border-gray-200 rounded-lg bg-gray-50/50 hover:bg-gray-100 transition-all flex items-center gap-2 min-w-fit focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                                >
+                                  <span className="text-sm font-medium">{selectedCountry.dial}</span>
+                                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                                </button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-56 p-0" align="start">
+                                <div className="flex flex-col">
+                                  {/* Search Input */}
+                                  <div className="sticky top-0 z-10 p-3 border-b border-gray-200 bg-white">
+                                    <div className="relative">
+                                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                      <input
+                                        type="text"
+                                        placeholder="Search country..."
+                                        value={countrySearch}
+                                        onChange={(e) => setCountrySearch(e.target.value)}
+                                        className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 bg-gray-50"
+                                        autoFocus
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {/* Countries List */}
+                                  <div className="max-h-64 overflow-y-auto" onWheel={(e) => e.stopPropagation()}>
+                                    {filteredCountries.length > 0 ? (
+                                      filteredCountries.map((country) => (
+                                        <button
+                                          key={country.code}
+                                          type="button"
+                                          onClick={() => handleCountrySelect(country)}
+                                          className={`w-full text-left px-3 py-2.5 text-sm hover:bg-orange-50 transition-colors flex items-center justify-between ${
+                                            selectedCountry.code === country.code ? "bg-orange-100 font-semibold" : ""
+                                          }`}
+                                        >
+                                          <span>
+                                            <span className="font-medium">{country.dial}</span>
+                                            <span className="text-gray-600 ml-2">
+                                              {country.name}
+                                            </span>
+                                          </span>
+                                          {selectedCountry.code === country.code && (
+                                            <span className="text-orange-600">✓</span>
+                                          )}
+                                        </button>
+                                      ))
+                                    ) : (
+                                      <div className="px-3 py-8 text-sm text-gray-500 text-center">
+                                        No countries found
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+
+                            {/* Phone Number Input */}
+                            <div className="relative group flex-1">
+                              <Phone className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+                              <Input
+                                type="tel"
+                                placeholder="9876543210"
+                                value={editedPhone}
+                                onChange={(e) => {
+                                  const digitsOnly = e.target.value.replace(/\D/g, '');
+                                  const maxDigits = COUNTRY_DIGIT_REQUIREMENTS[selectedCountry.code]?.max || 15;
+                                  const truncated = digitsOnly.slice(0, maxDigits);
+                                  setEditedPhone(truncated);
+                                  setPhoneError("");
+                                }}
+                                className={`w-full pl-11 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 bg-gray-50/50 transition-all ${
+                                  phoneError ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-orange-500 focus:ring-orange-500/20'
+                                }`}
+                              />
+                            </div>
+                          </div>
+
+                          {phoneError && (
+                            <p className="text-xs text-red-500 font-medium">{phoneError}</p>
+                          )}
+
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={handleSavePhone}
+                              disabled={isSavingPhone}
+                            >
+                              {isSavingPhone ? "Saving..." : "Save"}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setIsEditingPhone(false);
+                                setEditedPhone("");
+                                setPhoneError("");
+                              }}
+                              disabled={isSavingPhone}
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {user?.countryCode && user?.mobileNumber
+                              ? `+${countryCodeToPhoneCode[user.countryCode] || user.countryCode}${user.mobileNumber}`
+                              : "—"}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-2">
+                            {user?.mobileNumber ? "Cannot be changed after signup" : "Add your phone number to complete your profile"}
+                          </p>
+                        </>
+                      )}
                     </div>
 
                     {/* Member Since */}
