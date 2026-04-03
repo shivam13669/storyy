@@ -340,12 +340,15 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         countryCode: selectedCountry.code,
       };
 
+      // Send OTP to email after checking registration details
+      setOtpEmail(signupEmail);
+      await sendOTP(signupEmail, 'signup', {
+        mobileNumber,
+        countryCode: selectedCountry.code,
+      });
+
       // Store form data for OTP verification flow
       setSignupFormData(signupFormDataToUse);
-
-      // Send OTP to email (don't create user yet)
-      setOtpEmail(signupEmail);
-      await sendOTP(signupEmail);
 
       toast.success("OTP sent to your email!");
 
@@ -421,7 +424,16 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setIsSendingOTP(true);
     try {
       const purpose = signupFormData?.isPasswordReset ? 'password-reset' : 'signup';
-      await sendOTP(otpEmail, purpose);
+      await sendOTP(
+        otpEmail,
+        purpose,
+        signupFormData?.isPasswordReset
+          ? undefined
+          : {
+              mobileNumber: signupFormData?.mobileNumber || mobileNumber,
+              countryCode: signupFormData?.countryCode || selectedCountry.code,
+            }
+      );
       toast.success("OTP resent to your email!");
       setOtpCode("");
     } catch (error) {

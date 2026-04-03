@@ -21,6 +21,8 @@ import {
   ChevronDown,
   Edit2,
   User,
+  Phone,
+  Search,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +30,7 @@ import { format } from "date-fns";
 import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, updateUser, Booking, Testimonial } from "@/lib/api";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 // Country code to phone code mapping
 const countryCodeToPhoneCode: { [key: string]: string } = {
@@ -49,6 +52,34 @@ const countryCodeToPhoneCode: { [key: string]: string } = {
   'BD': '880',  // Bangladesh
 };
 
+const COUNTRIES = [
+  { code: 'IN', name: 'India', dial: '+91' },
+  { code: 'US', name: 'United States', dial: '+1' },
+  { code: 'GB', name: 'United Kingdom', dial: '+44' },
+  { code: 'CA', name: 'Canada', dial: '+1' },
+  { code: 'AU', name: 'Australia', dial: '+61' },
+  { code: 'DE', name: 'Germany', dial: '+49' },
+  { code: 'FR', name: 'France', dial: '+33' },
+  { code: 'JP', name: 'Japan', dial: '+81' },
+  { code: 'CN', name: 'China', dial: '+86' },
+  { code: 'BR', name: 'Brazil', dial: '+55' },
+  { code: 'MX', name: 'Mexico', dial: '+52' },
+  { code: 'ZA', name: 'South Africa', dial: '+27' },
+  { code: 'SG', name: 'Singapore', dial: '+65' },
+  { code: 'HK', name: 'Hong Kong', dial: '+852' },
+  { code: 'PK', name: 'Pakistan', dial: '+92' },
+  { code: 'BD', name: 'Bangladesh', dial: '+880' },
+];
+
+const formatDisplayPhoneNumber = (countryCode?: string, mobileNumber?: string) => {
+  if (!countryCode || !mobileNumber) return '—';
+  const phoneCode = countryCodeToPhoneCode[countryCode] || countryCode;
+  return `+${phoneCode} ${mobileNumber}`;
+};
+
+const isGooglePlaceholderPhone = (mobileNumber?: string) =>
+  !!mobileNumber && mobileNumber.startsWith('GOOGLE_');
+
 const Dashboard = () => {
   const { user, isAuthenticated, isAdmin, logout, refreshUser, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -63,6 +94,12 @@ const Dashboard = () => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(user?.fullName || "");
   const [isSavingName, setIsSavingName] = useState(false);
+  const [isPhoneEditing, setIsPhoneEditing] = useState(false);
+  const [isSavingPhone, setIsSavingPhone] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneCountrySearch, setPhoneCountrySearch] = useState("");
+  const [openPhoneCountryPopover, setOpenPhoneCountryPopover] = useState(false);
+  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState(COUNTRIES[0]);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Redirect if not authenticated or if admin (admin should go to admin dashboard)
@@ -136,6 +173,58 @@ const Dashboard = () => {
       throw new Error("User not authenticated");
     }
     await changeUserPassword(user.id, oldPassword, newPassword);
+  };
+
+  const openPhoneEditor = () => {
+    const currentCountry = COUNTRIES.find((country) => country.code === user?.countryCode) || COUNTRIES[0];
+    setSelectedPhoneCountry(currentCountry);
+    setPhoneNumber(isGooglePlaceholderPhone(user?.mobileNumber) ? "" : user?.mobileNumber || "");
+    setPhoneCountrySearch("");
+    setOpenPhoneCountryPopover(false);
+    setIsPhoneEditing(true);
+  };
+
+  const closePhoneEditor = () => {
+    setIsPhoneEditing(false);
+    setIsSavingPhone(false);
+    setPhoneNumber("");
+    setPhoneCountrySearch("");
+    setOpenPhoneCountryPopover(false);
+  };
+
+  const filteredPhoneCountries = COUNTRIES.filter((country) =>
+    `${country.name} ${country.code} ${country.dial}`.toLowerCase().includes(phoneCountrySearch.toLowerCase())
+  );
+
+  const handleSavePhone = async () => {
+    if (!user?.id) {
+      toast({ title: "Error", description: "User not authenticated", variant: "destructive" });
+      return;
+    }
+
+    if (!phoneNumber.trim()) {
+      toast({ title: "Error", description: "Please enter your phone number", variant: "destructive" });
+      return;
+    }
+
+    setIsSavingPhone(true);
+    try {
+      await updateUser(user.id, {
+        mobileNumber: phoneNumber.trim(),
+        countryCode: selectedPhoneCountry.code,
+      });
+      await refreshUser();
+      toast({ title: "Success", description: "Phone number added successfully" });
+      closePhoneEditor();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update phone number",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSavingPhone(false);
+    }
   };
 
   // Close user menu when clicking outside
@@ -223,6 +312,9 @@ const Dashboard = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  const phoneIsMissing = !user?.countryCode || !user?.mobileNumber || isGooglePlaceholderPhone(user.mobileNumber);
+  const displayPhoneNumber = formatDisplayPhoneNumber(user?.countryCode, phoneIsMissing ? undefined : user?.mobileNumber);
 
   // Don't render content until auth is verified
   // Show loading while auth is still loading, or if not authenticated, or if user is admin
@@ -575,9 +667,24 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Phone</p>
-                      <p className="text-lg font-semibold text-gray-900 mt-1">
-                        +{user?.countryCode ? countryCodeToPhoneCode[user.countryCode] || user.countryCode : ""} {user?.mobileNumber}
-                      </p>
+                      {phoneIsMissing ? (
+                        <div className="mt-1 space-y-2">
+                          <p className="text-lg font-semibold text-gray-900">Phone not added</p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-fit"
+                            onClick={() => {
+                              setActiveNav("profile");
+                              openPhoneEditor();
+                            }}
+                          >
+                            Add Phone Number
+                          </Button>
+                        </div>
+                      ) : (
+                        <p className="text-lg font-semibold text-gray-900 mt-1">{displayPhoneNumber}</p>
+                      )}
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Member Since</p>
@@ -772,13 +879,114 @@ const Dashboard = () => {
 
                     {/* Phone */}
                     <div className="border-t pt-6">
-                      <p className="text-sm text-gray-600 font-medium mb-2">Phone Number</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {user?.countryCode && user?.mobileNumber
-                          ? `+${countryCodeToPhoneCode[user.countryCode] || user.countryCode}${user.mobileNumber}`
-                          : "—"}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">Cannot be changed after signup</p>
+                      <div className="flex items-center justify-between gap-3 mb-2">
+                        <p className="text-sm text-gray-600 font-medium">Phone Number</p>
+                        {phoneIsMissing && !isPhoneEditing && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={openPhoneEditor}
+                            className="flex items-center gap-2"
+                          >
+                            <Phone className="w-4 h-4" />
+                            Add Phone Number
+                          </Button>
+                        )}
+                      </div>
+
+                      {phoneIsMissing && !isPhoneEditing ? (
+                        <>
+                          <p className="text-lg font-semibold text-gray-900">Phone not added</p>
+                          <p className="text-xs text-gray-500 mt-2">Add your phone number to complete your profile</p>
+                        </>
+                      ) : isPhoneEditing ? (
+                        <div className="space-y-4">
+                          <div className="flex flex-col gap-3 sm:flex-row">
+                            <Popover
+                              open={openPhoneCountryPopover}
+                              onOpenChange={(open) => {
+                                setOpenPhoneCountryPopover(open);
+                                if (!open) setPhoneCountrySearch("");
+                              }}
+                            >
+                              <PopoverTrigger asChild>
+                                <button
+                                  type="button"
+                                  className="px-3 py-2.5 border border-gray-200 rounded-lg bg-gray-50/50 hover:bg-gray-100 transition-all flex items-center gap-2 min-w-fit focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                >
+                                  <span className="text-sm font-medium">{selectedPhoneCountry.dial}</span>
+                                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                                </button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-64 p-0" align="start">
+                                <div className="flex flex-col">
+                                  <div className="sticky top-0 z-10 p-3 border-b border-gray-200 bg-white">
+                                    <div className="relative">
+                                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                      <input
+                                        type="text"
+                                        placeholder="Search country..."
+                                        value={phoneCountrySearch}
+                                        onChange={(e) => setPhoneCountrySearch(e.target.value)}
+                                        className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-gray-50"
+                                        autoFocus
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="max-h-64 overflow-y-auto" onWheel={(e) => e.stopPropagation()}>
+                                    {filteredPhoneCountries.length > 0 ? (
+                                      filteredPhoneCountries.map((country) => (
+                                        <button
+                                          key={country.code}
+                                          type="button"
+                                          onClick={() => {
+                                            setSelectedPhoneCountry(country);
+                                            setOpenPhoneCountryPopover(false);
+                                            setPhoneCountrySearch("");
+                                          }}
+                                          className={`w-full text-left px-3 py-2.5 text-sm hover:bg-blue-50 transition-colors flex items-center justify-between ${
+                                            selectedPhoneCountry.code === country.code ? "bg-blue-100 font-semibold" : ""
+                                          }`}
+                                        >
+                                          <span>
+                                            <span className="font-medium">{country.dial}</span>
+                                            <span className="text-gray-600 ml-2">{country.name}</span>
+                                          </span>
+                                          {selectedPhoneCountry.code === country.code && <span className="text-blue-600">✓</span>}
+                                        </button>
+                                      ))
+                                    ) : (
+                                      <div className="px-3 py-8 text-sm text-gray-500 text-center">No countries found</div>
+                                    )}
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+
+                            <Input
+                              type="tel"
+                              value={phoneNumber}
+                              onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
+                              placeholder="Enter phone number"
+                              className="flex-1"
+                            />
+                          </div>
+
+                          <div className="flex flex-col gap-2 sm:flex-row">
+                            <Button onClick={handleSavePhone} disabled={isSavingPhone} className="w-full sm:w-auto">
+                              {isSavingPhone ? "Saving..." : "Save Phone Number"}
+                            </Button>
+                            <Button variant="outline" onClick={closePhoneEditor} disabled={isSavingPhone} className="w-full sm:w-auto">
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-lg font-semibold text-gray-900">{displayPhoneNumber}</p>
+                          <p className="text-xs text-gray-500 mt-2">Cannot be changed after signup</p>
+                        </>
+                      )}
                     </div>
 
                     {/* Member Since */}

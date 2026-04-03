@@ -159,14 +159,18 @@ export async function googleLogin(credential: string): Promise<{ user: AuthUser;
   }
 }
 
-export async function sendOTP(email: string, purpose: string = 'signup'): Promise<{ message: string; email: string; expiresIn: string }> {
+export async function sendOTP(
+  email: string,
+  purpose: string = 'signup',
+  registrationData?: { mobileNumber: string; countryCode: string }
+): Promise<{ message: string; email: string; expiresIn: string }> {
   try {
     const response = await fetch(`${API_URL}/auth/send-otp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, purpose }),
+      body: JSON.stringify({ email, purpose, ...registrationData }),
     });
 
     let result;
@@ -267,7 +271,7 @@ export async function getUser(userId: number): Promise<{ user: AuthUser }> {
   }
 }
 
-export async function updateUser(userId: number, data: { fullName: string }): Promise<{ user: AuthUser; message: string }> {
+export async function updateUser(userId: number, data: { fullName?: string; mobileNumber?: string; countryCode?: string }): Promise<{ user: AuthUser; message: string }> {
   try {
     const response = await fetch(`${API_URL}/auth/user/${userId}`, {
       method: 'PATCH',
