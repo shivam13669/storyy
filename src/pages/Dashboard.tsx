@@ -27,6 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
+import { AddPhoneNumberModal } from "@/components/AddPhoneNumberModal";
 import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, updateUser, Booking, Testimonial } from "@/lib/api";
 
 // Country code to phone code mapping
@@ -60,6 +61,7 @@ const Dashboard = () => {
   const [activeNav, setActiveNav] = useState("overview");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isAddPhoneModalOpen, setIsAddPhoneModalOpen] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(user?.fullName || "");
   const [isSavingName, setIsSavingName] = useState(false);
@@ -773,12 +775,24 @@ const Dashboard = () => {
                     {/* Phone */}
                     <div className="border-t pt-6">
                       <p className="text-sm text-gray-600 font-medium mb-2">Phone Number</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {user?.countryCode && user?.mobileNumber
-                          ? `+${countryCodeToPhoneCode[user.countryCode] || user.countryCode}${user.mobileNumber}`
-                          : "—"}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">Cannot be changed after signup</p>
+                      {user?.countryCode && user?.mobileNumber ? (
+                        <>
+                          <p className="text-lg font-semibold text-gray-900">
+                            +{countryCodeToPhoneCode[user.countryCode] || user.countryCode}{user.mobileNumber}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-2">Cannot be changed after signup</p>
+                        </>
+                      ) : (
+                        <div className="space-y-3">
+                          <p className="text-gray-600">No phone number added yet</p>
+                          <Button
+                            onClick={() => setIsAddPhoneModalOpen(true)}
+                            className="w-full bg-orange-500 hover:bg-orange-600"
+                          >
+                            Add Phone Number
+                          </Button>
+                        </div>
+                      )}
                     </div>
 
                     {/* Member Since */}
@@ -811,6 +825,15 @@ const Dashboard = () => {
                 isOpen={isPasswordModalOpen}
                 onClose={() => setIsPasswordModalOpen(false)}
                 onSubmit={handleChangePassword}
+              />
+
+              <AddPhoneNumberModal
+                isOpen={isAddPhoneModalOpen}
+                onClose={() => setIsAddPhoneModalOpen(false)}
+                onSuccess={() => {
+                  setIsAddPhoneModalOpen(false);
+                  // User data will be refreshed by the modal's refreshUser call
+                }}
               />
             </div>
           ) : activeNav === "settings" ? (

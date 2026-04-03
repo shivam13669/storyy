@@ -195,6 +195,42 @@ export async function sendOTP(email: string, purpose: string = 'signup'): Promis
   }
 }
 
+export async function checkDuplicate(email?: string, mobileNumber?: string): Promise<{ available: boolean; errors?: string[] }> {
+  try {
+    const response = await fetch(`${API_URL}/auth/check-duplicate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, mobileNumber }),
+    });
+
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      if (!response.ok) {
+        throw new Error(`Failed to check duplicate with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
+
+    if (!response.ok) {
+      throw new Error(result.error || result.errors?.join(', ') || 'Failed to check duplicate');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error(`Cannot connect to API at ${API_URL}. Make sure the backend server is running.`);
+      }
+      throw error;
+    }
+    throw new Error('Check duplicate failed: Unknown error');
+  }
+}
+
 export async function verifyOTP(email: string, otp: string): Promise<{ message: string; email: string; verified: boolean }> {
   try {
     const response = await fetch(`${API_URL}/auth/verify-otp`, {
@@ -267,7 +303,7 @@ export async function getUser(userId: number): Promise<{ user: AuthUser }> {
   }
 }
 
-export async function updateUser(userId: number, data: { fullName: string }): Promise<{ user: AuthUser; message: string }> {
+export async function updateUser(userId: number, data: { fullName?: string; mobileNumber?: string; countryCode?: string }): Promise<{ user: AuthUser; message: string }> {
   try {
     const response = await fetch(`${API_URL}/auth/user/${userId}`, {
       method: 'PATCH',

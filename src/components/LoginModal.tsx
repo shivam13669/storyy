@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle, User, Phone, Search, ChevronDown, X, Loader } from "lucide-react";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { toast } from "sonner";
-import { signup, sendOTP, verifyOTP, resetPasswordWithEmail } from "@/lib/api";
+import { signup, sendOTP, verifyOTP, resetPasswordWithEmail, checkDuplicate } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { GoogleLogin } from "@react-oauth/google";
 import {
@@ -332,6 +332,25 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setIsSigningUp(true);
     setIsSendingOTP(true);
     try {
+      // Check if email or mobile already exists
+      try {
+        await checkDuplicate(signupEmail, mobileNumber);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Account verification failed';
+
+        // Handle duplicate email/mobile errors
+        if (errorMessage.includes('Email already registered')) {
+          setSignupEmailError('Email already registered');
+          toast.error('Email already registered');
+        } else if (errorMessage.includes('Mobile number already registered')) {
+          setMobileNumberError('Mobile number already registered');
+          toast.error('Mobile number already registered');
+        } else {
+          toast.error(errorMessage);
+        }
+        return;
+      }
+
       const signupFormDataToUse = {
         fullName,
         email: signupEmail,

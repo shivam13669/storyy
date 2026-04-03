@@ -124,20 +124,48 @@ router.get('/user/:id', async (req, res) => {
 
 /**
  * PATCH /api/auth/user/:id
- * Update user profile (fullName, etc)
+ * Update user profile (fullName, mobileNumber, countryCode)
  */
 router.patch('/user/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName } = req.body;
+    const { fullName, mobileNumber, countryCode } = req.body;
 
-    // Validate input
-    if (!fullName) {
-      return res.status(400).json({ error: 'Full name is required' });
+    // Validate input - at least one field is required
+    if (!fullName && !mobileNumber && !countryCode) {
+      return res.status(400).json({ error: 'At least one field is required for update' });
     }
 
+    // If updating mobile number, check for duplicates
+    if (mobileNumber) {
+      const db = getDB();
+      const userId = parseInt(id);
+      const user = await UserRepository.getById(userId);
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Check if mobile number already exists (excluding current user)
+      const mobileExists = await db.mobileNumberExists(mobileNumber);
+      if (mobileExists && user.mobileNumber !== mobileNumber) {
+        return res.status(409).json({ error: 'Mobile number already registered' });
+      }
+
+      // Both mobileNumber and countryCode required together
+      if (!countryCode) {
+        return res.status(400).json({ error: 'Country code is required when updating mobile number' });
+      }
+    }
+
+    // Prepare update object
+    const updateData = {};
+    if (fullName) updateData.fullName = fullName;
+    if (mobileNumber) updateData.mobileNumber = mobileNumber;
+    if (countryCode) updateData.countryCode = countryCode;
+
     // Update user
-    const user = await UserRepository.update(parseInt(id), { fullName });
+    const user = await UserRepository.update(parseInt(id), updateData);
 
     console.log(`✅ User updated: ${user.email}`);
 
@@ -316,6 +344,54 @@ router.post('/change-password', async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/auth/check-duplicate
+ * Check if email or mobile number already exists
+ * Body: { email, mobileNumber }
+ */
+router.post('/check-duplicate', async (req, res) => {
+  try {
+    const { email, mobileNumber } = req.body;
+
+    // Validate input
+    if (!email && !mobileNumber) {
+      return res.status(400).json({ error: 'Email or mobile number is required' });
+    }
+
+    const db = getDB();
+    const errors = [];
+
+    // Check if email exists
+    if (email) {
+      const emailLower = email.toLowerCase();
+      const emailExists = await db.emailExists(emailLower);
+      if (emailExists) {
+        errors.push('Email already registered');
+      }
+    }
+
+    // Check if mobile exists
+    if (mobileNumber) {
+      const mobileExists = await db.mobileNumberExists(mobileNumber);
+      if (mobileExists) {
+        errors.push('Mobile number already registered');
+      }
+    }
+
+    if (errors.length > 0) {
+      return res.status(409).json({ errors });
+    }
+
+    res.json({
+      message: 'Email and mobile number are available',
+      available: true
+    });
+  } catch (error) {
+    console.error('Check duplicate error:', error);
     res.status(500).json({ error: error.message });
   }
 });
