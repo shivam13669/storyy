@@ -31,6 +31,7 @@ import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, updateUser, Booking, Testimonial } from "@/lib/api";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import statesAndDistricts from "@/data/states-and-districts.json";
 
 // Country code to phone code mapping
 const countryCodeToPhoneCode: { [key: string]: string } = {
@@ -103,6 +104,8 @@ const Dashboard = () => {
   const [phoneCountrySearch, setPhoneCountrySearch] = useState("");
   const [openPhoneCountryPopover, setOpenPhoneCountryPopover] = useState(false);
   const [selectedPhoneCountry, setSelectedPhoneCountry] = useState(COUNTRIES[0]);
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Redirect if not authenticated or if admin (admin should go to admin dashboard)
@@ -929,14 +932,40 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">State</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <select
+                          value={selectedState}
+                          onChange={(e) => {
+                            setSelectedState(e.target.value);
+                            setSelectedDistrict("");
+                          }}
+                          className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                        >
                           <option value="">Select State</option>
+                          {statesAndDistricts.states.map((state) => (
+                            <option key={state.state} value={state.state}>
+                              {state.state}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">District</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <select
+                          value={selectedDistrict}
+                          onChange={(e) => setSelectedDistrict(e.target.value)}
+                          disabled={!selectedState}
+                          className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        >
                           <option value="">Select District</option>
+                          {selectedState &&
+                            statesAndDistricts.states
+                              .find((s) => s.state === selectedState)
+                              ?.districts.map((district) => (
+                                <option key={district} value={district}>
+                                  {district}
+                                </option>
+                              ))
+                          }
                         </select>
                       </div>
                     </div>
