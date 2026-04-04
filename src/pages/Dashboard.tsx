@@ -564,7 +564,7 @@ const Dashboard = () => {
                         ))
                       ) : (
                         <div className="text-center py-8">
-                          <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                          <AlertCircle className="w-12 h-12 text-gray-600 mx-auto mb-3" />
                           <p className="text-sm text-gray-600 font-medium">No bookings yet</p>
                           <p className="text-xs text-gray-500 mt-1">Start your adventure!</p>
                           <Button
@@ -625,7 +625,7 @@ const Dashboard = () => {
                         ))
                       ) : (
                         <div className="text-center py-8">
-                          <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                          <AlertCircle className="w-12 h-12 text-gray-600 mx-auto mb-3" />
                           <p className="text-sm text-gray-600 font-medium">No reviews yet</p>
                           <p className="text-xs text-gray-500 mt-1">Share your experiences!</p>
                         </div>
@@ -887,18 +887,17 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Gender</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                          <option value="">Select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
-                        </select>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Gender</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Date of Birth</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                          <option value="">Select Date</option>
-                        </select>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Date</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
                       </div>
                     </div>
 
@@ -906,9 +905,10 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Nationality</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                          <option value="">Select Nationality</option>
-                        </select>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Nationality</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
                       </div>
                       <div></div>
                     </div>
@@ -917,18 +917,17 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Marital Status</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                          <option value="">Select Status</option>
-                          <option value="single">Single</option>
-                          <option value="married">Married</option>
-                          <option value="divorced">Divorced</option>
-                        </select>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Status</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Anniversary</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                          <option value="">Select Date</option>
-                        </select>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Date</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
                       </div>
                     </div>
 
@@ -943,27 +942,28 @@ const Dashboard = () => {
                           <PopoverTrigger asChild>
                             <button
                               type="button"
-                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
                             >
-                              {selectedState || "Select State"}
+                              <span>{selectedState || "Select State"}</span>
+                              <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
                             </button>
                           </PopoverTrigger>
                           <PopoverContent className="w-96 p-0" align="start">
-                            <div className="flex flex-col">
-                              <div className="sticky top-0 z-10 p-3 border-b border-gray-200 bg-white">
+                            <div className="flex flex-col bg-white rounded-lg overflow-hidden">
+                              <div className="sticky top-0 z-10 p-4 border-b border-gray-200 bg-white">
                                 <div className="relative">
-                                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                  <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
                                   <input
                                     type="text"
-                                    placeholder="Search..."
+                                    placeholder="Search states..."
                                     value={stateSearch}
                                     onChange={(e) => setStateSearch(e.target.value)}
-                                    className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
                                     autoFocus
                                   />
                                 </div>
                               </div>
-                              <div className="max-h-64 overflow-y-auto">
+                              <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                                 {statesAndDistricts.states
                                   .filter((s) => s.state.toLowerCase().includes(stateSearch.toLowerCase()))
                                   .length > 0 ? (
@@ -979,15 +979,20 @@ const Dashboard = () => {
                                           setOpenStatePopover(false);
                                           setStateSearch("");
                                         }}
-                                        className={`w-full text-left px-3 py-2.5 text-sm hover:bg-blue-50 transition-colors ${
-                                          selectedState === state.state ? "bg-blue-100 font-semibold text-gray-900" : "text-gray-700"
+                                        className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between group ${
+                                          selectedState === state.state
+                                            ? "bg-blue-50 text-gray-900 font-semibold border-l-3 border-blue-500"
+                                            : "text-gray-700 hover:bg-gray-50 border-l-3 border-transparent"
                                         }`}
                                       >
-                                        {state.state}
+                                        <span>{state.state}</span>
+                                        {selectedState === state.state && (
+                                          <span className="text-blue-600 font-bold">✓</span>
+                                        )}
                                       </button>
                                     ))
                                 ) : (
-                                  <div className="px-3 py-8 text-sm text-gray-500 text-center">No states found</div>
+                                  <div className="px-4 py-8 text-sm text-gray-500 text-center">No states found</div>
                                 )}
                               </div>
                             </div>
@@ -1004,27 +1009,28 @@ const Dashboard = () => {
                             <button
                               type="button"
                               disabled={!selectedState}
-                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed disabled:hover:bg-gray-100"
+                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed disabled:hover:bg-gray-100 flex items-center justify-between"
                             >
-                              {selectedDistrict || "Select District"}
+                              <span>{selectedDistrict || "Select District"}</span>
+                              <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
                             </button>
                           </PopoverTrigger>
                           <PopoverContent className="w-96 p-0" align="start">
-                            <div className="flex flex-col">
-                              <div className="sticky top-0 z-10 p-3 border-b border-gray-200 bg-white">
+                            <div className="flex flex-col bg-white rounded-lg overflow-hidden">
+                              <div className="sticky top-0 z-10 p-4 border-b border-gray-200 bg-white">
                                 <div className="relative">
-                                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                  <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
                                   <input
                                     type="text"
-                                    placeholder="Search..."
+                                    placeholder="Search districts..."
                                     value={districtSearch}
                                     onChange={(e) => setDistrictSearch(e.target.value)}
-                                    className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
                                     autoFocus
                                   />
                                 </div>
                               </div>
-                              <div className="max-h-64 overflow-y-auto">
+                              <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                                 {selectedState && statesAndDistricts.states
                                   .find((s) => s.state === selectedState)
                                   ?.districts
@@ -1043,15 +1049,20 @@ const Dashboard = () => {
                                           setOpenDistrictPopover(false);
                                           setDistrictSearch("");
                                         }}
-                                        className={`w-full text-left px-3 py-2.5 text-sm hover:bg-blue-50 transition-colors ${
-                                          selectedDistrict === district ? "bg-blue-100 font-semibold text-gray-900" : "text-gray-700"
+                                        className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between group ${
+                                          selectedDistrict === district
+                                            ? "bg-blue-50 text-gray-900 font-semibold border-l-3 border-blue-500"
+                                            : "text-gray-700 hover:bg-gray-50 border-l-3 border-transparent"
                                         }`}
                                       >
-                                        {district}
+                                        <span>{district}</span>
+                                        {selectedDistrict === district && (
+                                          <span className="text-blue-600 font-bold">✓</span>
+                                        )}
                                       </button>
                                     ))
                                 ) : (
-                                  <div className="px-3 py-8 text-sm text-gray-500 text-center">No districts found</div>
+                                  <div className="px-4 py-8 text-sm text-gray-500 text-center">No districts found</div>
                                 )}
                               </div>
                             </div>
@@ -1122,14 +1133,14 @@ const Dashboard = () => {
                                   className="h-10 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50/50 hover:bg-gray-100 transition-all flex items-center gap-2 min-w-fit focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                                 >
                                   <span className="text-sm font-medium">{selectedPhoneCountry.dial}</span>
-                                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                                  <ChevronDown className="h-4 w-4 text-gray-600" />
                                 </button>
                               </PopoverTrigger>
                               <PopoverContent className="w-64 p-0" align="start">
                                 <div className="flex flex-col">
                                   <div className="sticky top-0 z-10 p-3 border-b border-gray-200 bg-white">
                                     <div className="relative">
-                                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
                                       <input
                                         type="text"
                                         placeholder="Search country..."
@@ -1230,9 +1241,10 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Expiry Date</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                          <option value="">Select Date</option>
-                        </select>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Date</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
                       </div>
                     </div>
 
@@ -1240,9 +1252,10 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Issuing Country</label>
-                        <select className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                          <option value="">Select Country</option>
-                        </select>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Country</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">PAN Card Number</label>
