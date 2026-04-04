@@ -120,6 +120,13 @@ const Dashboard = () => {
     }
   }, [isAuthenticated, isAdmin, authLoading, navigate]);
 
+  // Sync editedName with user fullName when user data loads
+  useEffect(() => {
+    if (user?.fullName) {
+      setEditedName(user.fullName);
+    }
+  }, [user?.fullName]);
+
   // Load user data function
   const loadData = async () => {
     if (!user?.id) return;
