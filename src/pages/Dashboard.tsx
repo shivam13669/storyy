@@ -23,6 +23,8 @@ import {
   User,
   Phone,
   Search,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -121,6 +123,13 @@ const Dashboard = () => {
   const [selectedNationality, setSelectedNationality] = useState("");
   const [nationalitySearch, setNationalitySearch] = useState("");
   const [openNationalityPopover, setOpenNationalityPopover] = useState(false);
+
+  // Documents state
+  const [documents, setDocuments] = useState<Array<{id: string; type: string; number: string}>>([]);
+  const [openDocTypePopovers, setOpenDocTypePopovers] = useState<{[key: string]: boolean}>({});
+  const [docTypeSearches, setDocTypeSearches] = useState<{[key: string]: string}>({});
+  const documentTypes = ["Aadhaar", "Driving License", "Voter ID"];
+
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Redirect if not authenticated or if admin (admin should go to admin dashboard)
@@ -1209,7 +1218,7 @@ const Dashboard = () => {
                           <Input
                             type="text"
                             placeholder="Enter state or province"
-                            className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
+                            className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
                           />
                         </div>
                         <div>
@@ -1217,7 +1226,7 @@ const Dashboard = () => {
                           <Input
                             type="text"
                             placeholder="Enter district or city"
-                            className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
+                            className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
                           />
                         </div>
                       </div>
@@ -1480,6 +1489,134 @@ const Dashboard = () => {
                     {/* Note */}
                     <div className="text-xs text-orange-600 font-semibold">
                       NOTE: Your PAN No. will not be used for international bookings as per RBI Guidelines
+                    </div>
+
+                    {/* Document Rows */}
+                    {documents.length > 0 && (
+                      <div className="space-y-4 pt-6 border-t">
+                        {documents.map((doc) => (
+                          <div key={doc.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                            {/* Document Type Dropdown */}
+                            <div>
+                              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Document Type</label>
+                              <Popover
+                                open={openDocTypePopovers[doc.id] || false}
+                                onOpenChange={(open) => {
+                                  setOpenDocTypePopovers({...openDocTypePopovers, [doc.id]: open});
+                                  if (!open) setDocTypeSearches({...docTypeSearches, [doc.id]: ""});
+                                }}
+                              >
+                                <PopoverTrigger asChild>
+                                  <button
+                                    type="button"
+                                    className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
+                                  >
+                                    <span>{doc.type || "Select Type"}</span>
+                                    <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                                  </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0 z-50" align="start">
+                                  <div className="flex flex-col bg-white rounded-lg overflow-hidden shadow-lg">
+                                    <div className="sticky top-0 z-10 p-4 border-b border-gray-200 bg-white">
+                                      <div className="relative">
+                                        <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
+                                        <input
+                                          type="text"
+                                          placeholder="Search documents..."
+                                          value={docTypeSearches[doc.id] || ""}
+                                          onChange={(e) => setDocTypeSearches({...docTypeSearches, [doc.id]: e.target.value})}
+                                          className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
+                                          autoFocus
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                                      {documentTypes
+                                        .filter((t) => t.toLowerCase().includes((docTypeSearches[doc.id] || "").toLowerCase()))
+                                        .length > 0 ? (
+                                        documentTypes
+                                          .filter((t) => t.toLowerCase().includes((docTypeSearches[doc.id] || "").toLowerCase()))
+                                          .map((type) => (
+                                            <button
+                                              key={type}
+                                              type="button"
+                                              onClick={() => {
+                                                setDocuments(documents.map(d => d.id === doc.id ? {...d, type} : d));
+                                                setOpenDocTypePopovers({...openDocTypePopovers, [doc.id]: false});
+                                                setDocTypeSearches({...docTypeSearches, [doc.id]: ""});
+                                              }}
+                                              className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between group ${
+                                                doc.type === type
+                                                  ? "bg-blue-50 text-gray-900 font-semibold border-l-3 border-blue-500"
+                                                  : "text-gray-700 hover:bg-blue-50 border-l-3 border-transparent"
+                                              }`}
+                                            >
+                                              <span>{type}</span>
+                                              {doc.type === type && (
+                                                <span className="text-blue-600 font-bold">✓</span>
+                                              )}
+                                            </button>
+                                          ))
+                                      ) : (
+                                        <div className="px-4 py-8 text-sm text-gray-500 text-center">No documents found</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                            </div>
+
+                            {/* Document Number Input */}
+                            <div>
+                              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Document Number</label>
+                              <Input
+                                type="text"
+                                placeholder="Enter document number"
+                                value={doc.number}
+                                onChange={(e) => setDocuments(documents.map(d => d.id === doc.id ? {...d, number: e.target.value} : d))}
+                                className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
+                              />
+                            </div>
+
+                            {/* Delete Button */}
+                            <div className="flex justify-end">
+                              <button
+                                type="button"
+                                onClick={() => setDocuments(documents.filter(d => d.id !== doc.id))}
+                                className="p-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Delete document"
+                              >
+                                <Trash2 className="h-5 w-5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Add Document Button */}
+                    <div>
+                      <Button
+                        variant="link"
+                        disabled={documents.length >= 3}
+                        className={`p-0 ${
+                          documents.length >= 3
+                            ? "text-gray-400 cursor-not-allowed opacity-20"
+                            : "text-blue-600"
+                        }`}
+                        onClick={() => {
+                          if (documents.length < 3) {
+                            const newDoc = {
+                              id: Date.now().toString(),
+                              type: "",
+                              number: ""
+                            };
+                            setDocuments([...documents, newDoc]);
+                          }
+                        }}
+                      >
+                        + ADD DOCUMENT
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
