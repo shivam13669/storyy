@@ -821,12 +821,12 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Full Name</label>
-                        <Input
+                        <input
                           type="text"
                           value={editedName}
                           onChange={(e) => setEditedName(e.target.value)}
                           placeholder="Enter your full name"
-                          className="mt-2"
+                          className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                         />
                       </div>
                       <div></div>
