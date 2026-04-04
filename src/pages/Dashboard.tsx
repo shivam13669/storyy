@@ -120,6 +120,8 @@ const Dashboard = () => {
   const [openDOBPopover, setOpenDOBPopover] = useState(false);
   const [selectedAnniversary, setSelectedAnniversary] = useState<Date | null>(null);
   const [openAnniversaryPopover, setOpenAnniversaryPopover] = useState(false);
+  const [selectedExpiryDate, setSelectedExpiryDate] = useState<Date | null>(null);
+  const [openExpiryDatePopover, setOpenExpiryDatePopover] = useState(false);
   const [selectedMaritalStatus, setSelectedMaritalStatus] = useState("");
   const [openMaritalStatusPopover, setOpenMaritalStatusPopover] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -1445,10 +1447,29 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Expiry Date</label>
-                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
-                          <span>Select Date</span>
-                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
-                        </button>
+                        <Popover open={openExpiryDatePopover} onOpenChange={setOpenExpiryDatePopover}>
+                          <PopoverTrigger asChild>
+                            <button
+                              type="button"
+                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
+                            >
+                              <span className={selectedExpiryDate ? "text-gray-900" : "text-gray-500"}>
+                                {selectedExpiryDate ? format(selectedExpiryDate, "dd MMM, yyyy") : "Select Date"}
+                              </span>
+                              <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 z-50" align="start">
+                            <AdvancedDatePicker
+                              selected={selectedExpiryDate || undefined}
+                              onSelect={(date) => {
+                                setSelectedExpiryDate(date);
+                                setOpenExpiryDatePopover(false);
+                              }}
+                              minDate={new Date()}
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
 

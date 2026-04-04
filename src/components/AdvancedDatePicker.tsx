@@ -9,6 +9,7 @@ interface AdvancedDatePickerProps {
   disabled?: (date: Date) => boolean;
   availableDates?: string[];
   maxDate?: Date;
+  minDate?: Date;
 }
 
 type PickerMode = "day" | "month" | "year";
@@ -19,9 +20,11 @@ export const AdvancedDatePicker = ({
   disabled,
   availableDates,
   maxDate,
+  minDate,
 }: AdvancedDatePickerProps) => {
   const today = startOfDay(new Date());
   const maxSelectableDate = maxDate ? startOfDay(maxDate) : null;
+  const minSelectableDate = minDate ? startOfDay(minDate) : null;
   const [mode, setMode] = useState<PickerMode>("day");
 
   // Get available years and months from availableDates
@@ -47,9 +50,17 @@ export const AdvancedDatePicker = ({
 
   const { years: availableYears, monthsByYear: availableMonthsByYear } = getAvailableYearsAndMonths();
 
+  const isBeforeMinDate = (date: Date) => !!minSelectableDate && startOfDay(date) < minSelectableDate;
+  const isAfterMaxDate = (date: Date) => !!maxSelectableDate && startOfDay(date) > maxSelectableDate;
+
   // Initialize to first available date month if current month has no available dates
   const getInitialDate = () => {
-    if (selected) return maxSelectableDate && selected > maxSelectableDate ? maxSelectableDate : selected;
+    if (selected) {
+      const selectedDate = startOfDay(selected);
+      if (minSelectableDate && selectedDate < minSelectableDate) return minSelectableDate;
+      if (maxSelectableDate && selectedDate > maxSelectableDate) return maxSelectableDate;
+      return selected;
+    }
 
     if (availableDates && availableDates.length > 0) {
       const availableMonthsInCurrentYear = availableMonthsByYear.get(today.getFullYear()) || new Set();
@@ -60,6 +71,9 @@ export const AdvancedDatePicker = ({
         return firstAvailableDate;
       }
     }
+
+    if (minSelectableDate && today < minSelectableDate) return minSelectableDate;
+    if (maxSelectableDate && today > maxSelectableDate) return maxSelectableDate;
     return today;
   };
 
@@ -71,6 +85,7 @@ export const AdvancedDatePicker = ({
   // Handle year selection
   const handleYearSelect = (year: number) => {
     if (maxSelectableDate && year > maxSelectableDate.getFullYear()) return;
+    if (minSelectableDate && year < minSelectableDate.getFullYear()) return;
 
     const newDate = new Date(currentDate);
     newDate.setFullYear(year);
@@ -81,6 +96,7 @@ export const AdvancedDatePicker = ({
   // Handle month selection
   const handleMonthSelect = (month: number) => {
     if (maxSelectableDate && currentYear === maxSelectableDate.getFullYear() && month > maxSelectableDate.getMonth()) return;
+    if (minSelectableDate && currentYear === minSelectableDate.getFullYear() && month < minSelectableDate.getMonth()) return;
 
     const newDate = new Date(currentDate);
     newDate.setMonth(month);
@@ -93,6 +109,7 @@ export const AdvancedDatePicker = ({
     const newDate = new Date(currentDate);
     newDate.setDate(day);
     if (maxSelectableDate && startOfDay(newDate) > maxSelectableDate) return;
+    if (minSelectableDate && startOfDay(newDate) < minSelectableDate) return;
     onSelect(newDate);
   };
 
@@ -125,6 +142,7 @@ export const AdvancedDatePicker = ({
         // No available dates, use normal navigation
         const newDate = new Date(currentDate);
         newDate.setMonth(newDate.getMonth() - 1);
+        if (minSelectableDate && startOfDay(newDate) < minSelectableDate) return;
         setCurrentDate(newDate);
         return;
       }
@@ -164,6 +182,7 @@ export const AdvancedDatePicker = ({
         // No available dates, use normal navigation
         const newDate = new Date(currentDate);
         newDate.setMonth(newDate.getMonth() + 1);
+        if (minSelectableDate && startOfDay(newDate) < minSelectableDate) return;
         setCurrentDate(newDate);
         return;
       }
@@ -252,7 +271,7 @@ export const AdvancedDatePicker = ({
               day === selected.getDate() &&
               currentMonth === selected.getMonth() &&
               currentYear === selected.getFullYear();
-            const isDisabled = disabled?.(dateObj) ?? false;
+            const isDisabled = (disabled?.(dateObj) ?? false) || isBeforeMinDate(dateObj) || isAfterMaxDate(dateObj);
 
             return (
               <button
@@ -322,7 +341,10 @@ export const AdvancedDatePicker = ({
         <div className="grid grid-cols-3 gap-2">
           {months.map((month, idx) => {
             const isAvailable = availableMonthsForYear.size === 0 || availableMonthsForYear.has(idx);
-            const isDisabledMonth = (availableDates && availableDates.length > 0 && !isAvailable) || (maxSelectableDate ? currentYear === maxSelectableDate.getFullYear() && idx > maxSelectableDate.getMonth() : false);
+            const isDisabledMonth =
+              (availableDates && availableDates.length > 0 && !isAvailable) ||
+              (maxSelectableDate ? currentYear === maxSelectableDate.getFullYear() && idx > maxSelectableDate.getMonth() : false) ||
+              (minSelectableDate ? currentYear === minSelectableDate.getFullYear() && idx < minSelectableDate.getMonth() : false);
 
             return (
               <button
@@ -362,6 +384,7 @@ export const AdvancedDatePicker = ({
             onClick={() => {
               const newDate = new Date(currentDate);
               newDate.setFullYear(currentYear - 10);
+              if (minSelectableDate && startOfDay(newDate) < minSelectableDate) return;
               setCurrentDate(newDate);
             }}
             className="p-1 hover:bg-primary/10 rounded-md transition-colors"
@@ -379,6 +402,7 @@ export const AdvancedDatePicker = ({
               if (maxSelectableDate && currentYear + 10 > maxSelectableDate.getFullYear()) return;
               const newDate = new Date(currentDate);
               newDate.setFullYear(currentYear + 10);
+              if (minSelectableDate && startOfDay(newDate) < minSelectableDate) return;
               setCurrentDate(newDate);
             }}
             className="p-1 hover:bg-primary/10 rounded-md transition-colors"
@@ -391,7 +415,10 @@ export const AdvancedDatePicker = ({
         <div className="grid grid-cols-3 gap-2">
           {years.map((year) => {
             const isAvailable = availableYears.size === 0 || availableYears.has(year);
-            const isDisabledYear = (availableDates && availableDates.length > 0 && !isAvailable) || (maxSelectableDate ? year > maxSelectableDate.getFullYear() : false);
+            const isDisabledYear =
+              (availableDates && availableDates.length > 0 && !isAvailable) ||
+              (maxSelectableDate ? year > maxSelectableDate.getFullYear() : false) ||
+              (minSelectableDate ? year < minSelectableDate.getFullYear() : false);
 
             return (
               <button
