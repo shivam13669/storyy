@@ -75,6 +75,17 @@ export class PostgresDatabase extends IDatabase {
       isSuspended: row.is_suspended,
       signupDate: row.signup_date,
       phoneLastChangedAt: row.phone_last_changed_at,
+      gender: row.gender,
+      dateOfBirth: row.date_of_birth,
+      nationality: row.nationality,
+      maritalStatus: row.marital_status,
+      anniversary: row.anniversary,
+      state: row.state,
+      district: row.district,
+      passportNumber: row.passport_number,
+      passportExpiryDate: row.passport_expiry_date,
+      passportIssuingCountry: row.passport_issuing_country,
+      panCardNumber: row.pan_card_number,
     };
   }
 
@@ -120,11 +131,33 @@ export class PostgresDatabase extends IDatabase {
         signup_date TEXT NOT NULL,
         testimonial_allowed BOOLEAN NOT NULL DEFAULT FALSE,
         is_suspended BOOLEAN NOT NULL DEFAULT FALSE,
-        phone_last_changed_at TEXT
+        phone_last_changed_at TEXT,
+        gender TEXT,
+        date_of_birth TEXT,
+        nationality TEXT,
+        marital_status TEXT,
+        anniversary TEXT,
+        state TEXT,
+        district TEXT,
+        passport_number TEXT,
+        passport_expiry_date TEXT,
+        passport_issuing_country TEXT,
+        pan_card_number TEXT
       )
     `);
 
     await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS phone_last_changed_at TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS gender TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS date_of_birth TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS nationality TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS marital_status TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS anniversary TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS state TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS district TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passport_number TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passport_expiry_date TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passport_issuing_country TEXT`);
+    await this._query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS pan_card_number TEXT`);
 
     await this._query(`
       CREATE TABLE IF NOT EXISTS bookings (
@@ -340,7 +373,7 @@ export class PostgresDatabase extends IDatabase {
   async getUserById(id) {
     try {
       const result = await this._query(
-        `SELECT id, full_name, email, role, mobile_number, country_code, testimonial_allowed, is_suspended, signup_date, phone_last_changed_at FROM users WHERE id = $1`,
+        `SELECT id, full_name, email, role, mobile_number, country_code, testimonial_allowed, is_suspended, signup_date, phone_last_changed_at, gender, date_of_birth, nationality, marital_status, anniversary, state, district, passport_number, passport_expiry_date, passport_issuing_country, pan_card_number FROM users WHERE id = $1`,
         [id]
       );
 
@@ -357,7 +390,7 @@ export class PostgresDatabase extends IDatabase {
   async getUserByEmail(email) {
     try {
       const result = await this._query(
-        `SELECT id, full_name, email, password, role, mobile_number, country_code, testimonial_allowed, is_suspended, signup_date, phone_last_changed_at FROM users WHERE LOWER(email) = $1`,
+        `SELECT id, full_name, email, password, role, mobile_number, country_code, testimonial_allowed, is_suspended, signup_date, phone_last_changed_at, gender, date_of_birth, nationality, marital_status, anniversary, state, district, passport_number, passport_expiry_date, passport_issuing_country, pan_card_number FROM users WHERE LOWER(email) = $1`,
         [email.toLowerCase()]
       );
 
@@ -377,8 +410,19 @@ export class PostgresDatabase extends IDatabase {
         testimonialAllowed: row.testimonial_allowed,
         isSuspended: row.is_suspended,
         signupDate: row.signup_date,
-      phoneLastChangedAt: row.phone_last_changed_at,
-    };
+        phoneLastChangedAt: row.phone_last_changed_at,
+        gender: row.gender,
+        dateOfBirth: row.date_of_birth,
+        nationality: row.nationality,
+        maritalStatus: row.marital_status,
+        anniversary: row.anniversary,
+        state: row.state,
+        district: row.district,
+        passportNumber: row.passport_number,
+        passportExpiryDate: row.passport_expiry_date,
+        passportIssuingCountry: row.passport_issuing_country,
+        panCardNumber: row.pan_card_number,
+      };
     } catch (error) {
       throw new Error(`Failed to get user by email: ${error.message}`);
     }
@@ -387,7 +431,7 @@ export class PostgresDatabase extends IDatabase {
   async getAllUsers() {
     try {
       const result = await this._query(
-        `SELECT id, full_name, email, role, mobile_number, country_code, testimonial_allowed, is_suspended, signup_date, phone_last_changed_at FROM users ORDER BY id`
+        `SELECT id, full_name, email, role, mobile_number, country_code, testimonial_allowed, is_suspended, signup_date, phone_last_changed_at, gender, date_of_birth, nationality, marital_status, anniversary, state, district, passport_number, passport_expiry_date, passport_issuing_country, pan_card_number FROM users ORDER BY id`
       );
 
       return result.rows.map((row) => this._mapUserRow(row));

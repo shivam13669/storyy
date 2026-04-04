@@ -66,14 +66,34 @@ export class SQLiteDatabase extends IDatabase {
           signupDate TEXT NOT NULL,
           testimonialAllowed INTEGER NOT NULL DEFAULT 0,
           isSuspended INTEGER NOT NULL DEFAULT 0,
-          phoneLastChangedAt TEXT
+          phoneLastChangedAt TEXT,
+          gender TEXT,
+          dateOfBirth TEXT,
+          nationality TEXT,
+          maritalStatus TEXT,
+          anniversary TEXT,
+          state TEXT,
+          district TEXT,
+          passportNumber TEXT,
+          passportExpiryDate TEXT,
+          passportIssuingCountry TEXT,
+          panCardNumber TEXT
         )
       `);
 
       const userColumns = this.db.exec(`PRAGMA table_info(users)`);
-      const hasPhoneLastChangedAt = userColumns.length > 0 && userColumns[0].values.some((column) => column[1] === 'phoneLastChangedAt');
-      if (!hasPhoneLastChangedAt) {
-        this.db.run(`ALTER TABLE users ADD COLUMN phoneLastChangedAt TEXT`);
+      const columnNames = userColumns.length > 0 ? userColumns[0].values.map((column) => column[1]) : [];
+
+      const requiredColumns = [
+        'phoneLastChangedAt', 'gender', 'dateOfBirth', 'nationality', 'maritalStatus',
+        'anniversary', 'state', 'district', 'passportNumber', 'passportExpiryDate',
+        'passportIssuingCountry', 'panCardNumber'
+      ];
+
+      for (const col of requiredColumns) {
+        if (!columnNames.includes(col)) {
+          this.db.run(`ALTER TABLE users ADD COLUMN ${col} TEXT`);
+        }
       }
 
       // Bookings table
@@ -226,7 +246,7 @@ export class SQLiteDatabase extends IDatabase {
   async getUserById(id) {
     try {
       const result = this.db.exec(
-        `SELECT id, fullName, email, role, mobileNumber, countryCode, testimonialAllowed, isSuspended, signupDate, phoneLastChangedAt FROM users WHERE id = ?`,
+        `SELECT id, fullName, email, role, mobileNumber, countryCode, testimonialAllowed, isSuspended, signupDate, phoneLastChangedAt, gender, dateOfBirth, nationality, maritalStatus, anniversary, state, district, passportNumber, passportExpiryDate, passportIssuingCountry, panCardNumber FROM users WHERE id = ?`,
         [id]
       );
 
@@ -244,7 +264,7 @@ export class SQLiteDatabase extends IDatabase {
     try {
       const emailLower = email.toLowerCase();
       const result = this.db.exec(
-        `SELECT id, fullName, email, password, role, mobileNumber, countryCode, testimonialAllowed, isSuspended, signupDate, phoneLastChangedAt FROM users WHERE LOWER(email) = ?`,
+        `SELECT id, fullName, email, password, role, mobileNumber, countryCode, testimonialAllowed, isSuspended, signupDate, phoneLastChangedAt, gender, dateOfBirth, nationality, maritalStatus, anniversary, state, district, passportNumber, passportExpiryDate, passportIssuingCountry, panCardNumber FROM users WHERE LOWER(email) = ?`,
         [emailLower]
       );
 
@@ -263,7 +283,19 @@ export class SQLiteDatabase extends IDatabase {
         countryCode: row[6],
         testimonialAllowed: row[7] === 1,
         isSuspended: row[8] === 1,
-        signupDate: row[9]
+        signupDate: row[9],
+        phoneLastChangedAt: row[10],
+        gender: row[11],
+        dateOfBirth: row[12],
+        nationality: row[13],
+        maritalStatus: row[14],
+        anniversary: row[15],
+        state: row[16],
+        district: row[17],
+        passportNumber: row[18],
+        passportExpiryDate: row[19],
+        passportIssuingCountry: row[20],
+        panCardNumber: row[21]
       };
     } catch (error) {
       throw new Error(`Failed to get user by email: ${error.message}`);
@@ -273,7 +305,7 @@ export class SQLiteDatabase extends IDatabase {
   async getAllUsers() {
     try {
       const result = this.db.exec(
-        `SELECT id, fullName, email, role, mobileNumber, countryCode, testimonialAllowed, isSuspended, signupDate, phoneLastChangedAt FROM users ORDER BY id`
+        `SELECT id, fullName, email, role, mobileNumber, countryCode, testimonialAllowed, isSuspended, signupDate, phoneLastChangedAt, gender, dateOfBirth, nationality, maritalStatus, anniversary, state, district, passportNumber, passportExpiryDate, passportIssuingCountry, panCardNumber FROM users ORDER BY id`
       );
 
       if (!result || result.length === 0) {
@@ -340,7 +372,18 @@ export class SQLiteDatabase extends IDatabase {
       testimonialAllowed: row[6] === 1,
       isSuspended: row[7] === 1,
       signupDate: row[8],
-      phoneLastChangedAt: row[9] || null
+      phoneLastChangedAt: row[9] || null,
+      gender: row[10] || null,
+      dateOfBirth: row[11] || null,
+      nationality: row[12] || null,
+      maritalStatus: row[13] || null,
+      anniversary: row[14] || null,
+      state: row[15] || null,
+      district: row[16] || null,
+      passportNumber: row[17] || null,
+      passportExpiryDate: row[18] || null,
+      passportIssuingCountry: row[19] || null,
+      panCardNumber: row[20] || null
     };
   }
 
