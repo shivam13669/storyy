@@ -1389,10 +1389,111 @@ const Dashboard = () => {
                   <CardTitle>Documents Details</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className="space-y-6">
+                    {/* Passport No. and Expiry Date */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Passport No.</label>
+                        <Input
+                          type="text"
+                          placeholder="Enter passport number"
+                          className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Expiry Date</label>
+                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                          <span>Select Date</span>
+                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Issuing Country and PAN Card Number */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Issuing Country</label>
+                        <Popover open={openCountryPopover} onOpenChange={(open) => {
+                          setOpenCountryPopover(open);
+                          if (!open) setCountrySearch("");
+                        }}>
+                          <PopoverTrigger asChild>
+                            <button
+                              type="button"
+                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
+                            >
+                              <span>{selectedCountry || "Select Country"}</span>
+                              <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[--radix-popover-trigger-width] p-0 z-50" align="start">
+                            <div className="flex flex-col bg-white rounded-lg overflow-hidden shadow-lg">
+                              <div className="sticky top-0 z-10 p-4 border-b border-gray-200 bg-white">
+                                <div className="relative">
+                                  <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-600" />
+                                  <input
+                                    type="text"
+                                    placeholder="Search countries..."
+                                    value={countrySearch}
+                                    onChange={(e) => setCountrySearch(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
+                                    autoFocus
+                                  />
+                                </div>
+                              </div>
+                              <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                                {countries
+                                  .filter((c) => c.name.toLowerCase().includes(countrySearch.toLowerCase()))
+                                  .length > 0 ? (
+                                  countries
+                                    .filter((c) => c.name.toLowerCase().includes(countrySearch.toLowerCase()))
+                                    .map((country) => (
+                                      <button
+                                        key={country.code}
+                                        type="button"
+                                        onClick={() => {
+                                          setSelectedCountry(country.name);
+                                          setOpenCountryPopover(false);
+                                          setCountrySearch("");
+                                        }}
+                                        className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between group ${
+                                          selectedCountry === country.name
+                                            ? "bg-blue-50 text-gray-900 font-semibold border-l-3 border-blue-500"
+                                            : "text-gray-700 hover:bg-blue-50 border-l-3 border-transparent"
+                                        }`}
+                                      >
+                                        <span>{country.name}</span>
+                                        {selectedCountry === country.name && (
+                                          <span className="text-blue-600 font-bold">✓</span>
+                                        )}
+                                      </button>
+                                    ))
+                                ) : (
+                                  <div className="px-4 py-8 text-sm text-gray-500 text-center">No countries found</div>
+                                )}
+                              </div>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div>
+                        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">PAN Card Number</label>
+                        <Input
+                          type="text"
+                          placeholder="Enter PAN card number"
+                          className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Note */}
+                    <div className="text-xs text-orange-600 font-semibold">
+                      NOTE: Your PAN No. will not be used for international bookings as per RBI Guidelines
+                    </div>
+
                     {/* Document Rows */}
                     {documents.length > 0 && (
-                      <div className="space-y-4">
+                      <div className="space-y-4 pt-6 border-t">
                         {documents.map((doc) => (
                           <div key={doc.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                             {/* Document Type Dropdown */}
@@ -1495,8 +1596,9 @@ const Dashboard = () => {
 
                     {/* Add Document Button */}
                     <div>
-                      <button
-                        type="button"
+                      <Button
+                        variant="link"
+                        className="text-blue-600 p-0"
                         onClick={() => {
                           const newDoc = {
                             id: Date.now().toString(),
@@ -1505,11 +1607,9 @@ const Dashboard = () => {
                           };
                           setDocuments([...documents, newDoc]);
                         }}
-                        className="w-full px-4 py-3 border-2 border-dashed border-blue-300 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold transition-colors flex items-center justify-center gap-2"
                       >
-                        <Plus className="h-5 w-5" />
-                        Add Document
-                      </button>
+                        + ADD DOCUMENT
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
