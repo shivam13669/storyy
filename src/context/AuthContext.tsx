@@ -11,6 +11,17 @@ export interface AuthUser {
   role: 'user' | 'admin';
   testimonialAllowed: boolean;
   phoneLastChangedAt?: string | null;
+  gender?: string;
+  dateOfBirth?: string;
+  nationality?: string;
+  maritalStatus?: string;
+  anniversary?: string;
+  state?: string;
+  district?: string;
+  passportNumber?: string;
+  passportExpiryDate?: string;
+  passportIssuingCountry?: string;
+  panCardNumber?: string;
 }
 
 interface AuthContextType {
@@ -54,6 +65,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: dbUser.role,
                 testimonialAllowed: dbUser.testimonialAllowed,
                 phoneLastChangedAt: dbUser.phoneLastChangedAt,
+                gender: (dbUser as any).gender,
+                dateOfBirth: (dbUser as any).dateOfBirth,
+                nationality: (dbUser as any).nationality,
+                maritalStatus: (dbUser as any).maritalStatus,
+                anniversary: (dbUser as any).anniversary,
+                state: (dbUser as any).state,
+                district: (dbUser as any).district,
+                passportNumber: (dbUser as any).passportNumber,
+                passportExpiryDate: (dbUser as any).passportExpiryDate,
+                passportIssuingCountry: (dbUser as any).passportIssuingCountry,
+                panCardNumber: (dbUser as any).panCardNumber,
               });
             } else {
               // User deleted from DB, clear session
@@ -86,6 +108,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: apiUser.role,
         testimonialAllowed: apiUser.testimonialAllowed,
         phoneLastChangedAt: apiUser.phoneLastChangedAt,
+        gender: (apiUser as any).gender,
+        dateOfBirth: (apiUser as any).dateOfBirth,
+        nationality: (apiUser as any).nationality,
+        maritalStatus: (apiUser as any).maritalStatus,
+        anniversary: (apiUser as any).anniversary,
+        state: (apiUser as any).state,
+        district: (apiUser as any).district,
+        passportNumber: (apiUser as any).passportNumber,
+        passportExpiryDate: (apiUser as any).passportExpiryDate,
+        passportIssuingCountry: (apiUser as any).passportIssuingCountry,
+        panCardNumber: (apiUser as any).panCardNumber,
       };
 
       setUser(authUser);
@@ -112,6 +145,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: apiUser.role,
         testimonialAllowed: apiUser.testimonialAllowed,
         phoneLastChangedAt: apiUser.phoneLastChangedAt,
+        gender: (apiUser as any).gender,
+        dateOfBirth: (apiUser as any).dateOfBirth,
+        nationality: (apiUser as any).nationality,
+        maritalStatus: (apiUser as any).maritalStatus,
+        anniversary: (apiUser as any).anniversary,
+        state: (apiUser as any).state,
+        district: (apiUser as any).district,
+        passportNumber: (apiUser as any).passportNumber,
+        passportExpiryDate: (apiUser as any).passportExpiryDate,
+        passportIssuingCountry: (apiUser as any).passportIssuingCountry,
+        panCardNumber: (apiUser as any).panCardNumber,
       };
 
       setUser(authUser);
@@ -144,6 +188,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             role: dbUser.role,
             testimonialAllowed: dbUser.testimonialAllowed,
             phoneLastChangedAt: dbUser.phoneLastChangedAt,
+            gender: (dbUser as any).gender,
+            dateOfBirth: (dbUser as any).dateOfBirth,
+            nationality: (dbUser as any).nationality,
+            maritalStatus: (dbUser as any).maritalStatus,
+            anniversary: (dbUser as any).anniversary,
+            state: (dbUser as any).state,
+            district: (dbUser as any).district,
+            passportNumber: (dbUser as any).passportNumber,
+            passportExpiryDate: (dbUser as any).passportExpiryDate,
+            passportIssuingCountry: (dbUser as any).passportIssuingCountry,
+            panCardNumber: (dbUser as any).panCardNumber,
           };
           setUser(updatedUser);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));

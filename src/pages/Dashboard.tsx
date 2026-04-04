@@ -32,7 +32,7 @@ import { format } from "date-fns";
 import { UserProfileView } from "@/components/dashboardViews/UserProfileView";
 import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 import { AdvancedDatePicker } from "@/components/AdvancedDatePicker";
-import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, updateUser, Booking, Testimonial } from "@/lib/api";
+import { changeUserPassword, getBookingsByUser, getTestimonialsByUser, updateUser, updateUserDocuments, Booking, Testimonial } from "@/lib/api";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import statesAndDistricts from "@/data/states-and-districts.json";
 import countries from "@/data/countries.json";
@@ -162,6 +162,9 @@ const Dashboard = () => {
   const [documents, setDocuments] = useState<Array<{id: string; type: string; number: string}>>([]);
   const [openDocTypePopovers, setOpenDocTypePopovers] = useState<{[key: string]: boolean}>({});
   const [docTypeSearches, setDocTypeSearches] = useState<{[key: string]: string}>({});
+  const [passportNumber, setPassportNumber] = useState("");
+  const [panCardNumber, setPanCardNumber] = useState("");
+  const [isSavingDocuments, setIsSavingDocuments] = useState(false);
   const documentTypes = ["Aadhaar", "Driving License", "Voter ID"];
 
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -187,6 +190,67 @@ const Dashboard = () => {
       setEditedName(user.fullName);
     }
   }, [user?.fullName]);
+
+  // Initialize profile fields from user data
+  useEffect(() => {
+    if (user) {
+      if ((user as any).gender) {
+        setSelectedGender((user as any).gender);
+      }
+      if ((user as any).dateOfBirth) {
+        try {
+          const dobDate = new Date((user as any).dateOfBirth);
+          if (!isNaN(dobDate.getTime())) {
+            setSelectedDOB(dobDate);
+          }
+        } catch (e) {
+          console.error('Invalid DOB:', e);
+        }
+      }
+      if ((user as any).nationality) {
+        setSelectedNationality((user as any).nationality);
+      }
+      if ((user as any).maritalStatus) {
+        setSelectedMaritalStatus((user as any).maritalStatus);
+      }
+      if ((user as any).anniversary) {
+        try {
+          const annDate = new Date((user as any).anniversary);
+          if (!isNaN(annDate.getTime())) {
+            setSelectedAnniversary(annDate);
+          }
+        } catch (e) {
+          console.error('Invalid anniversary:', e);
+        }
+      }
+      if ((user as any).state) {
+        setSelectedState((user as any).state);
+      }
+      if ((user as any).district) {
+        setSelectedDistrict((user as any).district);
+      }
+      // Initialize document fields
+      if ((user as any).passportNumber) {
+        setPassportNumber((user as any).passportNumber);
+      }
+      if ((user as any).panCardNumber) {
+        setPanCardNumber((user as any).panCardNumber);
+      }
+      if ((user as any).passportExpiryDate) {
+        try {
+          const expiryDate = new Date((user as any).passportExpiryDate);
+          if (!isNaN(expiryDate.getTime())) {
+            setSelectedExpiryDate(expiryDate);
+          }
+        } catch (e) {
+          console.error('Invalid expiry date:', e);
+        }
+      }
+      if ((user as any).passportIssuingCountry) {
+        setSelectedCountry((user as any).passportIssuingCountry);
+      }
+    }
+  }, [user]);
 
   // Load user data function
   const loadData = async () => {
@@ -300,6 +364,35 @@ const Dashboard = () => {
       });
     } finally {
       setIsSavingPhone(false);
+    }
+  };
+
+  const handleSaveDocuments = async () => {
+    if (!user?.id) {
+      toast({ title: "Error", description: "User not authenticated", variant: "destructive" });
+      return;
+    }
+
+    setIsSavingDocuments(true);
+    try {
+      const documentData: any = {};
+
+      if (passportNumber) documentData.passportNumber = passportNumber;
+      if (selectedExpiryDate) documentData.passportExpiryDate = format(selectedExpiryDate, "yyyy-MM-dd");
+      if (selectedCountry) documentData.passportIssuingCountry = selectedCountry;
+      if (panCardNumber) documentData.panCardNumber = panCardNumber;
+      if (documents.length > 0) documentData.documents = documents;
+
+      await updateUserDocuments(user.id, documentData);
+      toast({ title: "Success", description: "Documents saved successfully" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save documents",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSavingDocuments(false);
     }
   };
 
@@ -892,7 +985,17 @@ const Dashboard = () => {
                         throw new Error("User not authenticated");
                       }
 
-                      await updateUser(user.id, { fullName: editedName });
+                      const updateData: any = { fullName: editedName };
+
+                      if (selectedGender) updateData.gender = selectedGender;
+                      if (selectedDOB) updateData.dateOfBirth = format(selectedDOB, "yyyy-MM-dd");
+                      if (selectedNationality) updateData.nationality = selectedNationality;
+                      if (selectedMaritalStatus) updateData.maritalStatus = selectedMaritalStatus;
+                      if (selectedAnniversary) updateData.anniversary = format(selectedAnniversary, "yyyy-MM-dd");
+                      if (selectedState) updateData.state = selectedState;
+                      if (selectedDistrict) updateData.district = selectedDistrict;
+
+                      await updateUser(user.id, updateData);
                       await refreshUser();
                       toast({
                         title: "Success",
@@ -1470,6 +1573,8 @@ const Dashboard = () => {
                         <Input
                           type="text"
                           placeholder="Enter passport number"
+                          value={passportNumber}
+                          onChange={(e) => setPassportNumber(e.target.value)}
                           className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
                         />
                       </div>
@@ -1573,6 +1678,8 @@ const Dashboard = () => {
                         <Input
                           type="text"
                           placeholder="Enter PAN card number"
+                          value={panCardNumber}
+                          onChange={(e) => setPanCardNumber(e.target.value)}
                           className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
                         />
                       </div>
@@ -1710,6 +1817,17 @@ const Dashboard = () => {
                     <div className="text-[13px] leading-5">
                       <span className="font-semibold text-orange-600">NOTE:</span>{" "}
                       <span className="text-slate-900">For Indian customers, PAN No. will only be used for international bookings as per RBI Guidelines</span>
+                    </div>
+
+                    {/* Save Documents Button */}
+                    <div className="border-t pt-6">
+                      <Button
+                        onClick={handleSaveDocuments}
+                        disabled={isSavingDocuments}
+                        className="bg-gray-700 hover:bg-gray-800 text-white"
+                      >
+                        {isSavingDocuments ? "Saving..." : "SAVE DOCUMENTS"}
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

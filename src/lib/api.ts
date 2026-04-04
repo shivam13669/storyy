@@ -272,7 +272,18 @@ export async function getUser(userId: number): Promise<{ user: AuthUser }> {
   }
 }
 
-export async function updateUser(userId: number, data: { fullName?: string; mobileNumber?: string; countryCode?: string }): Promise<{ user: AuthUser; message: string }> {
+export async function updateUser(userId: number, data: {
+  fullName?: string;
+  mobileNumber?: string;
+  countryCode?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  nationality?: string;
+  maritalStatus?: string;
+  anniversary?: string;
+  state?: string;
+  district?: string;
+}): Promise<{ user: AuthUser; message: string }> {
   try {
     const response = await fetch(`${API_URL}/auth/user/${userId}`, {
       method: 'PATCH',
@@ -305,6 +316,48 @@ export async function updateUser(userId: number, data: { fullName?: string; mobi
       throw error;
     }
     throw new Error('Failed to update user: Unknown error');
+  }
+}
+
+export async function updateUserDocuments(userId: number, data: {
+  passportNumber?: string;
+  passportExpiryDate?: string;
+  passportIssuingCountry?: string;
+  panCardNumber?: string;
+  documents?: Array<{id: string; type: string; number: string}>;
+}): Promise<{ message: string }> {
+  try {
+    const response = await fetch(`${API_URL}/auth/user/${userId}/documents`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      if (!response.ok) {
+        throw new Error(`Failed to update documents with status ${response.status}`);
+      }
+      throw new Error('Invalid response from server');
+    }
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to update documents');
+    }
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error(`Cannot connect to API at ${API_URL}. Make sure the backend server is running.`);
+      }
+      throw error;
+    }
+    throw new Error('Failed to update documents: Unknown error');
   }
 }
 
