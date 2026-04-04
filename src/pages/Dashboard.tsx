@@ -1598,14 +1598,21 @@ const Dashboard = () => {
                     <div>
                       <Button
                         variant="link"
-                        className="text-blue-600 p-0"
+                        disabled={documents.length >= 3}
+                        className={`p-0 ${
+                          documents.length >= 3
+                            ? "text-gray-400 cursor-not-allowed opacity-50"
+                            : "text-blue-600"
+                        }`}
                         onClick={() => {
-                          const newDoc = {
-                            id: Date.now().toString(),
-                            type: "",
-                            number: ""
-                          };
-                          setDocuments([...documents, newDoc]);
+                          if (documents.length < 3) {
+                            const newDoc = {
+                              id: Date.now().toString(),
+                              type: "",
+                              number: ""
+                            };
+                            setDocuments([...documents, newDoc]);
+                          }
                         }}
                       >
                         + ADD DOCUMENT
