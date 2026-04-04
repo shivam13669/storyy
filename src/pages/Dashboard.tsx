@@ -110,6 +110,10 @@ const Dashboard = () => {
   const [districtSearch, setDistrictSearch] = useState("");
   const [openStatePopover, setOpenStatePopover] = useState(false);
   const [openDistrictPopover, setOpenDistrictPopover] = useState(false);
+  const [selectedGender, setSelectedGender] = useState("");
+  const [openGenderPopover, setOpenGenderPopover] = useState(false);
+  const [selectedMaritalStatus, setSelectedMaritalStatus] = useState("");
+  const [openMaritalStatusPopover, setOpenMaritalStatusPopover] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Redirect if not authenticated or if admin (admin should go to admin dashboard)
@@ -887,10 +891,38 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Gender</label>
-                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
-                          <span>Select Gender</span>
-                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
-                        </button>
+                        <Popover open={openGenderPopover} onOpenChange={setOpenGenderPopover}>
+                          <PopoverTrigger asChild>
+                            <button
+                              type="button"
+                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
+                            >
+                              <span>{selectedGender || "Select Gender"}</span>
+                              <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-48 p-0" align="start">
+                            <div className="flex flex-col bg-white rounded-lg overflow-hidden">
+                              {["Male", "Female", "Others"].map((gender) => (
+                                <button
+                                  key={gender}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedGender(gender);
+                                    setOpenGenderPopover(false);
+                                  }}
+                                  className={`w-full text-left px-4 py-3 text-sm transition-colors ${
+                                    selectedGender === gender
+                                      ? "bg-blue-50 text-gray-900 font-semibold border-l-3 border-blue-500"
+                                      : "text-gray-700 hover:bg-gray-50 border-l-3 border-transparent"
+                                  }`}
+                                >
+                                  {gender}
+                                </button>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Date of Birth</label>
@@ -917,10 +949,38 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Marital Status</label>
-                        <button className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
-                          <span>Select Status</span>
-                          <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
-                        </button>
+                        <Popover open={openMaritalStatusPopover} onOpenChange={setOpenMaritalStatusPopover}>
+                          <PopoverTrigger asChild>
+                            <button
+                              type="button"
+                              className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
+                            >
+                              <span>{selectedMaritalStatus || "Select Status"}</span>
+                              <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-48 p-0" align="start">
+                            <div className="flex flex-col bg-white rounded-lg overflow-hidden">
+                              {["Single", "Married", "Others"].map((status) => (
+                                <button
+                                  key={status}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedMaritalStatus(status);
+                                    setOpenMaritalStatusPopover(false);
+                                  }}
+                                  className={`w-full text-left px-4 py-3 text-sm transition-colors ${
+                                    selectedMaritalStatus === status
+                                      ? "bg-blue-50 text-gray-900 font-semibold border-l-3 border-blue-500"
+                                      : "text-gray-700 hover:bg-gray-50 border-l-3 border-transparent"
+                                  }`}
+                                >
+                                  {status}
+                                </button>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Anniversary</label>
