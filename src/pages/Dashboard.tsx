@@ -958,7 +958,7 @@ const Dashboard = () => {
                               type="button"
                               className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
                             >
-                              <span className={selectedDOB ? "text-gray-900" : "text-gray-500"}>
+                              <span className="text-gray-900">
                                 {selectedDOB ? format(selectedDOB, "dd MMM, yyyy") : "Select Date"}
                               </span>
                               <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
@@ -1096,7 +1096,7 @@ const Dashboard = () => {
                               type="button"
                               className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
                             >
-                              <span className={selectedAnniversary ? "text-gray-900" : "text-gray-500"}>
+                              <span className="text-gray-900">
                                 {selectedAnniversary ? format(selectedAnniversary, "dd MMM, yyyy") : "Select Date"}
                               </span>
                               <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
@@ -1453,7 +1453,7 @@ const Dashboard = () => {
                               type="button"
                               className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 text-left text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between"
                             >
-                              <span className={selectedExpiryDate ? "text-gray-900" : "text-gray-500"}>
+                              <span className="text-gray-900">
                                 {selectedExpiryDate ? format(selectedExpiryDate, "dd MMM, yyyy") : "Select Date"}
                               </span>
                               <ChevronDown className="h-5 w-5 text-gray-600 flex-shrink-0" />
