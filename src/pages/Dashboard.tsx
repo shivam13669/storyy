@@ -877,7 +877,7 @@ const Dashboard = () => {
                           value={editedName}
                           onChange={(e) => setEditedName(e.target.value)}
                           placeholder="Enter your full name"
-                          className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                          className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                         />
                       </div>
                       <div></div>
@@ -1186,7 +1186,7 @@ const Dashboard = () => {
                               value={phoneNumber}
                               onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
                               placeholder="Enter phone number"
-                              className="flex-1"
+                              className="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
                             />
                           </div>
 
@@ -1236,7 +1236,7 @@ const Dashboard = () => {
                         <Input
                           type="text"
                           placeholder="Enter passport number"
-                          className="mt-2"
+                          className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
                         />
                       </div>
                       <div>
@@ -1262,7 +1262,7 @@ const Dashboard = () => {
                         <Input
                           type="text"
                           placeholder="Enter PAN card number"
-                          className="mt-2"
+                          className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
                         />
                       </div>
                     </div>
