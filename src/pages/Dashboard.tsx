@@ -249,6 +249,19 @@ const Dashboard = () => {
       if ((user as any).passportIssuingCountry) {
         setSelectedCountry((user as any).passportIssuingCountry);
       }
+      // Load documents from user data
+      if ((user as any).documents) {
+        try {
+          const parsedDocuments = typeof (user as any).documents === 'string'
+            ? JSON.parse((user as any).documents)
+            : (user as any).documents;
+          if (Array.isArray(parsedDocuments)) {
+            setDocuments(parsedDocuments);
+          }
+        } catch (e) {
+          console.error('Failed to parse documents:', e);
+        }
+      }
     }
   }, [user]);
 
@@ -384,6 +397,7 @@ const Dashboard = () => {
       if (documents.length > 0) documentData.documents = documents;
 
       await updateUserDocuments(user.id, documentData);
+      await refreshUser();
       toast({ title: "Success", description: "Documents saved successfully" });
     } catch (error) {
       toast({
@@ -1108,6 +1122,24 @@ const Dashboard = () => {
                       </div>
                     </div>
 
+                    {/* Age (auto-calculated) */}
+                    <div>
+                      <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Age</label>
+                      <div className="w-full mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all flex items-center justify-between">
+                        <span className="text-gray-900">
+                          {selectedDOB
+                            ? new Date().getFullYear() - selectedDOB.getFullYear() - (
+                                new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) <
+                                new Date(new Date().getFullYear(), selectedDOB.getMonth(), selectedDOB.getDate())
+                                  ? 1
+                                  : 0
+                              )
+                            : "—"}
+                        </span>
+                        <span className="text-xs text-gray-500">Auto-calculated</span>
+                      </div>
+                    </div>
+
                     {/* Nationality */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
@@ -1729,7 +1761,12 @@ const Dashboard = () => {
                                         .filter((t) => t.toLowerCase().includes((docTypeSearches[doc.id] || "").toLowerCase()))
                                         .length > 0 ? (
                                         documentTypes
-                                          .filter((t) => t.toLowerCase().includes((docTypeSearches[doc.id] || "").toLowerCase()))
+                                          .filter((t) => {
+                                            // Filter by search term AND exclude already selected types
+                                            const matchesSearch = t.toLowerCase().includes((docTypeSearches[doc.id] || "").toLowerCase());
+                                            const alreadySelected = documents.some(d => d.id !== doc.id && d.type === t);
+                                            return matchesSearch && !alreadySelected;
+                                          })
                                           .map((type) => (
                                             <button
                                               key={type}

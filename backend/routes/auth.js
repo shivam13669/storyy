@@ -94,7 +94,19 @@ router.post('/login', async (req, res) => {
         countryCode: user.countryCode,
         testimonialAllowed: user.testimonialAllowed === 1,
         signupDate: user.signupDate,
-        phoneLastChangedAt: user.phoneLastChangedAt || null
+        phoneLastChangedAt: user.phoneLastChangedAt || null,
+        gender: user.gender || null,
+        dateOfBirth: user.dateOfBirth || null,
+        nationality: user.nationality || null,
+        maritalStatus: user.maritalStatus || null,
+        anniversary: user.anniversary || null,
+        state: user.state || null,
+        district: user.district || null,
+        passportNumber: user.passportNumber || null,
+        passportExpiryDate: user.passportExpiryDate || null,
+        passportIssuingCountry: user.passportIssuingCountry || null,
+        panCardNumber: user.panCardNumber || null,
+        documents: user.documents || null
       }
     });
   } catch (error) {
@@ -126,13 +138,34 @@ router.get('/user/:id', async (req, res) => {
 
 /**
  * PATCH /api/auth/user/:id
- * Update user profile (fullName, etc)
+ * Update user profile (fullName, personal info, and document details)
  */
 router.patch('/user/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName, mobileNumber, countryCode } = req.body;
+    const {
+      fullName,
+      mobileNumber,
+      countryCode,
+      gender,
+      dateOfBirth,
+      nationality,
+      maritalStatus,
+      anniversary,
+      state,
+      district,
+      passportNumber,
+      passportExpiryDate,
+      passportIssuingCountry,
+      panCardNumber
+    } = req.body;
     const updates = {};
+
+    console.log(`🔄 Updating user ${id} with data:`, {
+      fullName, gender, dateOfBirth, nationality, maritalStatus,
+      anniversary, state, district, passportNumber, passportExpiryDate,
+      passportIssuingCountry, panCardNumber
+    });
 
     if (fullName !== undefined) {
       if (!fullName) {
@@ -177,6 +210,26 @@ router.patch('/user/:id', async (req, res) => {
       }
     }
 
+    // Handle general information fields
+    if (gender !== undefined) updates.gender = gender;
+    if (dateOfBirth !== undefined) updates.dateOfBirth = dateOfBirth;
+    if (nationality !== undefined) updates.nationality = nationality;
+    if (maritalStatus !== undefined) updates.maritalStatus = maritalStatus;
+    if (anniversary !== undefined) updates.anniversary = anniversary;
+    if (state !== undefined) updates.state = state;
+    if (district !== undefined) updates.district = district;
+
+    // Handle document fields
+    if (passportNumber !== undefined) updates.passportNumber = passportNumber;
+    if (passportExpiryDate !== undefined) updates.passportExpiryDate = passportExpiryDate;
+    if (passportIssuingCountry !== undefined) updates.passportIssuingCountry = passportIssuingCountry;
+    if (panCardNumber !== undefined) updates.panCardNumber = panCardNumber;
+
+    // Handle documents array (convert to JSON string for storage)
+    if (req.body.documents !== undefined) {
+      updates.documents = req.body.documents ? JSON.stringify(req.body.documents) : null;
+    }
+
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
     }
@@ -191,6 +244,56 @@ router.patch('/user/:id', async (req, res) => {
     });
   } catch (error) {
     console.error('Update user error:', error);
+
+    if (error.message.includes('not found')) {
+      return res.status(404).json({ error: error.message });
+    }
+
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * PATCH /api/auth/user/:id/documents
+ * Update user document details (passport, PAN, and documents array)
+ */
+router.patch('/user/:id/documents', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      passportNumber,
+      passportExpiryDate,
+      passportIssuingCountry,
+      panCardNumber,
+      documents
+    } = req.body;
+    const updates = {};
+
+    // Handle document fields
+    if (passportNumber !== undefined) updates.passportNumber = passportNumber;
+    if (passportExpiryDate !== undefined) updates.passportExpiryDate = passportExpiryDate;
+    if (passportIssuingCountry !== undefined) updates.passportIssuingCountry = passportIssuingCountry;
+    if (panCardNumber !== undefined) updates.panCardNumber = panCardNumber;
+
+    // Handle documents array (convert to JSON string for storage)
+    if (documents !== undefined) {
+      updates.documents = documents && documents.length > 0 ? JSON.stringify(documents) : null;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+
+    const user = await UserRepository.update(parseInt(id), updates);
+
+    console.log(`✅ User documents updated: ${user.email}`);
+
+    res.json({
+      message: 'User documents updated successfully',
+      user
+    });
+  } catch (error) {
+    console.error('Update user documents error:', error);
 
     if (error.message.includes('not found')) {
       return res.status(404).json({ error: error.message });
@@ -567,7 +670,19 @@ router.post('/google', async (req, res) => {
         countryCode: user.countryCode,
         testimonialAllowed: user.testimonialAllowed === 1,
         signupDate: user.signupDate,
-        phoneLastChangedAt: user.phoneLastChangedAt || null
+        phoneLastChangedAt: user.phoneLastChangedAt || null,
+        gender: user.gender || null,
+        dateOfBirth: user.dateOfBirth || null,
+        nationality: user.nationality || null,
+        maritalStatus: user.maritalStatus || null,
+        anniversary: user.anniversary || null,
+        state: user.state || null,
+        district: user.district || null,
+        passportNumber: user.passportNumber || null,
+        passportExpiryDate: user.passportExpiryDate || null,
+        passportIssuingCountry: user.passportIssuingCountry || null,
+        panCardNumber: user.panCardNumber || null,
+        documents: user.documents || null
       }
     });
   } catch (error) {

@@ -48,6 +48,18 @@ export interface AuthUser {
   testimonialAllowed: boolean;
   signupDate: string;
   phoneLastChangedAt?: string | null;
+  gender?: string | null;
+  dateOfBirth?: string | null;
+  nationality?: string | null;
+  maritalStatus?: string | null;
+  anniversary?: string | null;
+  state?: string | null;
+  district?: string | null;
+  passportNumber?: string | null;
+  passportExpiryDate?: string | null;
+  passportIssuingCountry?: string | null;
+  panCardNumber?: string | null;
+  documents?: string | null;
 }
 
 export async function signup(data: SignupData): Promise<{ user: AuthUser; message: string }> {
