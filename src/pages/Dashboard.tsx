@@ -180,6 +180,7 @@ const Dashboard = () => {
   const [panCardNumber, setPanCardNumber] = useState("");
   const [aadhaarCardNumber, setAadhaarCardNumber] = useState("");
   const [isSavingDocuments, setIsSavingDocuments] = useState(false);
+  const [isDocumentsCardOpen, setIsDocumentsCardOpen] = useState(false);
   const documentTypes = ["Driving License", "Voter ID"];
 
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -1609,10 +1610,20 @@ const Dashboard = () => {
 
               {/* Documents Details Card */}
               <Card className="border-0 shadow-md rounded-2xl">
-                <CardHeader>
-                  <CardTitle>Documents Details</CardTitle>
+                <CardHeader
+                  className="cursor-pointer hover:bg-gray-50 transition-colors rounded-t-2xl"
+                  onClick={() => setIsDocumentsCardOpen(!isDocumentsCardOpen)}
+                >
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Documents Details</CardTitle>
+                    <ChevronDown
+                      className={`h-5 w-5 text-gray-600 transition-transform ${
+                        isDocumentsCardOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </div>
                 </CardHeader>
-                <CardContent>
+                {isDocumentsCardOpen && <CardContent>
                   <div className="space-y-6">
                     {/* Passport No. and Expiry Date */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1859,14 +1870,14 @@ const Dashboard = () => {
                     <div>
                       <Button
                         variant="link"
-                        disabled={documents.length >= 3}
+                        disabled={documents.length >= 2}
                         className={`p-0 ${
-                          documents.length >= 3
+                          documents.length >= 2
                             ? "text-gray-400 cursor-not-allowed opacity-20"
                             : "text-blue-600"
                         }`}
                         onClick={() => {
-                          if (documents.length < 3) {
+                          if (documents.length < 2) {
                             const newDoc = {
                               id: Date.now().toString(),
                               type: "",
@@ -1897,7 +1908,7 @@ const Dashboard = () => {
                       </Button>
                     </div>
                   </div>
-                </CardContent>
+                </CardContent>}
               </Card>
 
             </div>
