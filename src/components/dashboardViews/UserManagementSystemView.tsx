@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UserDetailsModal } from "@/components/UserDetailsModal";
+import { DocumentDetailsModal } from "@/components/DocumentDetailsModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +47,19 @@ interface User {
   role: string;
   signupDate: string;
   isSuspended: boolean;
+  gender?: string;
+  dateOfBirth?: string;
+  nationality?: string;
+  maritalStatus?: string;
+  anniversary?: string;
+  state?: string;
+  district?: string;
+  passportNumber?: string;
+  passportExpiryDate?: string;
+  passportIssuingCountry?: string;
+  panCardNumber?: string;
+  aadhaarCardNo?: string;
+  documents?: string | null;
 }
 
 interface UserManagementSystemViewProps {
@@ -64,6 +78,8 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedUserForDocuments, setSelectedUserForDocuments] = useState<User | null>(null);
+  const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -81,6 +97,11 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
   const handleViewDetails = (user: User) => {
     setSelectedUser(user);
     setIsDetailsModalOpen(true);
+  };
+
+  const handleViewDocuments = (user: User) => {
+    setSelectedUserForDocuments(user);
+    setIsDocumentModalOpen(true);
   };
 
   // Update filteredUsers when users list changes
@@ -194,6 +215,20 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
       "BR": "55",
     };
     return countryCodeMap[code] || code;
+  };
+
+  const calculateAge = (dateOfBirth?: string) => {
+    if (!dateOfBirth) return null;
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age > 0 ? age : null;
   };
 
   const handleExportList = () => {
@@ -324,6 +359,15 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                     <th className="px-6 py-4 text-left font-semibold text-gray-900">User</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-900">Role</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-900">Status</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">Gender</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">Date of Birth</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">Age</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">Nationality</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">Marital Status</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">Anniversary</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">State</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">District</th>
+                    <th className="px-6 py-4 text-left font-semibold text-gray-900">Document</th>
                     <th className="px-6 py-4 text-left font-semibold text-gray-900">Joined</th>
                     <th className="px-6 py-4 text-right font-semibold text-gray-900">Actions</th>
                   </tr>
@@ -368,6 +412,74 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                         >
                           {user.isSuspended ? "Suspended" : "Active"}
                         </span>
+                      </td>
+
+                      {/* Gender Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {user.gender || "-"}
+                        </span>
+                      </td>
+
+                      {/* Date of Birth Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {user.dateOfBirth ? format(new Date(user.dateOfBirth), "dd/MM/yyyy") : "-"}
+                        </span>
+                      </td>
+
+                      {/* Age Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {calculateAge(user.dateOfBirth) || "-"}
+                        </span>
+                      </td>
+
+                      {/* Nationality Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {user.nationality || "-"}
+                        </span>
+                      </td>
+
+                      {/* Marital Status Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {user.maritalStatus || "-"}
+                        </span>
+                      </td>
+
+                      {/* Anniversary Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {user.anniversary ? format(new Date(user.anniversary), "dd/MM/yyyy") : "-"}
+                        </span>
+                      </td>
+
+                      {/* State Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {user.state || "-"}
+                        </span>
+                      </td>
+
+                      {/* District Column */}
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {user.district || "-"}
+                        </span>
+                      </td>
+
+                      {/* Document Column */}
+                      <td className="px-6 py-4">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleViewDocuments(user)}
+                        >
+                          <Eye className="w-4 h-4 text-blue-600" />
+                        </Button>
                       </td>
 
                       {/* Joined Column */}
@@ -497,6 +609,13 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
         user={selectedUser}
         onClose={() => setIsDetailsModalOpen(false)}
         onDataChange={onDataChange}
+      />
+
+      {/* Document Details Modal */}
+      <DocumentDetailsModal
+        isOpen={isDocumentModalOpen}
+        user={selectedUserForDocuments}
+        onClose={() => setIsDocumentModalOpen(false)}
       />
     </div>
   );
