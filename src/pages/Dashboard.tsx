@@ -267,19 +267,8 @@ const Dashboard = () => {
       if ((user as any).passportIssuingCountry) {
         setSelectedCountry((user as any).passportIssuingCountry);
       }
-      // Load documents from user data
-      if ((user as any).documents) {
-        try {
-          const parsedDocuments = typeof (user as any).documents === 'string'
-            ? JSON.parse((user as any).documents)
-            : (user as any).documents;
-          if (Array.isArray(parsedDocuments)) {
-            setDocuments(parsedDocuments);
-          }
-        } catch (e) {
-          console.error('Failed to parse documents:', e);
-        }
-      }
+      // Documents start empty - only added via "+ ADD DOCUMENT" button
+      setDocuments([]);
     }
   }, [user]);
 
@@ -1734,15 +1723,17 @@ const Dashboard = () => {
                     </div>
 
                     {/* Aadhaar Card Number */}
-                    <div>
-                      <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Aadhaar Card No.</label>
-                      <Input
-                        type="text"
-                        placeholder="Enter Aadhaar card number"
-                        value={aadhaarCardNumber}
-                        onChange={(e) => setAadhaarCardNumber(e.target.value)}
-                        className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Aadhaar Card No.</label>
+                        <Input
+                          type="text"
+                          placeholder="Enter Aadhaar card number"
+                          value={aadhaarCardNumber}
+                          onChange={(e) => setAadhaarCardNumber(e.target.value)}
+                          className="mt-2 px-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all h-auto"
+                        />
+                      </div>
                     </div>
 
                     {/* Document Rows */}
@@ -1857,14 +1848,14 @@ const Dashboard = () => {
                     <div>
                       <Button
                         variant="link"
-                        disabled={documents.length >= 3}
+                        disabled={documents.length >= 2}
                         className={`p-0 ${
-                          documents.length >= 3
+                          documents.length >= 2
                             ? "text-gray-400 cursor-not-allowed opacity-20"
                             : "text-blue-600"
                         }`}
                         onClick={() => {
-                          if (documents.length < 3) {
+                          if (documents.length < 2) {
                             const newDoc = {
                               id: Date.now().toString(),
                               type: "",
