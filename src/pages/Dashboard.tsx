@@ -180,7 +180,6 @@ const Dashboard = () => {
   const [panCardNumber, setPanCardNumber] = useState("");
   const [aadhaarCardNumber, setAadhaarCardNumber] = useState("");
   const [isSavingDocuments, setIsSavingDocuments] = useState(false);
-  const [isDocumentsCardOpen, setIsDocumentsCardOpen] = useState(false);
   const documentTypes = ["Driving License", "Voter ID"];
 
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -1610,20 +1609,10 @@ const Dashboard = () => {
 
               {/* Documents Details Card */}
               <Card className="border-0 shadow-md rounded-2xl">
-                <CardHeader
-                  className="cursor-pointer hover:bg-gray-50 transition-colors rounded-t-2xl"
-                  onClick={() => setIsDocumentsCardOpen(!isDocumentsCardOpen)}
-                >
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Documents Details</CardTitle>
-                    <ChevronDown
-                      className={`h-5 w-5 text-gray-600 transition-transform ${
-                        isDocumentsCardOpen ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </div>
+                <CardHeader>
+                  <CardTitle>Documents Details</CardTitle>
                 </CardHeader>
-                {isDocumentsCardOpen && <CardContent>
+                <CardContent>
                   <div className="space-y-6">
                     {/* Passport No. and Expiry Date */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1908,7 +1897,7 @@ const Dashboard = () => {
                       </Button>
                     </div>
                   </div>
-                </CardContent>}
+                </CardContent>
               </Card>
 
             </div>
