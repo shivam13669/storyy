@@ -267,19 +267,8 @@ const Dashboard = () => {
       if ((user as any).passportIssuingCountry) {
         setSelectedCountry((user as any).passportIssuingCountry);
       }
-      // Load documents from user data
-      if ((user as any).documents) {
-        try {
-          const parsedDocuments = typeof (user as any).documents === 'string'
-            ? JSON.parse((user as any).documents)
-            : (user as any).documents;
-          if (Array.isArray(parsedDocuments)) {
-            setDocuments(parsedDocuments);
-          }
-        } catch (e) {
-          console.error('Failed to parse documents:', e);
-        }
-      }
+      // Documents start empty - only added via "+ ADD DOCUMENT" button
+      setDocuments([]);
     }
   }, [user]);
 
