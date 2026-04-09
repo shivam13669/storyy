@@ -29,6 +29,12 @@ export class PostgresDatabase extends IDatabase {
     this.pool = new Pool({
       connectionString,
       ssl,
+      max: 20,
+      min: 2,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 5000,
+      keepAlives: true,
+      keepAlivesIdleTimeout: 30000,
     });
 
     await this._createTables();
