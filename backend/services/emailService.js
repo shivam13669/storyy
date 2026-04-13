@@ -7,17 +7,21 @@ dns.setDefaultResultOrder('ipv4first');
 // Create transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
   tls: {
-    rejectUnauthorized: false,
-    minVersion: 'TLSv1.2'
+    rejectUnauthorized: false
   },
-  connectionUrl: undefined
+  connectionTimeout: 10000,
+  socketTimeout: 10000,
+  maxConnections: 5,
+  maxMessages: 100,
+  rateDelta: 1000,
+  rateLimit: 10
 });
 
 /**
@@ -28,6 +32,11 @@ const transporter = nodemailer.createTransport({
  */
 export async function sendOTPEmail(email, otp) {
   try {
+    // Verify email config on first use
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      throw new Error('EMAIL_USER or EMAIL_PASS environment variable is not set');
+    }
+
     const htmlContent = `
       <!DOCTYPE html>
       <html>
