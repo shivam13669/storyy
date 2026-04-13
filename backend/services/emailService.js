@@ -1,13 +1,18 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Create transporter using Gmail SMTP
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Initialize Resend client (lazily)
+let resend = null;
+
+function getResendClient() {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY environment variable is not set');
+    }
+    resend = new Resend(apiKey);
+  }
+  return resend;
+}
 
 /**
  * Send OTP email to user
@@ -86,25 +91,25 @@ export async function sendOTPEmail(email, otp) {
           <div class="header">
             <h1>Stories by Foot</h1>
           </div>
-          
+
           <div class="content">
             <p>Hello,</p>
-            
+
             <p>You requested a verification code to complete your action. Use the code below:</p>
-            
+
             <div class="otp-box">
               <p style="margin: 0; color: #666;">Your verification code is:</p>
               <div class="otp-code">${otp}</div>
               <div class="otp-expiry">This code expires in 5 minutes</div>
             </div>
-            
+
             <div class="warning">
               <strong>Security Notice:</strong> If you didn't request this code, please ignore this email. Do not share this code with anyone.
             </div>
-            
+
             <p>Thank you,<br>Stories by Foot Team</p>
           </div>
-          
+
           <div class="footer">
             <p>© 2026 Stories by Foot. All rights reserved.</p>
             <p>This is an automated email. Please do not reply to this message.</p>
@@ -114,20 +119,24 @@ export async function sendOTPEmail(email, otp) {
       </html>
     `;
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
+    const resendClient = getResendClient();
+    const result = await resendClient.emails.send({
+      from: 'noreply@storiesbyfoot.com',
       to: email,
       subject: 'Your OTP Verification Code - Stories by Foot',
       html: htmlContent,
       text: `Your OTP verification code is: ${otp}\n\nThis code expires in 5 minutes.\n\nIf you didn't request this code, please ignore this email.`,
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
+
     console.log(`✅ OTP email sent to ${email}`);
     return {
       success: true,
       message: 'OTP sent successfully',
-      messageId: result.messageId,
+      messageId: result.data.id,
     };
   } catch (error) {
     console.error(`❌ Failed to send OTP email to ${email}:`, error);
@@ -136,13 +145,15 @@ export async function sendOTPEmail(email, otp) {
 }
 
 /**
- * Verify email configuration by sending test email
+ * Verify email configuration
  * @returns {Promise<boolean>} True if configuration is valid
  */
 export async function verifyEmailConfig() {
   try {
-    await transporter.verify();
-    console.log('✅ Email service is properly configured');
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY is not set');
+    }
+    console.log('✅ Email service (Resend) is properly configured');
     return true;
   } catch (error) {
     console.error('❌ Email service configuration failed:', error);
