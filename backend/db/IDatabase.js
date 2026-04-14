@@ -215,4 +215,12 @@ export class IDatabase {
   async deleteOTP(email) {
     throw new Error('Method not implemented');
   }
+
+  /**
+   * Delete all expired OTPs (older than current time)
+   * @returns {Promise<number>} Number of deleted OTPs
+   */
+  async deleteExpiredOTPs() {
+    throw new Error('Method not implemented');
+  }
 }
