@@ -31,6 +31,22 @@ initDB().catch(err => {
   process.exit(1);
 });
 
+// Periodic cleanup of expired OTPs (every 10 minutes)
+setInterval(async () => {
+  try {
+    const { getDB } = await import('./backend/db/index.js');
+    const db = getDB();
+    if (db && typeof db.deleteExpiredOTPs === 'function') {
+      const deletedCount = await db.deleteExpiredOTPs();
+      if (deletedCount > 0) {
+        console.log(`🗑️ Cleanup: Deleted ${deletedCount} expired OTP(s)`);
+      }
+    }
+  } catch (error) {
+    console.error('❌ OTP cleanup error:', error);
+  }
+}, 10 * 60 * 1000); // 10 minutes
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
