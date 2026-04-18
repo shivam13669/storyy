@@ -117,7 +117,7 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
         return [
           user.fullName,
           user.email,
-          `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
+          user.mobileNumber ? `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}` : "",
           formattedDate,
         ];
       }),
@@ -283,9 +283,15 @@ export function CustomerManagementView({ users, onDataChange }: CustomerManageme
                         <span className="flex items-center gap-1">
                           <Mail className="w-4 h-4" /> {user.email}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <Phone className="w-4 h-4" /> +{getNumericCountryCode(user.countryCode)} {user.mobileNumber}
-                        </span>
+                        {user.mobileNumber ? (
+                          <span className="flex items-center gap-1">
+                            <Phone className="w-4 h-4" /> +{getNumericCountryCode(user.countryCode)} {user.mobileNumber}
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-gray-400">
+                            <Phone className="w-4 h-4" />
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

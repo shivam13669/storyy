@@ -181,7 +181,7 @@ export function UserDetailsModal({
                   <div className="p-2 bg-green-100 rounded-lg">
                     <Phone className="w-4 h-4 text-green-600" />
                   </div>
-                  <span className="font-medium">+{getCountryDialCode(user.countryCode)} {user.mobileNumber}</span>
+                  <span className="font-medium">{user.mobileNumber ? `+${getCountryDialCode(user.countryCode)} ${user.mobileNumber}` : "—"}</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-700">
                   <div className="p-2 bg-purple-100 rounded-lg">

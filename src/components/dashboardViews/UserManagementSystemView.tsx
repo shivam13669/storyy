@@ -244,7 +244,7 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
         return [
           user.fullName,
           user.email,
-          `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}`,
+          user.mobileNumber ? `+${getNumericCountryCode(user.countryCode)} ${user.mobileNumber}` : "",
           user.role === "admin" ? "Admin" : "Customer",
           user.isSuspended ? "Suspended" : "Active",
           formattedDate,
@@ -389,7 +389,11 @@ export function UserManagementSystemView({ users, onDataChange }: UserManagement
                           <div>
                             <p className="font-medium text-gray-900">{user.fullName}</p>
                             <p className="text-xs text-gray-600">{user.email}</p>
-                            <p className="text-xs text-gray-600">+{getNumericCountryCode(user.countryCode)} {user.mobileNumber}</p>
+                            {user.mobileNumber ? (
+                              <p className="text-xs text-gray-600">+{getNumericCountryCode(user.countryCode)} {user.mobileNumber}</p>
+                            ) : (
+                              <p className="text-xs text-gray-400">—</p>
+                            )}
                           </div>
                         </div>
                       </td>

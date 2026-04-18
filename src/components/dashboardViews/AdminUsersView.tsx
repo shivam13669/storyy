@@ -122,7 +122,7 @@ export function AdminUsersView({ users, onDataChange }: AdminUsersViewProps) {
     const exportData = users.map((user) => ({
       "Full Name": user.fullName,
       Email: user.email,
-      "Phone Number": `+${user.countryCode} ${user.mobileNumber}`,
+      "Phone Number": user.mobileNumber ? `+${user.countryCode} ${user.mobileNumber}` : "",
       Role: user.role,
       Status: user.isSuspended ? "Suspended" : "Active",
       "Signup Date": format(new Date(user.signupDate), "MMM dd, yyyy"),
@@ -180,7 +180,7 @@ export function AdminUsersView({ users, onDataChange }: AdminUsersViewProps) {
                     </TableCell>
                     <TableCell className="text-gray-600">{user.email}</TableCell>
                     <TableCell className="text-gray-600">
-                      +{user.countryCode} {user.mobileNumber}
+                      {user.mobileNumber ? `+${user.countryCode} ${user.mobileNumber}` : "—"}
                     </TableCell>
                     <TableCell>
                       <Badge
