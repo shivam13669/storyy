@@ -14,6 +14,7 @@ import {
   Destination
 } from "@/data/destinations";
 import { parsePrice, useCurrency } from "@/context/CurrencyContext";
+import { getBikePrice, getPackagePricing } from "@/data/pricing";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { validateCouponFromAPI, calculateDiscount, Coupon, incrementCouponUsageFromAPI } from "@/utils/couponUtils";
@@ -54,7 +55,7 @@ type BookingStep = 1 | 2 | 3 | 4;
 const BookingPage = () => {
   const { packageSlug } = useParams<{ packageSlug: string }>();
   const [validationError, setValidationError] = useState<string>("");
-  const { formatPrice } = useCurrency();
+  const { formatPrice, currency } = useCurrency();
 
   const formatSignedPrice = (amount: number, sign: "+" | "-" = "+") => `${sign}${formatPrice(amount)}`;
 
@@ -141,22 +142,24 @@ const BookingPage = () => {
   }
 
 
-  // Calculate price
-  const basePrice = parsePrice(travelPackage.price) || 0;
+  // Calculate price using centralized pricing with currency
   const selectedBike = travelPackage.bikes?.find(b => b.id === formData.selectedBikeId);
   const isTransHimalayan = travelPackage.slug === "trans-himalayan-ride";
+  const currencyCode = currency?.code || "INR";
 
-  // Determine bike price based on seating preference for trans-himalayan or backup vehicles, or use multiplier for others
-  let bikePrice = basePrice;
-  if (selectedBike) {
-    // Use seating prices if available (for trans-himalayan or backup vehicles)
-    if (selectedBike.seatingPrices && formData.seatingPreference) {
-      bikePrice = selectedBike.seatingPrices[formData.seatingPreference] || basePrice;
-    } else if (selectedBike.priceMultiplier) {
-      // Otherwise use price multiplier if available
-      bikePrice = basePrice * selectedBike.priceMultiplier;
-    }
-    // If neither seatingPrices nor priceMultiplier exist, keep basePrice
+  // Get bike price from centralized pricing (includes seating preference and currency markup)
+  let bikePrice = 0;
+  if (formData.selectedBikeId) {
+    bikePrice = getBikePrice(
+      packageSlug || "",
+      formData.selectedBikeId,
+      formData.seatingPreference as "solo" | "dual-sharing" | "seat-in-backup" || "solo",
+      currencyCode
+    );
+  } else {
+    // Fallback to base price if no bike selected
+    const packagePricing = getPackagePricing(packageSlug || "");
+    bikePrice = packagePricing ? packagePricing.basePriceINR : 0;
   }
 
   const totalTravelers = 1 + formData.guests.length; // Primary traveler + co-travelers
