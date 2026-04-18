@@ -1501,7 +1501,7 @@ export const destinations: Destination[] = [
         duration: "12 nights · 13 days",
         description:
           "This 13-day Himalayan Odyssey is the ultimate pilgrimage for every adventure seeker - a grand circuit spanning over 3000 kilometers from the plains of Chandigarh to the highest reaches of the trans-Himalayan desert. From the lush saffron valleys of Kashmir to the stark moonscapes of Ladakh, conquer legendary passes and experience Ladakh's most remote frontiers before descending through the Atal Tunnel engineering marvel.",
-        price: "₹30,999",
+        price: "₹30,799",
         oldPrice: "₹64,460",
         badge: "Group Special",
         rating: 4.9,
