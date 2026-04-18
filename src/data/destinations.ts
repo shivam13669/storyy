@@ -1999,8 +1999,8 @@ export const destinations: Destination[] = [
             cc: "452cc",
             features: ["Maximum power", "Advanced suspension", "Best for experts", "Handles all terrains"],
             seatingPrices: {
-              solo: 68474,
-              "dual-sharing": 49279,
+              solo: 58199,
+              "dual-sharing": 41699,
               "seat-in-backup": 25499,
             },
           },
@@ -2013,8 +2013,8 @@ export const destinations: Destination[] = [
             cc: "411cc",
             features: ["Better ground clearance", "Improved suspension", "More powerful engine", "Ideal for rough terrain"],
             seatingPrices: {
-              solo: 55109,
-              "dual-sharing": 42679,
+              solo: 46999,
+              "dual-sharing": 36099,
               "seat-in-backup": 25499,
             },
           },
