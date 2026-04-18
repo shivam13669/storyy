@@ -2019,20 +2019,6 @@ export const destinations: Destination[] = [
             },
           },
           {
-            id: "classic-350",
-            name: "Royal Enfield Classic 350",
-            description: "Perfect for beginners. Smooth, lightweight, and easy to handle.",
-            image: "https://cdn.builder.io/api/v1/image/assets%2Fefb8a20ed2eb4fb5b67c675a044988d4%2F3ce46e66d9b648498cebe69aaf9f207e?format=webp&width=800&height=1200",
-            priceMultiplier: 1.0,
-            cc: "350cc",
-            features: ["Best for beginners", "Comfortable seating", "Excellent fuel efficiency", "Classic design"],
-            seatingPrices: {
-              solo: 53459,
-              "dual-sharing": 41689,
-              "seat-in-backup": 25499,
-            },
-          },
-          {
             id: "seat-in-backup",
             name: "Seat in Backup",
             description: "Travel comfortably in a backup support vehicle.",
