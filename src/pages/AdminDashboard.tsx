@@ -33,6 +33,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { getAllUsers as getAllUsersFromAPI, getAllBookings, getAllTestimonials, Booking, Testimonial } from "@/lib/api";
 import type { User } from "@/lib/db";
+import { Coupon } from "@/utils/couponUtils";
 import { format } from "date-fns";
 import { AdminUsersView } from "@/components/dashboardViews/AdminUsersView";
 import { AdminBookingsView } from "@/components/dashboardViews/AdminBookingsView";
@@ -52,6 +53,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const [activeNav, setActiveNav] = useState("overview");
@@ -81,14 +83,16 @@ const AdminDashboard = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [usersResponse, bookingsResponse, testimonialsResponse] = await Promise.all([
+      const [usersResponse, bookingsResponse, testimonialsResponse, couponsResponse] = await Promise.all([
         getAllUsersFromAPI(),
         getAllBookings(),
         getAllTestimonials(),
+        fetch('/api/coupons').then(res => res.json()),
       ]);
       setUsers(usersResponse.users || []);
       setBookings(bookingsResponse.bookings || []);
       setTestimonials(testimonialsResponse.testimonials || []);
+      setCoupons(couponsResponse.coupons || []);
     } catch (error) {
       console.error("Error loading data:", error);
       toast({ title: "Error", description: "Failed to load data" });
@@ -799,7 +803,7 @@ const AdminDashboard = () => {
           ) : activeNav === "reviews" ? (
             <AdminTestimonialsView testimonials={testimonials} onDataChange={loadData} />
           ) : activeNav === "coupons" ? (
-            <AdminCouponsView />
+            <AdminCouponsView initialCoupons={coupons} onDataChange={loadData} />
           ) : activeNav === "settings" ? (
             <div className="space-y-6">
               {/* Header */}
