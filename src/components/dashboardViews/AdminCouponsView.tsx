@@ -21,45 +21,24 @@ import { Coupon } from "@/utils/couponUtils";
 
 interface AdminCouponsViewProps {
   initialCoupons?: Coupon[];
+  onDataChange?: () => void;
 }
 
 const API_URL = '/api';
 
-export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps) {
+export function AdminCouponsView({ initialCoupons = [], onDataChange }: AdminCouponsViewProps) {
   const { toast } = useToast();
   const [coupons, setCoupons] = useState<Coupon[]>(initialCoupons);
   const [loading, setLoading] = useState(false);
-  const [fetchingCoupons, setFetchingCoupons] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [editingCouponId, setEditingCouponId] = useState<string | number | null>(null);
 
-  // Fetch coupons from API on component mount
+  // Update coupons when initialCoupons changes from parent
   useEffect(() => {
-    const fetchCoupons = async () => {
-      try {
-        setFetchingCoupons(true);
-        const response = await fetch(`${API_URL}/coupons`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch coupons');
-        }
-        const data = await response.json();
-        setCoupons(data.coupons || []);
-      } catch (err) {
-        console.error('Error fetching coupons:', err);
-        toast({
-          title: "Error",
-          description: "Failed to load coupons",
-          variant: "destructive"
-        });
-      } finally {
-        setFetchingCoupons(false);
-      }
-    };
-
-    fetchCoupons();
-  }, [toast]);
+    setCoupons(initialCoupons);
+  }, [initialCoupons]);
 
   const [formData, setFormData] = useState({
     code: "",
@@ -218,6 +197,11 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
       setShowPackageDropdown(false);
       setEditingCouponId(null);
 
+      // Reload data from parent
+      if (onDataChange) {
+        onDataChange();
+      }
+
       setTimeout(() => {
         setShowForm(false);
         setSuccess("");
@@ -254,6 +238,11 @@ export function AdminCouponsView({ initialCoupons = [] }: AdminCouponsViewProps)
 
       setCoupons(coupons.filter((c) => c.id !== id));
       toast({ title: "Success", description: "Coupon deleted" });
+
+      // Reload data from parent
+      if (onDataChange) {
+        onDataChange();
+      }
     } catch (err) {
       toast({
         title: "Error",
