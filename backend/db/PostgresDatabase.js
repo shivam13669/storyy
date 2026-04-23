@@ -977,6 +977,19 @@ export class PostgresDatabase extends IDatabase {
     }
   }
 
+  async clearOTPSendHistory(email, purpose) {
+    try {
+      const emailLower = email.toLowerCase();
+      await this._query(
+        `DELETE FROM otp_send_history WHERE email = $1 AND purpose = $2`,
+        [emailLower, purpose]
+      );
+      return true;
+    } catch (error) {
+      throw new Error(`Failed to clear OTP send history: ${error.message}`);
+    }
+  }
+
   async addOTPBlock(email, blockReason, blockDurationMinutes = 15) {
     try {
       const emailLower = email.toLowerCase();

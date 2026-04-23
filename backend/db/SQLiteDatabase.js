@@ -869,6 +869,20 @@ export class SQLiteDatabase extends IDatabase {
     }
   }
 
+  async clearOTPSendHistory(email, purpose) {
+    try {
+      const emailLower = email.toLowerCase();
+      this.db.run(
+        `DELETE FROM otp_send_history WHERE email = ? AND purpose = ?`,
+        [emailLower, purpose]
+      );
+      this._save();
+      return true;
+    } catch (error) {
+      throw new Error(`Failed to clear OTP send history: ${error.message}`);
+    }
+  }
+
   async addOTPBlock(email, blockReason, blockDurationMinutes = 15) {
     try {
       const emailLower = email.toLowerCase();

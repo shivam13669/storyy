@@ -259,6 +259,16 @@ export class IDatabase {
   }
 
   /**
+   * Clear OTP send history for a specific email and purpose
+   * @param {string} email - Email address
+   * @param {string} purpose - Purpose of OTP (signup, password-reset)
+   * @returns {Promise<boolean>} Success
+   */
+  async clearOTPSendHistory(email, purpose) {
+    throw new Error('Method not implemented');
+  }
+
+  /**
    * Add an OTP block for an email
    * @param {string} email - Email address
    * @param {string} blockReason - Reason for the block
