@@ -1050,19 +1050,6 @@ export class PostgresDatabase extends IDatabase {
     }
   }
 
-  async deleteOTPSendHistory(email, purpose) {
-    try {
-      const emailLower = email.toLowerCase();
-      const result = await this._query(
-        `DELETE FROM otp_send_history WHERE email = $1 AND purpose = $2`,
-        [emailLower, purpose]
-      );
-      return result.rowCount || 0;
-    } catch (error) {
-      throw new Error(`Failed to delete OTP send history: ${error.message}`);
-    }
-  }
-
   // ============ Coupons Operations ============
 
   _mapCouponRow(row) {

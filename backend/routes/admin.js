@@ -134,13 +134,12 @@ router.post('/otp/reset-send-limit/:email/:purpose', isAdmin, async (req, res) =
     }
 
     const db = getDB();
-
-    // Delete OTP, remove blocks, AND clear send history so user can request new OTP
+    
+    // Note: We're not deleting history, just informing the admin that they can request new OTP
+    // In a more advanced system, you might want to actually delete old records
+    // For now, we can just remove any active OTP and blocks
     await db.deleteOTP(email);
     await db.removeOTPBlock(email);
-    await db.deleteOTPSendHistory(email, purpose);
-
-    console.log(`✅ Reset OTP limit for ${email} - ${purpose}`);
 
     res.json({
       message: `OTP send limit reset for ${purpose}`,

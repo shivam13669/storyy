@@ -948,20 +948,6 @@ export class SQLiteDatabase extends IDatabase {
     }
   }
 
-  async deleteOTPSendHistory(email, purpose) {
-    try {
-      const emailLower = email.toLowerCase();
-      this.db.run(
-        `DELETE FROM otp_send_history WHERE email = ? AND purpose = ?`,
-        [emailLower, purpose]
-      );
-      this._save();
-      return true;
-    } catch (error) {
-      throw new Error(`Failed to delete OTP send history: ${error.message}`);
-    }
-  }
-
   // ============ Coupons Operations ============
 
   async createCoupon(couponData) {

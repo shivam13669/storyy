@@ -295,14 +295,4 @@ export class IDatabase {
   async getFailedAttemptBlocksInDay(email) {
     throw new Error('Method not implemented');
   }
-
-  /**
-   * Delete OTP send history for a specific email and purpose
-   * @param {string} email - Email address
-   * @param {string} purpose - Purpose of OTP (signup, password-reset)
-   * @returns {Promise<number>} Count of deleted records
-   */
-  async deleteOTPSendHistory(email, purpose) {
-    throw new Error('Method not implemented');
-  }
 }
