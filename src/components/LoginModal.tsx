@@ -145,6 +145,7 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [isPasswordResetOTPVerified, setIsPasswordResetOTPVerified] = useState(false);
   const [isGoogleLoggingIn, setIsGoogleLoggingIn] = useState(false);
+  const [resendCooldownSeconds, setResendCooldownSeconds] = useState(0);
 
   // Refs for password inputs to preserve cursor position
   const passwordInputRef = useRef<HTMLInputElement>(null);
@@ -218,8 +219,20 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       setShowOTPVerification(false);
       setIsPasswordResetOTPVerified(false);
       setOpenCountryPopover(false);
+      setResendCooldownSeconds(0);
     }
   }, [isOpen]);
+
+  // Resend cooldown timer
+  useEffect(() => {
+    if (resendCooldownSeconds <= 0) return;
+
+    const timer = setTimeout(() => {
+      setResendCooldownSeconds(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [resendCooldownSeconds]);
 
   const passwordValidation = validatePassword(signupPassword);
   const passwordsMatch = signupPassword && confirmPassword && signupPassword === confirmPassword;
@@ -352,6 +365,9 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
       toast.success("OTP sent to your email!");
 
+      // Start 30-second resend cooldown
+      setResendCooldownSeconds(30);
+
       // Show OTP verification screen
       setShowOTPVerification(true);
       setOtpCode("");
@@ -419,7 +435,7 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   };
 
   const handleResendOTP = async () => {
-    if (!otpEmail) return;
+    if (!otpEmail || resendCooldownSeconds > 0) return;
 
     setIsSendingOTP(true);
     try {
@@ -436,6 +452,8 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       );
       toast.success("OTP resent to your email!");
       setOtpCode("");
+      // Start 30-second cooldown
+      setResendCooldownSeconds(30);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to resend OTP';
       toast.error(errorMessage);
@@ -514,6 +532,9 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       await sendOTP(forgotPasswordEmail, 'password-reset');
 
       toast.success("OTP sent to your email!");
+
+      // Start 30-second resend cooldown
+      setResendCooldownSeconds(30);
 
       // Show OTP verification screen for password reset
       setOtpEmail(forgotPasswordEmail);
@@ -1421,10 +1442,10 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                           <button
                             type="button"
                             onClick={handleResendOTP}
-                            disabled={isSendingOTP}
-                            className="text-sm text-orange-600 hover:text-orange-700 font-semibold transition-colors disabled:text-gray-400"
+                            disabled={isSendingOTP || resendCooldownSeconds > 0}
+                            className="text-sm text-orange-600 hover:text-orange-700 font-semibold transition-colors disabled:text-gray-400 disabled:cursor-not-allowed"
                           >
-                            {isSendingOTP ? "Sending..." : "Resend OTP"}
+                            {isSendingOTP ? "Sending..." : resendCooldownSeconds > 0 ? `Resend in ${resendCooldownSeconds}s` : "Resend OTP"}
                           </button>
                         </div>
 
@@ -1607,10 +1628,10 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                           <button
                             type="button"
                             onClick={handleResendOTP}
-                            disabled={isSendingOTP}
-                            className="text-sm text-orange-600 hover:text-orange-700 font-semibold transition-colors disabled:text-gray-400"
+                            disabled={isSendingOTP || resendCooldownSeconds > 0}
+                            className="text-sm text-orange-600 hover:text-orange-700 font-semibold transition-colors disabled:text-gray-400 disabled:cursor-not-allowed"
                           >
-                            {isSendingOTP ? "Sending..." : "Resend OTP"}
+                            {isSendingOTP ? "Sending..." : resendCooldownSeconds > 0 ? `Resend in ${resendCooldownSeconds}s` : "Resend OTP"}
                           </button>
                         </div>
 
