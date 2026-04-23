@@ -36,7 +36,7 @@ export default function TermsAndConditionPage() {
               Terms and Conditions
             </h1>
             <p className="text-lg text-slate-600 mb-4">
-              Governing your access to and use of StoriesByFoot Services
+              Governing your access to and use of Stories by Foot Services
             </p>
             <p className="text-sm text-slate-500">
               Last Updated: November 2025
@@ -52,7 +52,7 @@ export default function TermsAndConditionPage() {
               {/* Introduction */}
               <section className="space-y-4 pb-8 border-b border-slate-200">
                 <p className="text-slate-700 leading-relaxed text-lg">
-                  Welcome to StoriesByFoot ("we," "our," or "us"). These Terms and Conditions ("Terms") govern your access to and use of our website <a href="https://storiesbyfoot.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">https://storiesbyfoot.com</a> (the "Website") and all related features, services, and content provided by StoriesByFoot (collectively, the "Services").
+                  Welcome to Stories by Foot ("we," "our," or "us"). These Terms and Conditions ("Terms") govern your access to and use of our website <a href="https://storiesbyfoot.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">https://storiesbyfoot.com</a> (the "Website") and all related features, services, and content provided by StoriesByFoot (collectively, the "Services").
                 </p>
                 <p className="text-slate-700 leading-relaxed text-lg">
                   By accessing or using our Website, you agree to comply with and be bound by these Terms. If you do not agree, please refrain from using our Website or Services.
@@ -65,15 +65,15 @@ export default function TermsAndConditionPage() {
                 <ul className="space-y-3 text-slate-700 leading-relaxed ml-4">
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>StoriesByFoot is a travel-based platform that provides destination information, travel inspiration, and booking assistance for tours, stays, and experiences.</span>
+                    <span>Stories by Foot is a travel-based platform that provides destination information, travel inspiration, and booking assistance for tours, stays, and experiences.</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>Some services may be offered directly by StoriesByFoot, while others are facilitated through verified third-party providers ("Vendors").</span>
+                    <span>Some services may be offered directly by Stories by Foot, while others are facilitated through verified third-party providers ("Vendors").</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>These Terms apply to all visitors, users, and registered members of StoriesByFoot.</span>
+                    <span>These Terms apply to all visitors, users, and registered members of Stories by Foot.</span>
                   </li>
                 </ul>
               </section>
@@ -103,7 +103,7 @@ export default function TermsAndConditionPage() {
                 <div className="space-y-4 ml-4">
                   <div>
                     <h3 className="font-bold text-slate-900 text-lg mb-2">3.1. Booking Confirmation</h3>
-                    <p className="text-slate-700 leading-relaxed">All bookings made through StoriesByFoot are subject to availability and confirmation. You will receive an email confirmation once a booking is successfully processed by the Vendor.</p>
+                    <p className="text-slate-700 leading-relaxed">All bookings made through Stories by Foot are subject to availability and confirmation. You will receive an email confirmation once a booking is successfully processed by the Vendor.</p>
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900 text-lg mb-2">3.2. Pricing and Currency</h3>
@@ -119,7 +119,7 @@ export default function TermsAndConditionPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900 text-lg mb-2">3.6. Right to Refuse or Cancel Bookings</h3>
-                    <p className="text-slate-700 leading-relaxed">StoriesByFoot reserves the right to refuse or cancel any booking at its discretion if fraud, payment issues, or misuse is suspected, or if the transaction violates applicable laws or our internal risk policies.</p>
+                    <p className="text-slate-700 leading-relaxed">Stories by Foot reserves the right to refuse or cancel any booking at its discretion if fraud, payment issues, or misuse is suspected, or if the transaction violates applicable laws or our internal risk policies.</p>
                   </div>
                 </div>
               </section>
@@ -135,7 +135,7 @@ export default function TermsAndConditionPage() {
                     </li>
                     <li className="flex gap-3">
                       <span className="text-primary font-bold min-w-fit">•</span>
-                      <span>StoriesByFoot may charge a non-refundable service or convenience fee.</span>
+                      <span>Stories by Foot may charge a non-refundable service or convenience fee.</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="text-primary font-bold min-w-fit">•</span>
@@ -152,11 +152,11 @@ export default function TermsAndConditionPage() {
                     <ul className="space-y-3 text-slate-700 leading-relaxed">
                       <li className="flex gap-3">
                         <span className="text-primary font-bold min-w-fit">•</span>
-                        <span>StoriesByFoot functions as a travel platform and intermediary between travelers and verified third-party service providers (such as hotels, tour operators, and transport partners).</span>
+                        <span>Stories by Foot functions as a travel platform and intermediary between travelers and verified third-party service providers (such as hotels, tour operators, and transport partners).</span>
                       </li>
                       <li className="flex gap-3">
                         <span className="text-primary font-bold min-w-fit">•</span>
-                        <span>Each service provider has its own cancellation, amendment, and refund rules, which are binding on the user once a booking is confirmed. This policy applies to all bookings made directly through our Website or via official StoriesByFoot representatives.</span>
+                        <span>Each service provider has its own cancellation, amendment, and refund rules, which are binding on the user once a booking is confirmed. This policy applies to all bookings made directly through our Website or via official Stories by Foot representatives.</span>
                       </li>
                     </ul>
                   </div>
@@ -188,8 +188,8 @@ export default function TermsAndConditionPage() {
                   </div>
 
                   <div className="mt-4 pt-4 border-t border-slate-200">
-                    <h3 className="font-bold text-slate-900 text-lg mb-3">4.3. Cancellations by StoriesByFoot or Vendor</h3>
-                    <p className="text-slate-700 leading-relaxed mb-3">StoriesByFoot or the Vendor reserves the right to cancel a booking in cases of:</p>
+                    <h3 className="font-bold text-slate-900 text-lg mb-3">4.3. Cancellations by Stories by Foot or Vendor</h3>
+                    <p className="text-slate-700 leading-relaxed mb-3">Stories by Foot or the Vendor reserves the right to cancel a booking in cases of:</p>
                     <ul className="space-y-2 text-slate-700 leading-relaxed ml-4">
                       <li className="flex gap-3">
                         <span className="text-primary font-bold min-w-fit">•</span>
@@ -215,7 +215,7 @@ export default function TermsAndConditionPage() {
                         <span>The option to reschedule or receive a travel credit, depending on availability and Vendor policy.</span>
                       </li>
                     </ul>
-                    <p className="text-slate-700 leading-relaxed mt-4">StoriesByFoot will not be responsible for any indirect losses (such as flight costs, visa fees, or other expenses) arising from cancellations beyond our control.</p>
+                    <p className="text-slate-700 leading-relaxed mt-4">Stories by Foot will not be responsible for any indirect losses (such as flight costs, visa fees, or other expenses) arising from cancellations beyond our control.</p>
                   </div>
 
                   <div className="mt-4 pt-4 border-t border-slate-200">
@@ -253,7 +253,7 @@ export default function TermsAndConditionPage() {
                       </li>
                       <li className="flex gap-3">
                         <span className="text-primary font-bold min-w-fit">•</span>
-                        <span>StoriesByFoot will provide you with email confirmation once the refund has been initiated.</span>
+                        <span>Stories by Foot will provide you with email confirmation once the refund has been initiated.</span>
                       </li>
                     </ul>
                   </div>
@@ -291,7 +291,7 @@ export default function TermsAndConditionPage() {
 
                   <div className="mt-4 pt-4 border-t border-slate-200">
                     <h3 className="font-bold text-slate-900 text-lg mb-3">4.7. Force Majeure</h3>
-                    <p className="text-slate-700 leading-relaxed">In the event of unforeseen circumstances such as natural disasters, pandemics, war, or government restrictions, StoriesByFoot and its Vendors will make reasonable efforts to provide rescheduling or travel credits. However, cash refunds may not be possible in such cases, depending on Vendor agreements.</p>
+                    <p className="text-slate-700 leading-relaxed">In the event of unforeseen circumstances such as natural disasters, pandemics, war, or government restrictions, Stories by Foot and its Vendors will make reasonable efforts to provide rescheduling or travel credits. However, cash refunds may not be possible in such cases, depending on Vendor agreements.</p>
                   </div>
                 </div>
               </section>
@@ -314,7 +314,7 @@ export default function TermsAndConditionPage() {
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>StoriesByFoot reserves the right to suspend or terminate accounts found violating these Terms or engaging in misuse.</span>
+                    <span>Stories by Foot reserves the right to suspend or terminate accounts found violating these Terms or engaging in misuse.</span>
                   </li>
                 </ul>
               </section>
@@ -329,7 +329,7 @@ export default function TermsAndConditionPage() {
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>StoriesByFoot is not responsible for losses caused by denied travel or entry due to missing or invalid documents.</span>
+                    <span>Stories by Foot is not responsible for losses caused by denied travel or entry due to missing or invalid documents.</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
@@ -348,7 +348,7 @@ export default function TermsAndConditionPage() {
                 <ul className="space-y-3 text-slate-700 leading-relaxed ml-4">
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>StoriesByFoot may include links, offers, or bookings from third-party providers such as airlines, hotels, and tour operators.</span>
+                    <span>Stories by Foot may include links, offers, or bookings from third-party providers such as airlines, hotels, and tour operators.</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
@@ -360,7 +360,7 @@ export default function TermsAndConditionPage() {
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>Any issues, delays, or service failures should be reported directly to the Vendor. StoriesByFoot will provide assistance but does not assume liability.</span>
+                    <span>Any issues, delays, or service failures should be reported directly to the Vendor. Stories by Foot will provide assistance but does not assume liability.</span>
                   </li>
                 </ul>
               </section>
@@ -369,7 +369,7 @@ export default function TermsAndConditionPage() {
               <section id="travel-insurance" className="space-y-4 pb-8 border-b border-slate-200">
                 <h2 className="text-3xl font-bold text-slate-900">8. Travel Insurance</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  We strongly recommend that you purchase comprehensive travel insurance covering trip cancellations, medical emergencies, lost baggage, and other travel-related risks. StoriesByFoot does not provide or sell insurance products directly.
+                  We strongly recommend that you purchase comprehensive travel insurance covering trip cancellations, medical emergencies, lost baggage, and other travel-related risks. Stories by Foot does not provide or sell insurance products directly.
                 </p>
               </section>
 
@@ -379,11 +379,11 @@ export default function TermsAndConditionPage() {
                 <ul className="space-y-3 text-slate-700 leading-relaxed ml-4">
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>All content on this Website including text, images, graphics, videos, logos, and software is the exclusive property of StoriesByFoot or its content partners and is protected under applicable copyright and trademark laws.</span>
+                    <span>All content on this Website including text, images, graphics, videos, logos, and software is the exclusive property of Stories by Foot or its content partners and is protected under applicable copyright and trademark laws.</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>You may not reproduce, distribute, modify, or republish any content without prior written consent from StoriesByFoot.</span>
+                    <span>You may not reproduce, distribute, modify, or republish any content without prior written consent from Stories by Foot.</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
@@ -391,7 +391,7 @@ export default function TermsAndConditionPage() {
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
-                    <span>User-generated content (such as reviews, images, or stories) submitted to the platform grants StoriesByFoot a non-exclusive, royalty-free license to use such content for promotional or editorial purposes.</span>
+                    <span>User-generated content (such as reviews, images, or stories) submitted to the platform grants Stories by Foot a non-exclusive, royalty-free license to use such content for promotional or editorial purposes.</span>
                   </li>
                 </ul>
               </section>
@@ -402,7 +402,7 @@ export default function TermsAndConditionPage() {
                 <div className="space-y-4 ml-4">
                   <div>
                     <h3 className="font-bold text-slate-900 text-lg mb-2">10.1. Accuracy of Information</h3>
-                    <p className="text-slate-700 leading-relaxed">StoriesByFoot strives to provide accurate information but does not guarantee the completeness, accuracy, or reliability of all content.</p>
+                    <p className="text-slate-700 leading-relaxed">Stories by Foot strives to provide accurate information but does not guarantee the completeness, accuracy, or reliability of all content.</p>
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900 text-lg mb-3">10.2. We are not liable for:</h3>
@@ -428,10 +428,10 @@ export default function TermsAndConditionPage() {
                   <div>
                     <h3 className="font-bold text-slate-900 text-lg mb-2">10.3. Health, Safety, and Medical Conditions</h3>
                     <p className="text-slate-700 leading-relaxed mb-2">Travel and adventure activities involve inherent risks, including but not limited to illness, injury, accidents, or other health-related issues.</p>
-                    <p className="text-slate-700 leading-relaxed mb-2">By participating in any travel experience or using the services listed on StoriesByFoot, you acknowledge and accept these risks.</p>
-                    <p className="text-slate-700 leading-relaxed mb-2">StoriesByFoot is not responsible for any injury, illness, loss of property, or anything that may occur during travel, tours, or activities arranged through third-party providers.</p>
+                    <p className="text-slate-700 leading-relaxed mb-2">By participating in any travel experience or using the services listed on Stories by Foot, you acknowledge and accept these risks.</p>
+                    <p className="text-slate-700 leading-relaxed mb-2">Stories by Foot is not responsible for any injury, illness, loss of property, or anything that may occur during travel, tours, or activities arranged through third-party providers.</p>
                     <p className="text-slate-700 leading-relaxed mb-2">All travelers are strongly advised to obtain medical and travel insurance that covers health emergencies, evacuation, and trip cancellation.</p>
-                    <p className="text-slate-700 leading-relaxed">StoriesByFoot strives to ensure accuracy of content but does not warrant that descriptions, photos, or information on the Website are free of errors or omissions.</p>
+                    <p className="text-slate-700 leading-relaxed">Stories by Foot strives to ensure accuracy of content but does not warrant that descriptions, photos, or information on the Website are free of errors or omissions.</p>
                   </div>
                 </div>
               </section>
@@ -440,14 +440,14 @@ export default function TermsAndConditionPage() {
               <section id="force-majeure" className="space-y-4 pb-8 border-b border-slate-200">
                 <h2 className="text-3xl font-bold text-slate-900">11. Force Majeure</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  StoriesByFoot and its partners shall not be liable for any delay or failure to perform obligations due to causes beyond reasonable control — including, but not limited to, natural disasters, war, pandemics, political unrest, or governmental actions. Refunds or credits in such cases will be subject to the Vendor's policy.
+                  Stories by Foot and its partners shall not be liable for any delay or failure to perform obligations due to causes beyond reasonable control — including, but not limited to, natural disasters, war, pandemics, political unrest, or governmental actions. Refunds or credits in such cases will be subject to the Vendor's policy.
                 </p>
               </section>
 
               {/* Section 12 */}
               <section id="indemnification" className="space-y-4 pb-8 border-b border-slate-200">
                 <h2 className="text-3xl font-bold text-slate-900">12. Indemnification</h2>
-                <p className="text-slate-700 leading-relaxed mb-3">You agree to indemnify and hold harmless StoriesByFoot, its founders, employees, and affiliates from any claims, damages, liabilities, or expenses (including legal fees) arising from your:</p>
+                <p className="text-slate-700 leading-relaxed mb-3">You agree to indemnify and hold harmless Stories by Foot, its founders, employees, and affiliates from any claims, damages, liabilities, or expenses (including legal fees) arising from your:</p>
                 <ul className="space-y-3 text-slate-700 leading-relaxed ml-4">
                   <li className="flex gap-3">
                     <span className="text-primary font-bold min-w-fit">•</span>
@@ -516,7 +516,7 @@ export default function TermsAndConditionPage() {
               <section id="entire-agreement" className="space-y-4 pb-8 border-b border-slate-200">
                 <h2 className="text-3xl font-bold text-slate-900">18. Entire Agreement</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  These Terms and Conditions, along with our Privacy Policy and Cancellation & Refund Policy, constitute the entire agreement between you and StoriesByFoot with respect to the Website and Services, superseding all prior communications, understandings, or agreements (whether oral or written).
+                  These Terms and Conditions, along with our Privacy Policy and Cancellation & Refund Policy, constitute the entire agreement between you and Stories by Foot with respect to the Website and Services, superseding all prior communications, understandings, or agreements (whether oral or written).
                 </p>
               </section>
 
@@ -549,7 +549,7 @@ export default function TermsAndConditionPage() {
               <section className="space-y-4 pt-8">
                 <h2 className="text-3xl font-bold text-slate-900">Disclaimer</h2>
                 <p className="text-slate-700 leading-relaxed">
-                  All travel experiences, photos, and reviews featured on StoriesByFoot are for informational and inspirational purposes only. Actual experiences may vary due to weather conditions, local regulations, or third-party operations. StoriesByFoot does not guarantee any specific outcome, availability, or satisfaction level for services provided by third parties.
+                  All travel experiences, photos, and reviews featured on Stories by Foot are for informational and inspirational purposes only. Actual experiences may vary due to weather conditions, local regulations, or third-party operations. Stories by Foot does not guarantee any specific outcome, availability, or satisfaction level for services provided by third parties.
                 </p>
               </section>
             </div>
