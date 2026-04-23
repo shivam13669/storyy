@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Menu, X, LogOut, ChevronDown, LayoutDashboard, HelpCircle } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { CurrencyPicker } from "./CurrencyPicker";
 import { LoginModal } from "./LoginModal";
@@ -27,22 +27,6 @@ const Navigation = () => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { currency, setCurrencyWithRegion } = useCurrency();
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
-  const location = useLocation();
-  const [scrollbarWidth, setScrollbarWidth] = useState(0);
-
-  useEffect(() => {
-    // Only calculate when component mounts
-    const div = document.createElement("div");
-    div.style.overflowY = "scroll";
-    div.style.width = "50px";
-    div.style.height = "50px";
-    div.style.position = "absolute";
-    div.style.top = "-9999px";
-    document.body.appendChild(div);
-    const sw = div.offsetWidth - div.clientWidth;
-    div.remove();
-    setScrollbarWidth(sw);
-  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -57,10 +41,7 @@ const Navigation = () => {
   }, []);
 
   return (
-    <nav 
-      className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-white/10 text-white shadow-lg"
-      style={{ paddingRight: location.pathname === "/" ? `${scrollbarWidth}px` : "0px" }}
-    >
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-lg border-b border-white/10 text-white shadow-lg">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="flex items-center justify-between gap-3 h-16">
           {/* Logo */}
