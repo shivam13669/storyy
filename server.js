@@ -1,0 +1,170 @@
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { initDB } from './backend/db/index.js';
+import authRoutes from './backend/routes/auth.js';
+import bookingRoutes from './backend/routes/bookings.js';
+import testimonialRoutes from './backend/routes/testimonials.js';
+import couponRoutes from './backend/routes/coupons.js';
+import adminRoutes from './backend/routes/admin.js';
+import proxyMiddleware from 'express-http-proxy';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+// Use PORT env variable if available, otherwise use 3001 for dev, 5000 for production
+const PORT = parseInt(process.env.PORT || (process.env.NODE_ENV === 'production' ? '5000' : '3001'));
+
+// Middleware
+app.use(cors({
+  origin: '*', // Allow all origins (you can restrict this later)
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'userId'],
+  credentials: false
+}));
+app.use(express.json());
+
+// Initialize database
+initDB().catch(err => {
+  console.error('Failed to initialize database:', err);
+  process.exit(1);
+});
+
+// Periodic cleanup of expired OTPs (every 10 minutes)
+setInterval(async () => {
+  try {
+    const { getDB } = await import('./backend/db/index.js');
+    const db = getDB();
+    if (db && typeof db.deleteExpiredOTPs === 'function') {
+      const deletedCount = await db.deleteExpiredOTPs();
+      if (deletedCount > 0) {
+        console.log(`🗑️ Cleanup: Deleted ${deletedCount} expired OTP(s)`);
+      }
+    }
+  } catch (error) {
+    console.error('❌ OTP cleanup error:', error);
+  }
+}, 10 * 60 * 1000); // 10 minutes
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Server is running' });
+});
+
+// Region detection endpoint (for currency/locale detection)
+app.get('/api/region', (req, res) => {
+  // Detection priority:
+  // 1. Manual query parameter override
+  // 2. Vercel IP country header (production on Vercel)
+  // 3. Cloudflare country header (if behind Cloudflare)
+  // 4. Accept-Language header
+  // 5. Return null (unknown) so client applies 20% markup
+
+  const queryRegion = req.query.region;
+  if (queryRegion && typeof queryRegion === 'string') {
+    return res.json({ region: queryRegion.toUpperCase() });
+  }
+
+  // Priority 1: Vercel Edge Network header (most reliable)
+  const vercelCountry = req.headers['x-vercel-ip-country'];
+  if (vercelCountry && typeof vercelCountry === 'string') {
+    console.log(`[REGION] Detected from Vercel IP: ${vercelCountry}`);
+    return res.json({ region: vercelCountry.toUpperCase() });
+  }
+
+  // Priority 2: Cloudflare header
+  const cloudflareCountry = req.headers['cf-ipcountry'];
+  if (cloudflareCountry && typeof cloudflareCountry === 'string') {
+    console.log(`[REGION] Detected from Cloudflare IP: ${cloudflareCountry}`);
+    return res.json({ region: cloudflareCountry.toUpperCase() });
+  }
+
+  // Priority 3: Accept-Language header (less reliable, only use in production)
+  // In development, skip this as it's too unpredictable and causes inconsistent behavior
+  if (process.env.NODE_ENV === 'production') {
+    const acceptLanguage = req.headers['accept-language'] || '';
+    const languageRegionMap = {
+      'hi': 'IN',
+      'en-IN': 'IN',
+      'mr': 'IN',       // Marathi
+      'ta': 'IN',       // Tamil
+      'te': 'IN',       // Telugu
+      'kn': 'IN',       // Kannada
+      'ml': 'IN',       // Malayalam
+      'gu': 'IN',       // Gujarati
+      'bn': 'IN',       // Bengali
+      'pa': 'IN',       // Punjabi
+      'en-US': 'US',
+      'en': 'US',       // Default English to US (international standard)
+      'en-GB': 'GB',
+      'en-AU': 'AU',
+      'fr': 'FR',
+      'de': 'DE',
+      'es': 'ES',
+      'ja': 'JP',
+      'zh': 'CN',
+    };
+
+    const primaryLanguage = acceptLanguage.split(',')[0].trim().split(';')[0];
+    if (languageRegionMap[primaryLanguage]) {
+      console.log(`[REGION] Detected from Accept-Language: ${primaryLanguage} -> ${languageRegionMap[primaryLanguage]}`);
+      return res.json({ region: languageRegionMap[primaryLanguage] });
+    }
+  }
+
+  // If no detection succeeded, return null
+  // Client will treat this as unknown region and apply 50% markup as safety measure
+  // In development, this defaults to India for consistent testing
+  console.log('[REGION] Could not detect region, returning null (will default to India in dev, apply 50% markup in production)');
+  res.json({ region: null });
+});
+
+// Serve frontend
+if (process.env.NODE_ENV === 'production') {
+  // Production: Serve static files from dist folder
+  const distPath = path.join(__dirname, 'dist');
+  app.use(express.static(distPath));
+
+  // SPA: Send index.html for any non-API route
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+} else {
+  // Development: Proxy non-API requests to Vite dev server
+  const viteUrl = process.env.VITE_DEV_SERVER_URL || 'http://localhost:5000';
+
+  app.use((req, res, next) => {
+    // Skip proxying for API routes - they're handled by Express
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+
+    // Proxy everything else to Vite dev server
+    proxyMiddleware(viteUrl, {
+      proxyReqPathResolver: (req) => req.path + req.url.slice(req.path.length),
+    })(req, res, next);
+  });
+}
+
+// Start server
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Backend server running on http://0.0.0.0:${PORT}`);
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`📦 Production mode: Serving static files from ./dist`);
+  } else {
+    console.log(`🚀 Development mode:`);
+    console.log(`   Access app from: http://0.0.0.0:${PORT}`);
+    console.log(`   Frontend: Vite dev server (http://localhost:5000)`);
+    console.log(`   API endpoint: http://0.0.0.0:${PORT}/api`);
+    console.log(`   Non-API requests proxy to Vite`);
+  }
+});

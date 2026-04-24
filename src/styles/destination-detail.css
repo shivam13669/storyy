@@ -1,0 +1,131 @@
+/* Destination Detail Page - Orange Color Scheme (Reference: https://github.com/shivam13669/destination) */
+/* This CSS is only imported in DestinationDetail.tsx to avoid affecting other pages */
+
+.destination-detail-page {
+  /* Core reference colors */
+  --background: 0 0% 100%;
+  --foreground: 220 13% 18%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 13% 18%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 13% 18%;
+
+  /* Primary orange color */
+  --primary: 24 95% 53%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary colors */
+  --secondary: 24 95% 53%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 220 13% 18%;
+
+  /* Status colors */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 142 71% 45%;
+  --success-foreground: 0 0% 100%;
+
+  /* Borders and inputs */
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 24 95% 53%;
+
+  /* Custom colors matching reference exactly */
+  --orange: 24 95% 53%;
+  --orange-hover: 24 95% 45%;
+  --gold: 43 96% 56%;
+  --footer-bg: 220 20% 14%;
+  --sale-badge: 142 71% 45%;
+}
+
+.destination-detail-page .btn-primary {
+  @apply text-primary-foreground transition-colors duration-200 font-medium;
+  background-color: hsl(var(--primary));
+}
+
+.destination-detail-page .btn-primary:hover {
+  background-color: hsl(var(--orange-hover));
+}
+
+.destination-detail-page .btn-outline-primary {
+  @apply border transition-colors duration-200 font-medium;
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary));
+}
+
+.destination-detail-page .btn-outline-primary:hover {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.destination-detail-page .badge-duration {
+  @apply px-3 py-1 rounded text-sm font-semibold;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.destination-detail-page .badge-day {
+  @apply px-3 py-1 rounded text-xs font-semibold uppercase;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.destination-detail-page .tab-active {
+  @apply text-primary-foreground;
+  background-color: hsl(var(--primary));
+}
+
+.destination-detail-page .tab-inactive {
+  @apply bg-background text-foreground border transition-colors;
+  border-color: hsl(var(--border));
+}
+
+.destination-detail-page .tab-inactive:hover {
+  border-color: hsl(var(--primary));
+}
+
+.destination-detail-page .card-shadow {
+  @apply shadow-lg rounded-lg;
+  border-color: hsl(var(--border));
+}
+
+.destination-detail-page .image-overlay {
+  @apply absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent;
+}
+
+.destination-detail-page .bg-sale {
+  background-color: hsl(var(--sale-badge));
+  color: hsl(var(--primary-foreground));
+}
+
+.destination-detail-page .bg-footer {
+  background-color: hsl(var(--footer-bg));
+  color: hsl(var(--primary-foreground));
+}
+
+.destination-detail-page .text-gold {
+  color: hsl(var(--gold));
+}
+
+.destination-detail-page .text-success {
+  color: hsl(var(--success));
+}
+
+.destination-detail-page .text-destructive {
+  color: hsl(var(--destructive));
+}
+
+.destination-detail-page .text-primary {
+  color: hsl(var(--primary));
+}
+
+.destination-detail-page .flip-card {
+  @apply rounded-md flex items-center justify-center text-3xl font-bold;
+  background-color: hsl(var(--footer-bg));
+  color: hsl(var(--primary-foreground));
+  width: 45px;
+  height: 55px;
+}
