@@ -146,23 +146,23 @@ SAS Nagar, Punjab - 140307, India</a></div>
                 <ul className="space-y-[6px] mb-8">
                   <li className="flex items-center">
                     <span className="w-[6px] h-[6px] rounded-full bg-[#01b3a7] mr-3"></span>
-                    <Link to="/about" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">About us</a>
+                    <Link to="/about" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">About us</Link>
                   </li>
                   <li className="flex items-center">
                     <span className="w-[6px] h-[6px] rounded-full bg-[#01b3a7] mr-3"></span>
-                    <Link to="/destinations" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Our Tours</a>
+                    <Link to="/destinations" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Our Tours</Link>
                   </li>
                   <li className="flex items-center">
                     <span className="w-[6px] h-[6px] rounded-full bg-[#01b3a7] mr-3"></span>
-                    <Link to="/contact" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Our Team</a>
+                    <Link to="/contact" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Our Team</Link>
                   </li>
                   <li className="flex items-center">
                     <span className="w-[6px] h-[6px] rounded-full bg-[#01b3a7] mr-3"></span>
-                    <Link to="#" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Gallery</a>
+                    <Link to="#" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Gallery</Link>
                   </li>
                   <li className="flex items-center">
                     <span className="w-[6px] h-[6px] rounded-full bg-[#01b3a7] mr-3"></span>
-                    <Link to="/blog" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Blog</a>
+                    <Link to="/blog" className="text-[14px] leading-[1.72] text-white/80 hover:text-[#01b3a7] transition-colors">Blog</Link>
                   </li>
                 </ul>
                 <div className="mt-4">
