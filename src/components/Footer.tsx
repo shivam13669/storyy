@@ -77,12 +77,12 @@ const Footer = () => {
           transform: scale(1.3);
         }
       `}</style>
-      
+
       <footer ref={footerRef} className="bg-[#162e44] text-white/80 font-['Poppins',sans-serif] text-[14px] overflow-hidden leading-[1.72]">
         <div className="py-[60px] lg:py-[90px]">
           <div className="container mx-auto px-4 max-w-[1200px]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 justify-between">
-              
+
               {/* Contact Us - slideInRight */}
               <div className={`lg:col-span-4 lg:pr-8 ${getAnimClass('slide-in-from-right-8')}`}>
                 <h6 className="font-['Montserrat',sans-serif] text-[16px] tracking-[0.05em] font-medium uppercase mb-[27px] text-white">Contact us</h6>
@@ -107,7 +107,7 @@ const Footer = () => {
                     <div className="flex items-center">
                       <div className="mr-4"><span className="fa fa-location-arrow text-[#01b3a7] text-[24px] align-middle min-w-[21px]"></span></div>
                       <div className="flex-1"><a href="#" className="text-[14px] leading-[1.72] tracking-[0.025em] text-white/80 hover:text-[#01b3a7] transition-colors max-w-[192px] block">91, GK Crystal Home, KL Highway,
-SAS Nagar, Punjab - 140307, India</a></div>
+                        SAS Nagar, Punjab - 140307, India</a></div>
                     </div>
                   </li>
                 </ul>
@@ -166,7 +166,7 @@ SAS Nagar, Punjab - 140307, India</a></div>
                   </li>
                 </ul>
                 <div className="mt-4">
-                  <Link 
+                  <Link
                     to="/contact"
                     className="group relative z-0 inline-flex items-center justify-center overflow-hidden bg-[#01b3a7] text-white hover:text-[#ffffff] px-[36px] py-[16px] font-normal uppercase tracking-[0.05em] text-[14px] transition-colors [transition-duration:400ms] [transition-timing-function:cubic-bezier(0.2,1,0.3,1)] rounded-[4px] border border-transparent hover:border-[#01b3a7]"
                   >
@@ -175,7 +175,7 @@ SAS Nagar, Punjab - 140307, India</a></div>
                   </Link>
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -184,28 +184,28 @@ SAS Nagar, Punjab - 140307, India</a></div>
         <div className="bg-[#11263a] py-[30px] relative">
           <div className="container mx-auto px-4 max-w-[1200px]">
             <div className="flex flex-col md:flex-row items-center justify-between gap-[10px]">
-              
+
               {/* Copyright - Left */}
               <div className="md:w-1/3 order-3 md:order-1 text-center md:text-left text-[14px] text-white/30 font-['Poppins',sans-serif] tracking-[0.025em]">
-  <div className="mb-0 leading-[1.7]">
-    <p>
-      © {new Date().getFullYear()} Stories by Foot. All Rights Reserved.
-    </p>
+                <div className="mb-0 leading-[1.7]">
+                  <p>
+                    © {new Date().getFullYear()} Stories by Foot. All Rights Reserved.
+                  </p>
 
-    <p className="mt-1">
-      Design by{" "}
-      <a
-        href="https://www.khoobneek.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:text-[#01b3a7] transition-colors"
-      >
-        khoobneek.com
-      </a>
-    </p>
-  </div>
-</div>
-              
+                  <p className="mt-1">
+                    Design by{" "}
+                    <a
+                      href="https://www.khoobneek.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-[#01b3a7] transition-colors"
+                    >
+                      khoobneek.com
+                    </a>
+                  </p>
+                </div>
+              </div>
+
               {/* Socials - Center */}
               <div className="md:w-1/3 order-1 md:order-2 flex justify-center">
                 <ul className="flex space-x-[10px]">
@@ -220,7 +220,7 @@ SAS Nagar, Punjab - 140307, India</a></div>
               <div className="md:w-1/3 order-2 md:order-3 text-center md:text-right text-[14px] text-white/30 font-['Poppins',sans-serif] tracking-[0.025em]">
                 <p className="mb-0"><a href="#" className="hover:text-[#01b3a7] transition-colors">Privacy Policy</a></p>
               </div>
-              
+
             </div>
           </div>
         </div>
