@@ -100,7 +100,7 @@ const Footer = () => {
                   <li>
                     <div className="flex items-center">
                       <div className="mr-4"><span className="fa fa-envelope text-[#01b3a7] text-[24px] align-middle min-w-[21px]"></span></div>
-                      <div className="flex-1"><a href="mailto:#" className="text-[14px] leading-[1.72] tracking-[0.025em] text-white/80 hover:text-[#01b3a7] transition-colors">contact@storiesbyfoot.com</a></div>
+                      <div className="flex-1"><a href="mailto:contact@storiesbyfoot.com" className="text-[14px] leading-[1.72] tracking-[0.025em] text-white/80 hover:text-[#01b3a7] transition-colors">contact@storiesbyfoot.com</a></div>
                     </div>
                   </li>
                   <li>
