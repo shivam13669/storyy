@@ -187,14 +187,24 @@ SAS Nagar, Punjab - 140307, India</a></div>
               
               {/* Copyright - Left */}
               <div className="md:w-1/3 order-3 md:order-1 text-center md:text-left text-[14px] text-white/30 font-['Poppins',sans-serif] tracking-[0.025em]">
-                <p className="mb-0">
-                  <span>&copy;&nbsp;</span>
-                  <span>{new Date().getFullYear()}</span>
-                  <span>&nbsp;</span>
-                  <span>Stories by Foot</span>
-                  . All Rights Reserved. Design by <a href="https://www.khoobneek.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#01b3a7] transition-colors">khoobneek.com</a>
-                </p>
-              </div>
+  <div className="mb-0 leading-[1.7]">
+    <p>
+      © {new Date().getFullYear()} Stories by Foot. All Rights Reserved.
+    </p>
+
+    <p className="mt-1">
+      Design by{" "}
+      <a
+        href="https://www.khoobneek.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:text-[#01b3a7] transition-colors"
+      >
+        khoobneek.com
+      </a>
+    </p>
+  </div>
+</div>
               
               {/* Socials - Center */}
               <div className="md:w-1/3 order-1 md:order-2 flex justify-center">
