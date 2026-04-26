@@ -1,54 +1,47 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import express from "express";
+import cors from "cors";
 import { initDB } from "../backend/db/index.js";
+import authRoutes from "../backend/routes/auth.js";
+import bookingRoutes from "../backend/routes/bookings.js";
+import testimonialRoutes from "../backend/routes/testimonials.js";
+import couponRoutes from "../backend/routes/coupons.js";
+import adminRoutes from "../backend/routes/admin.js";
 
-let appInstance: any = null;
-let dbInitialized = false;
+let app: any = null;
 
-async function getApp() {
-  if (appInstance) return appInstance;
+async function createApp() {
+  if (app) return app;
 
-  const express = await import("express");
-  const cors = await import("cors");
-
-  const app = express.default();
+  const newApp = express();
 
   // Middleware
-  app.use(
-    cors.default({
+  newApp.use(
+    cors({
       origin: "*",
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization", "userId"],
       credentials: false,
     })
   );
-  app.use(express.default.json());
+  newApp.use(express.json());
 
-  // Initialize database once
-  if (!dbInitialized) {
-    try {
-      await initDB();
-      dbInitialized = true;
-    } catch (error) {
-      console.error("Failed to initialize database:", error);
-    }
+  // Initialize database
+  try {
+    await initDB();
+  } catch (error) {
+    console.error("Database initialization error:", error);
   }
 
-  // Import routes
-  const authRoutes = (await import("../backend/routes/auth.js")).default;
-  const bookingRoutes = (await import("../backend/routes/bookings.js")).default;
-  const testimonialRoutes = (await import("../backend/routes/testimonials.js")).default;
-  const couponRoutes = (await import("../backend/routes/coupons.js")).default;
-  const adminRoutes = (await import("../backend/routes/admin.js")).default;
-
-  // Routes
-  app.use("/api/auth", authRoutes);
-  app.use("/api/bookings", bookingRoutes);
-  app.use("/api/testimonials", testimonialRoutes);
-  app.use("/api/coupons", couponRoutes);
-  app.use("/api/admin", adminRoutes);
+  // API Routes
+  newApp.use("/api/auth", authRoutes);
+  newApp.use("/api/bookings", bookingRoutes);
+  newApp.use("/api/testimonials", testimonialRoutes);
+  newApp.use("/api/coupons", couponRoutes);
+  newApp.use("/api/admin", adminRoutes);
 
   // Health check
-  app.get("/api/health", (req: any, res: any) => {
+  newApp.get("/api/health", (req: any, res: any) => {
     res.json({
       status: "ok",
       message: "Backend is running on Vercel serverless",
@@ -56,7 +49,14 @@ async function getApp() {
     });
   });
 
-  appInstance = app;
+  // Region detection
+  newApp.get("/api/region", (req: any, res: any) => {
+    const countryFromHeader = req.headers["x-vercel-ip-country"];
+    const country = countryFromHeader ? countryFromHeader.toUpperCase() : null;
+    res.json({ region: country || null });
+  });
+
+  app = newApp;
   return app;
 }
 
@@ -65,10 +65,19 @@ export default async function handler(
   res: VercelResponse
 ) {
   try {
-    const app = await getApp();
-    return app(req, res);
+    const expressApp = await createApp();
+
+    return new Promise((resolve) => {
+      expressApp(req, res);
+      // Ensure response is sent
+      res.on("finish", () => {
+        resolve(null);
+      });
+    });
   } catch (error) {
-    console.error("API error:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Handler error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
 }
